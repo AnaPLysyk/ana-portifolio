@@ -94,8 +94,8 @@ export const registerAuthRoutes = async (app: FastifyInstance) => {
       },
     },
     async (request) => {
-      await request.jwtVerify<{ username: string }>()
-      return { username: request.user.username }
+      const session = await request.jwtVerify<{ username: string }>()
+      return { username: session.username }
     },
   )
 
