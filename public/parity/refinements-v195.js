@@ -96,23 +96,13 @@
   }
 
   function syncLegacyClasses(){
-    /*
-      Remove os 3 estados antigos da v192 para eles não brigarem
-      com os presets mais específicos.
-    */
+    /* v196: aparelho afeta somente a prévia.
+       Não aplicamos mais classes legadas no body que possam alterar o editor. */
     document.body.classList.remove(
       'editor-device-desktop-v192',
       'editor-device-tablet-v192',
       'editor-device-mobile-v192'
     );
-
-    if(current==='desktop-1440' || current==='laptop-1280'){
-      document.body.classList.add('editor-device-desktop-v192');
-    }else if(current==='tablet-landscape' || current==='tablet-portrait'){
-      document.body.classList.add('editor-device-tablet-v192');
-    }else{
-      document.body.classList.add('editor-device-mobile-v192');
-    }
   }
 
   function apply(id,{notify=false}={}){
