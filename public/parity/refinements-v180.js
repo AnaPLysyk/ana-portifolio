@@ -61,6 +61,8 @@
   function position(){
     raf=requestAnimationFrame(position);
 
+    /* v185 transforma Robô e CTA em dois elementos independentes do editor. */
+    if(window.__portfolioAssistantLayoutV185) return;
     if(stage.classList.contains('chat-active')) return;
 
     const shellRect=shell.getBoundingClientRect();
