@@ -205,3 +205,73 @@
     });
   }
 })();
+
+/* ===== ajuste fino — CTA mais afastado das órbitas ===== */
+(() => {
+  const $ = (selector, root = document) => root.querySelector(selector);
+
+  function placeAssistantHintWithBreathingRoom() {
+    const stage = $('.agent-stage');
+    const shell = $('#brainShell');
+    const orb = $('#agentButton');
+    const field = $('.quantum-field-v37');
+    const idle = shell?.querySelector('.brain-idle');
+
+    if (!stage || !shell || !orb || !idle || stage.classList.contains('chat-active')) return;
+
+    const shellRect = shell.getBoundingClientRect();
+    const orbRect = orb.getBoundingClientRect();
+    const fieldRect = field?.getBoundingClientRect();
+    const idleRect = idle.getBoundingClientRect();
+
+    if (!shellRect.width || !orbRect.width) return;
+
+    const centerX = (orbRect.left - shellRect.left) + (orbRect.width / 2);
+    const orbitBottom = fieldRect?.height
+      ? (fieldRect.bottom - shellRect.top)
+      : (orbRect.bottom - shellRect.top);
+
+    const sphereBottom = orbRect.bottom - shellRect.top;
+    const visualBottom = Math.max(sphereBottom, orbitBottom - 18);
+
+    const gap = innerWidth <= 480 ? 28 : (innerWidth <= 760 ? 30 : 34);
+
+    let left = centerX;
+    let top = visualBottom + gap;
+
+    const half = Math.min((idleRect.width || 220) / 2, 138);
+    const min = half + 8;
+    const max = shellRect.width - half - 8;
+
+    if (max > min) left = Math.max(min, Math.min(max, left));
+
+    const maxTop = shellRect.height - Math.max(idleRect.height || 34, 34) - 12;
+    top = Math.min(top, maxTop);
+
+    idle.style.setProperty('left', left + 'px', 'important');
+    idle.style.setProperty('top', top + 'px', 'important');
+    idle.style.setProperty('transform', 'translateX(-50%)', 'important');
+  }
+
+  const schedule = () => {
+    requestAnimationFrame(placeAssistantHintWithBreathingRoom);
+    setTimeout(placeAssistantHintWithBreathingRoom, 90);
+    setTimeout(placeAssistantHintWithBreathingRoom, 320);
+  };
+
+  addEventListener('load', schedule);
+  addEventListener('resize', schedule, { passive: true });
+  document.fonts?.ready?.then(schedule).catch(() => {});
+
+  if ('ResizeObserver' in window) {
+    const ro = new ResizeObserver(schedule);
+    const shell = $('#brainShell');
+    const orb = $('#agentButton');
+    const field = $('.quantum-field-v37');
+    if (shell) ro.observe(shell);
+    if (orb) ro.observe(orb);
+    if (field) ro.observe(field);
+  }
+
+  schedule();
+})();
