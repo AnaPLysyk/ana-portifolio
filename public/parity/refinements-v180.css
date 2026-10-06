@@ -1,0 +1,75 @@
+/* ===== v180 — CTA acompanha fisicamente a esfera ===== */
+
+/* O CTA legado continua no DOM só para i18n/compatibilidade,
+   mas deixa de participar do layout visual. */
+#brainShell > .brain-idle{
+  display:none!important;
+}
+
+#brainShell .agent-follow-hint-v180{
+  position:absolute!important;
+  left:0;
+  top:0;
+  z-index:24!important;
+  width:max-content!important;
+  max-width:min(240px,74vw)!important;
+  margin:0!important;
+  padding:0!important;
+  pointer-events:auto!important;
+  will-change:left,top,opacity!important;
+  transition:opacity .18s ease!important;
+}
+
+#brainShell .agent-follow-hint-v180 button{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-height:30px!important;
+  max-width:100%!important;
+  padding:6px 13px!important;
+  border-radius:999px!important;
+  border:1px solid color-mix(in srgb,var(--system-accent,var(--accent,#6ea8ff)) 34%,var(--line))!important;
+  background:color-mix(in srgb,var(--system-accent,var(--accent,#6ea8ff)) 8%,var(--bg) 92%)!important;
+  color:color-mix(in srgb,var(--system-accent,var(--accent,#6ea8ff)) 54%,var(--text) 46%)!important;
+  box-shadow:
+    0 5px 18px rgba(2,8,20,.08),
+    inset 0 0 0 1px rgba(255,255,255,.025)!important;
+  font:600 .58rem/1.1 "IBM Plex Mono",monospace!important;
+  white-space:nowrap!important;
+  cursor:pointer!important;
+  opacity:.78!important;
+  transition:
+    opacity .16s ease,
+    border-color .16s ease,
+    background .16s ease,
+    transform .16s ease!important;
+}
+
+#brainShell .agent-follow-hint-v180 button:hover,
+#brainShell .agent-follow-hint-v180 button:focus-visible{
+  opacity:1!important;
+  transform:translateY(-1px)!important;
+  border-color:color-mix(in srgb,var(--system-accent,var(--accent,#6ea8ff)) 52%,var(--line))!important;
+  background:color-mix(in srgb,var(--system-accent,var(--accent,#6ea8ff)) 12%,var(--bg) 88%)!important;
+  outline:none!important;
+}
+
+body.portfolio-theme-light #brainShell .agent-follow-hint-v180 button{
+  background:color-mix(in srgb,var(--system-accent,var(--accent,#6ea8ff)) 7%,#fff 93%)!important;
+  color:color-mix(in srgb,var(--system-accent,var(--accent,#6ea8ff)) 62%,#29415f 38%)!important;
+  border-color:color-mix(in srgb,var(--system-accent,var(--accent,#6ea8ff)) 28%,rgba(55,82,119,.16))!important;
+  box-shadow:0 5px 16px rgba(43,68,103,.08)!important;
+}
+
+.agent-stage.chat-active #brainShell .agent-follow-hint-v180{
+  opacity:0!important;
+  pointer-events:none!important;
+}
+
+@media(max-width:520px){
+  #brainShell .agent-follow-hint-v180 button{
+    min-height:28px!important;
+    padding:5px 11px!important;
+    font-size:.54rem!important;
+  }
+}
