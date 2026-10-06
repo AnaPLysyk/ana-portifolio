@@ -1,0 +1,686 @@
+/* ===== v197 — responsividade robusta pela largura REAL da prévia ===== */
+
+/*
+  Cada parte pública vira um container responsivo quando o editor
+  está simulando um aparelho. Assim a página reage ao tamanho real
+  disponível, inclusive quando o painel é redimensionado.
+*/
+body.editor-studio-open:not(.editor-preview-v156)[data-device-preset-v193] > .topbar,
+body.editor-studio-open:not(.editor-preview-v156)[data-device-preset-v193] > main,
+body.editor-studio-open:not(.editor-preview-v156)[data-device-preset-v193] > footer{
+  container-type:inline-size!important;
+}
+
+/* segurança geral da prévia */
+body.editor-studio-open:not(.editor-preview-v156)[data-device-preset-v193] > main,
+body.editor-studio-open:not(.editor-preview-v156)[data-device-preset-v193] > footer{
+  min-width:0!important;
+  overflow-x:clip!important;
+}
+
+body.editor-studio-open:not(.editor-preview-v156)[data-device-preset-v193] > main *,
+body.editor-studio-open:not(.editor-preview-v156)[data-device-preset-v193] > footer *,
+body.editor-studio-open:not(.editor-preview-v156)[data-device-preset-v193] > .topbar *{
+  min-width:0;
+  box-sizing:border-box;
+}
+
+body.editor-studio-open:not(.editor-preview-v156)[data-device-preset-v193] > main img,
+body.editor-studio-open:not(.editor-preview-v156)[data-device-preset-v193] > main video,
+body.editor-studio-open:not(.editor-preview-v156)[data-device-preset-v193] > main canvas{
+  max-width:100%!important;
+  height:auto;
+}
+
+body.editor-studio-open:not(.editor-preview-v156)[data-device-preset-v193] > main h1,
+body.editor-studio-open:not(.editor-preview-v156)[data-device-preset-v193] > main h2,
+body.editor-studio-open:not(.editor-preview-v156)[data-device-preset-v193] > main h3,
+body.editor-studio-open:not(.editor-preview-v156)[data-device-preset-v193] > main p,
+body.editor-studio-open:not(.editor-preview-v156)[data-device-preset-v193] > main a,
+body.editor-studio-open:not(.editor-preview-v156)[data-device-preset-v193] > main span{
+  overflow-wrap:break-word;
+}
+
+/* ---------------------------------------------------------
+   <= 1050px de PREVIEW
+   --------------------------------------------------------- */
+@container (max-width:1050px){
+
+  .container{
+    width:min(100% - 40px,var(--max))!important;
+    max-width:none!important;
+  }
+
+  /* header */
+  .topbar .nav{
+    gap:18px!important;
+  }
+
+  .topbar .nav-links{
+    gap:12px!important;
+  }
+
+  .topbar .nav-links a{
+    font-size:.72rem!important;
+  }
+
+  /* hero */
+  .hero-v70{
+    grid-template-columns:minmax(0,1fr) minmax(300px,.82fr)!important;
+    gap:24px!important;
+  }
+
+  .hero-welcome-v75 strong,
+  .hero-welcome-v72 strong,
+  .hero-title,
+  .hero-v70 h1{
+    font-size:clamp(2.5rem,6.2cqw,4.2rem)!important;
+    line-height:.98!important;
+  }
+
+  .agent-stage{
+    min-height:470px!important;
+  }
+
+  /* sobre */
+  .about-v52-head-grid{
+    grid-template-columns:minmax(0,1fr) minmax(280px,.72fr)!important;
+    gap:38px!important;
+  }
+
+  .about-v52-routine-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+
+  .about-v52-routine-grid article,
+  .about-v52-routine-grid article:nth-child(n){
+    padding:20px!important;
+    border-left:0!important;
+    border-bottom:1px solid var(--line)!important;
+  }
+
+  .about-v52-tools{
+    grid-template-columns:190px minmax(0,1fr)!important;
+    gap:22px!important;
+  }
+
+  .about-v52-row{
+    grid-template-columns:180px minmax(0,1fr)!important;
+    gap:20px!important;
+  }
+
+  /* competências */
+  .competencies-v59-item{
+    padding-right:24px!important;
+  }
+
+  .competencies-v59-item:nth-child(odd){
+    padding-right:28px!important;
+  }
+
+  .competencies-v59-item:nth-child(even){
+    padding-left:28px!important;
+  }
+
+  /* projetos */
+  .github-head-v61{
+    gap:20px!important;
+  }
+
+  .github-title-v61 .section-title{
+    font-size:clamp(1.75rem,4.3cqw,2.6rem)!important;
+  }
+
+  .repo-explain-v61{
+    gap:26px!important;
+  }
+
+  /* experiência */
+  .experience-head-v62,
+  .experience-head-v66{
+    gap:32px!important;
+  }
+
+  /* contato */
+  #contato .contact-panel{
+    grid-template-columns:minmax(0,.9fr) minmax(300px,1.1fr)!important;
+    gap:36px!important;
+  }
+}
+
+/* ---------------------------------------------------------
+   <= 820px de PREVIEW — tablet vertical / janela estreita
+   --------------------------------------------------------- */
+@container (max-width:820px){
+
+  .container{
+    width:calc(100% - 32px)!important;
+  }
+
+  /* HEADER: não corta; links continuam acessíveis */
+  .topbar .nav{
+    min-height:64px!important;
+    height:auto!important;
+    padding:8px 0!important;
+    gap:10px!important;
+    align-items:center!important;
+  }
+
+  .topbar .brand{
+    flex:0 0 auto!important;
+  }
+
+  .topbar .brand-copy{
+    max-width:180px!important;
+  }
+
+  .topbar .nav-links{
+    flex:1 1 auto!important;
+    display:flex!important;
+    gap:9px!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    flex-wrap:nowrap!important;
+    scrollbar-width:none!important;
+    -webkit-overflow-scrolling:touch!important;
+  }
+
+  .topbar .nav-links::-webkit-scrollbar{
+    display:none!important;
+  }
+
+  .topbar .nav-links a{
+    flex:0 0 auto!important;
+    white-space:nowrap!important;
+    font-size:.68rem!important;
+  }
+
+  .topbar .nav-actions-v100{
+    flex:0 0 auto!important;
+    gap:5px!important;
+  }
+
+  /* HERO: uma coluna; nada fica espremido */
+  .hero-v70{
+    grid-template-columns:1fr!important;
+    gap:14px!important;
+    min-height:auto!important;
+    padding-top:48px!important;
+    padding-bottom:54px!important;
+  }
+
+  .hero-copy-v75,
+  .hero-copy-v72,
+  .hero-copy-v70{
+    width:100%!important;
+    max-width:none!important;
+  }
+
+  .hero-welcome-v75 strong,
+  .hero-welcome-v72 strong,
+  .hero-title,
+  .hero-v70 h1{
+    max-width:100%!important;
+    font-size:clamp(2.25rem,8cqw,3.7rem)!important;
+    line-height:1!important;
+  }
+
+  .hero-copy-v75 .hero-intro-v75 p,
+  .hero-copy-v72 .hero-intro-v72 p,
+  .hero-copy p{
+    max-width:100%!important;
+    font-size:.88rem!important;
+    line-height:1.62!important;
+  }
+
+  .hero-meta-v70,
+  .hero-meta{
+    display:flex!important;
+    flex-wrap:wrap!important;
+    gap:10px 14px!important;
+  }
+
+  .agent-stage{
+    display:grid!important;
+    width:100%!important;
+    min-height:420px!important;
+    margin:0 auto!important;
+  }
+
+  .brain-shell{
+    width:100%!important;
+    max-width:100%!important;
+    height:420px!important;
+  }
+
+  .quantum-field-v37{
+    max-width:100%!important;
+  }
+
+  /* SOBRE */
+  .about-v52{
+    padding-top:64px!important;
+    padding-bottom:68px!important;
+  }
+
+  .about-v52-head-grid{
+    grid-template-columns:1fr!important;
+    gap:22px!important;
+    padding:30px 0!important;
+  }
+
+  .about-v52-head h2{
+    max-width:none!important;
+    font-size:clamp(2rem,7.5cqw,3rem)!important;
+  }
+
+  .about-v52-intro-copy p{
+    max-width:none!important;
+  }
+
+  .about-v52-routine-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+
+  .about-v52-tools{
+    grid-template-columns:1fr!important;
+    gap:8px!important;
+  }
+
+  .about-v52-tools p{
+    word-spacing:normal!important;
+  }
+
+  .about-v52-bottom{
+    grid-template-columns:1fr!important;
+  }
+
+  .about-v52-now,
+  .about-v52-beyond{
+    padding:24px 0!important;
+    border-left:0!important;
+  }
+
+  .about-v52-beyond{
+    border-top:1px solid var(--line)!important;
+  }
+
+  .about-v52-row{
+    grid-template-columns:1fr!important;
+    gap:8px!important;
+  }
+
+  /* COMPETÊNCIAS */
+  .competencies-v59{
+    padding:62px 0!important;
+  }
+
+  .competencies-v59-head{
+    grid-template-columns:1fr!important;
+    gap:18px!important;
+  }
+
+  .competencies-v59-grid{
+    grid-template-columns:1fr!important;
+  }
+
+  .competencies-v59-item,
+  .competencies-v59-item:nth-child(odd),
+  .competencies-v59-item:nth-child(even){
+    padding:22px 0!important;
+    min-height:auto!important;
+    border-right:0!important;
+    border-bottom:1px solid var(--line)!important;
+  }
+
+  .competencies-v59-item:last-child{
+    border-bottom:0!important;
+  }
+
+  /* PROJETOS */
+  .github-head-v61{
+    align-items:flex-start!important;
+    flex-direction:column!important;
+    gap:12px!important;
+  }
+
+  .github-title-v61{
+    width:100%!important;
+    align-items:flex-start!important;
+    flex-wrap:wrap!important;
+  }
+
+  .github-title-v61 .section-title{
+    flex:1 1 250px!important;
+    font-size:clamp(1.75rem,6cqw,2.5rem)!important;
+  }
+
+  .github-head-v61 .github-profile{
+    max-width:100%!important;
+    overflow-wrap:anywhere!important;
+  }
+
+  .repo-card summary{
+    grid-template-columns:42px minmax(0,1fr) auto 28px!important;
+    gap:10px!important;
+  }
+
+  .repo-body,
+  .repo-body-v61{
+    padding-left:52px!important;
+    padding-right:0!important;
+  }
+
+  .repo-explain-v61{
+    grid-template-columns:1fr!important;
+    gap:18px!important;
+  }
+
+  .repo-bottom{
+    flex-wrap:wrap!important;
+  }
+
+  /* EXPERIÊNCIA */
+  .experience-head-v62,
+  .experience-head-v66{
+    grid-template-columns:1fr!important;
+    gap:16px!important;
+    align-items:start!important;
+  }
+
+  .experience-intro-v66{
+    justify-self:start!important;
+    max-width:none!important;
+  }
+
+  .timeline-v66{
+    --timeline-x:12px!important;
+  }
+
+  .timeline-v66::before{
+    left:12px!important;
+  }
+
+  .timeline-v66::after{
+    left:8px!important;
+  }
+
+  .timeline-item-v66 summary{
+    grid-template-columns:24px minmax(0,1fr) 24px!important;
+    gap:12px!important;
+    padding:18px 0!important;
+  }
+
+  .timeline-period-v66{
+    grid-column:2/-1!important;
+    order:-1!important;
+    margin-bottom:-4px!important;
+  }
+
+  .timeline-dot-v66{
+    grid-column:1!important;
+    grid-row:1 / span 2!important;
+  }
+
+  .timeline-main-v66{
+    grid-column:2!important;
+  }
+
+  .timeline-panel-v67{
+    margin-left:36px!important;
+    padding-right:0!important;
+  }
+
+  .cert-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+
+  /* CONTATO */
+  #contato .contact-panel,
+  .contact-panel{
+    grid-template-columns:1fr!important;
+    gap:26px!important;
+  }
+
+  #contato .contact-panel h2,
+  .contact-panel h2{
+    max-width:none!important;
+    font-size:clamp(2rem,7cqw,3rem)!important;
+  }
+
+  .contact-link{
+    gap:12px!important;
+    flex-wrap:wrap!important;
+  }
+
+  /* RODAPÉ */
+  #portfolioFooter .container{
+    flex-wrap:wrap!important;
+  }
+
+  #portfolioFooterText{
+    max-width:100%!important;
+    white-space:normal!important;
+  }
+}
+
+/* ---------------------------------------------------------
+   <= 520px de PREVIEW — celular realista
+   --------------------------------------------------------- */
+@container (max-width:520px){
+
+  .container{
+    width:calc(100% - 24px)!important;
+  }
+
+  /* header compacto sem sobreposição */
+  .topbar .nav{
+    min-height:58px!important;
+    padding:7px 0!important;
+  }
+
+  .brand-photo{
+    width:36px!important;
+    height:36px!important;
+  }
+
+  .topbar .brand-copy{
+    display:none!important;
+  }
+
+  .topbar .nav-links{
+    max-width:min(46cqw,180px)!important;
+  }
+
+  .topbar .nav-links a{
+    font-size:.64rem!important;
+  }
+
+  /* hero */
+  .hero-v70{
+    padding-top:32px!important;
+    padding-bottom:38px!important;
+  }
+
+  .hero-welcome-v75 span,
+  .hero-welcome-v72 span{
+    font-size:.95rem!important;
+  }
+
+  .hero-welcome-v75 strong,
+  .hero-welcome-v72 strong,
+  .hero-title,
+  .hero-v70 h1{
+    font-size:clamp(2rem,10cqw,2.75rem)!important;
+    letter-spacing:-.045em!important;
+  }
+
+  .hero-copy-v75 .hero-intro-v75,
+  .hero-copy-v72 .hero-intro-v72,
+  .hero-intro{
+    padding-left:12px!important;
+  }
+
+  .hero-meta-v70,
+  .hero-meta{
+    font-size:.65rem!important;
+    gap:8px 11px!important;
+  }
+
+  .agent-stage{
+    min-height:340px!important;
+  }
+
+  .brain-shell{
+    height:340px!important;
+  }
+
+  #agentButton.brain-orb,
+  .brain-orb{
+    width:min(190px,50cqw)!important;
+    height:min(190px,50cqw)!important;
+  }
+
+  .quantum-field-v37{
+    width:min(340px,94cqw)!important;
+    height:220px!important;
+  }
+
+  #brainShell .agent-follow-hint-v180 button{
+    max-width:150px!important;
+    white-space:normal!important;
+    text-align:center!important;
+  }
+
+  /* sobre */
+  .about-v52-head-grid{
+    padding:24px 0!important;
+  }
+
+  .about-v52-head h2{
+    font-size:clamp(1.9rem,10cqw,2.55rem)!important;
+  }
+
+  .about-v52-routine-grid{
+    grid-template-columns:1fr!important;
+  }
+
+  .about-v52-routine-grid article,
+  .about-v52-routine-grid article:nth-child(n){
+    padding:17px 0!important;
+    border-left:0!important;
+    border-bottom:1px solid var(--line)!important;
+  }
+
+  .about-v52-routine-grid article:last-child{
+    border-bottom:0!important;
+  }
+
+  /* competências */
+  .competencies-v59-item{
+    grid-template-columns:30px minmax(0,1fr)!important;
+    gap:12px!important;
+  }
+
+  /* projetos */
+  .github-title-v61{
+    gap:9px!important;
+  }
+
+  .github-title-v61 svg{
+    width:22px!important;
+    height:22px!important;
+  }
+
+  .github-title-v61 .section-title{
+    font-size:clamp(1.65rem,8cqw,2.15rem)!important;
+  }
+
+  .repo-card summary{
+    grid-template-columns:34px minmax(0,1fr) 26px!important;
+    gap:8px!important;
+    padding:16px 0!important;
+  }
+
+  .repo-visibility{
+    display:none!important;
+  }
+
+  .repo-main strong{
+    font-size:.95rem!important;
+  }
+
+  .repo-main span{
+    font-size:.68rem!important;
+  }
+
+  .repo-body,
+  .repo-body-v61{
+    padding-left:34px!important;
+    padding-right:0!important;
+  }
+
+  .repo-bottom{
+    flex-direction:column!important;
+    align-items:flex-start!important;
+    gap:10px!important;
+  }
+
+  .repo-stack,
+  .repo-bottom a{
+    max-width:100%!important;
+    overflow-wrap:anywhere!important;
+  }
+
+  /* timeline */
+  .timeline-item-v66 summary{
+    grid-template-columns:20px minmax(0,1fr) 22px!important;
+    gap:9px!important;
+  }
+
+  .timeline-panel-v67{
+    margin-left:28px!important;
+    padding-left:12px!important;
+  }
+
+  .cert-grid{
+    grid-template-columns:1fr!important;
+  }
+
+  /* contato */
+  .contact-link{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:4px!important;
+    align-items:start!important;
+  }
+
+  /* footer */
+  #portfolioFooter .container{
+    justify-content:flex-start!important;
+  }
+
+  #portfolioFooterText{
+    width:100%!important;
+    display:flex!important;
+    flex-wrap:wrap!important;
+    border-radius:12px!important;
+  }
+}
+
+/* ---------------------------------------------------------
+   Blindagem extra: nada da responsividade da prévia toca no editor
+   --------------------------------------------------------- */
+body.editor-studio-open #editorStudio,
+body.editor-studio-open #editorStudio *{
+  container-type:normal!important;
+}
+
+body.editor-studio-open #editorStudio{
+  overflow:hidden!important;
+}
+
+body.editor-studio-open #editorStudio .editor-studio-body-v85{
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+}
