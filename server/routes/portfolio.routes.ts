@@ -1,9 +1,6 @@
 import type { FastifyInstance } from 'fastify'
 import type { SavePortfolioRequest } from '../domain/types.js'
-import {
-  portfolioRepository,
-  RevisionConflictError,
-} from '../repositories/portfolio.repository.js'
+import { portfolioService } from '../services/portfolio.service.js'
 
 export const registerPortfolioRoutes = async (app: FastifyInstance) => {
   app.get(
@@ -11,13 +8,13 @@ export const registerPortfolioRoutes = async (app: FastifyInstance) => {
     {
       schema: {
         tags: ['Portfolio'],
-        summary: 'Retorna o portfólio publicado',
+        summary: 'Retorna o documento completo publicado',
         response: {
           200: { $ref: 'PortfolioSnapshot#' },
         },
       },
     },
-    async () => portfolioRepository.get(),
+    async () => portfolioService.get(),
   )
 
   app.put<{ Body: SavePortfolioRequest }>(
@@ -27,7 +24,7 @@ export const registerPortfolioRoutes = async (app: FastifyInstance) => {
         tags: ['Portfolio'],
         summary: 'Salva o documento completo do portfólio',
         description:
-          'Requer a revisão que o editor carregou. Se outra gravação já tiver ocorrido, retorna 409 para impedir sobrescrita silenciosa.',
+          'Endpoint agregado usado quando o front salva toda a edição de uma vez. Também existe API granular por domínio.',
         security: [{ bearerAuth: [] }],
         body: {
           type: 'object',
@@ -40,31 +37,18 @@ export const registerPortfolioRoutes = async (app: FastifyInstance) => {
         },
         response: {
           200: { $ref: 'PortfolioSnapshot#' },
+          400: { $ref: 'ErrorResponse#' },
           401: { $ref: 'ErrorResponse#' },
           409: { $ref: 'ErrorResponse#' },
         },
       },
     },
-    async (request, reply) => {
+    async (request) => {
       await request.jwtVerify()
-
-      try {
-        return portfolioRepository.save(request.body)
-      } catch (error) {
-        if (error instanceof RevisionConflictError) {
-          return reply.code(409).send({
-            code: 'REVISION_CONFLICT',
-            message:
-              'O portfólio foi alterado depois que esta edição começou. Recarregue a versão mais recente antes de salvar.',
-            details: {
-              expectedRevision: error.expectedRevision,
-              currentRevision: error.currentRevision,
-            },
-          })
-        }
-
-        throw error
-      }
+      return portfolioService.replace(
+        request.body.expectedRevision,
+        request.body.data,
+      )
     },
   )
 }
