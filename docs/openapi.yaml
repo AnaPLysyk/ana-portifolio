@@ -3,8 +3,9 @@ info:
   title: Ana Portfolio API
   version: 1.0.0
   description: >
-    API do portfólio profissional. A leitura do portfólio é pública.
-    Edição exige JWT e usa controle de revisão para evitar sobrescrita silenciosa.
+    API do portfólio profissional. Leitura pública, edição autenticada,
+    controle de revisão, configuração visual e assistente.
+
 servers:
   - url: http://localhost:3333
     description: Desenvolvimento local
@@ -13,31 +14,22 @@ tags:
   - name: Health
   - name: Auth
   - name: Portfolio
+  - name: Profile
+  - name: Content
+  - name: Projects
+  - name: Experience
+  - name: Appearance
+  - name: Editor
   - name: Assistant
 
 paths:
   /api/v1/health:
     get:
       tags: [Health]
-      summary: Verifica se a API está disponível
+      summary: Verifica disponibilidade da API
       responses:
         '200':
           description: API disponível
-          content:
-            application/json:
-              schema:
-                type: object
-                required: [status, service, timestamp]
-                properties:
-                  status:
-                    type: string
-                    const: ok
-                  service:
-                    type: string
-                    example: ana-portfolio-api
-                  timestamp:
-                    type: string
-                    format: date-time
 
   /api/v1/auth/login:
     post:
@@ -54,89 +46,54 @@ paths:
               properties:
                 username:
                   type: string
-                  minLength: 1
                 password:
                   type: string
-                  minLength: 1
       responses:
         '200':
           description: Login realizado
-          content:
-            application/json:
-              schema:
-                type: object
-                required: [accessToken, tokenType, expiresIn]
-                properties:
-                  accessToken:
-                    type: string
-                  tokenType:
-                    type: string
-                    const: Bearer
-                  expiresIn:
-                    type: string
-                    example: 2h
         '401':
           $ref: '#/components/responses/Unauthorized'
         '503':
-          description: Autenticação ainda não configurada
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          description: Autenticação não configurada
 
   /api/v1/auth/me:
     get:
       tags: [Auth]
-      summary: Retorna a sessão autenticada
+      summary: Retorna sessão autenticada
       security:
         - bearerAuth: []
       responses:
         '200':
           description: Sessão válida
-          content:
-            application/json:
-              schema:
-                type: object
-                required: [username]
-                properties:
-                  username:
-                    type: string
         '401':
           $ref: '#/components/responses/Unauthorized'
 
   /api/v1/auth/logout:
     post:
       tags: [Auth]
-      summary: Encerra a sessão no cliente
-      description: >
-        A primeira versão usa JWT stateless. O logout consiste em descartar
-        o token no cliente.
+      summary: Encerra sessão no cliente
       security:
         - bearerAuth: []
       responses:
         '204':
-          description: Sessão encerrada no cliente
+          description: Token descartado pelo cliente
         '401':
           $ref: '#/components/responses/Unauthorized'
 
   /api/v1/portfolio:
     get:
       tags: [Portfolio]
-      summary: Retorna o portfólio publicado
+      summary: Retorna documento completo publicado
       responses:
         '200':
-          description: Documento atual
+          description: Snapshot atual
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PortfolioSnapshot'
-
     put:
       tags: [Portfolio]
-      summary: Salva o documento completo do portfólio
-      description: >
-        expectedRevision deve ser igual à revisão atualmente persistida.
-        Em caso contrário, a API retorna 409 REVISION_CONFLICT.
+      summary: Salva documento completo
       security:
         - bearerAuth: []
       requestBody:
@@ -144,15 +101,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required: [expectedRevision, data]
-              additionalProperties: false
-              properties:
-                expectedRevision:
-                  type: integer
-                  minimum: 1
-                data:
-                  $ref: '#/components/schemas/PortfolioDocument'
+              $ref: '#/components/schemas/PortfolioWrite'
       responses:
         '200':
           description: Documento salvo
@@ -165,20 +114,532 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
         '409':
-          description: A revisão enviada está desatualizada
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/responses/Conflict'
+
+  /api/v1/profile:
+    get:
+      tags: [Profile]
+      summary: Retorna perfil público
+      responses:
+        '200':
+          description: Perfil atual
+    put:
+      tags: [Profile]
+      summary: Atualiza perfil
+      security:
+        - bearerAuth: []
+      requestBody:
+        $ref: '#/components/requestBodies/ProfileWrite'
+      responses:
+        '200':
+          description: Perfil atualizado
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /api/v1/profile/photo:
+    put:
+      tags: [Profile]
+      summary: Atualiza foto
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [expectedRevision, dataUrl]
+              additionalProperties: false
+              properties:
+                expectedRevision:
+                  type: integer
+                  minimum: 1
+                dataUrl:
+                  type: string
+      responses:
+        '200':
+          description: Foto atualizada
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /api/v1/hero:
+    get:
+      tags: [Content]
+      summary: Retorna Home
+      responses:
+        '200':
+          description: Conteúdo atual
+    put:
+      tags: [Content]
+      summary: Atualiza Home
+      security:
+        - bearerAuth: []
+      requestBody:
+        $ref: '#/components/requestBodies/HeroWrite'
+      responses:
+        '200':
+          description: Home atualizada
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /api/v1/about:
+    get:
+      tags: [Content]
+      summary: Retorna Sobre
+      responses:
+        '200':
+          description: Conteúdo atual
+    put:
+      tags: [Content]
+      summary: Atualiza Sobre
+      security:
+        - bearerAuth: []
+      requestBody:
+        $ref: '#/components/requestBodies/AboutWrite'
+      responses:
+        '200':
+          description: Sobre atualizado
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /api/v1/competencies:
+    get:
+      tags: [Content]
+      summary: Lista competências
+      responses:
+        '200':
+          description: Competências atuais
+    put:
+      tags: [Content]
+      summary: Substitui competências
+      security:
+        - bearerAuth: []
+      requestBody:
+        $ref: '#/components/requestBodies/CompetenciesWrite'
+      responses:
+        '200':
+          description: Competências salvas
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /api/v1/education:
+    get:
+      tags: [Content]
+      summary: Lista formação e cursos
+      responses:
+        '200':
+          description: Formação atual
+    put:
+      tags: [Content]
+      summary: Substitui formação e cursos
+      security:
+        - bearerAuth: []
+      requestBody:
+        $ref: '#/components/requestBodies/EducationWrite'
+      responses:
+        '200':
+          description: Formação salva
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /api/v1/highlights:
+    get:
+      tags: [Content]
+      summary: Lista destaques e conquistas
+      responses:
+        '200':
+          description: Destaques atuais
+    put:
+      tags: [Content]
+      summary: Substitui destaques e conquistas
+      security:
+        - bearerAuth: []
+      requestBody:
+        $ref: '#/components/requestBodies/HighlightsWrite'
+      responses:
+        '200':
+          description: Destaques salvos
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /api/v1/content-blocks:
+    get:
+      tags: [Content]
+      summary: Retorna textos editáveis por chave
+      responses:
+        '200':
+          description: Textos atuais
+    put:
+      tags: [Content]
+      summary: Salva textos editáveis por chave
+      security:
+        - bearerAuth: []
+      requestBody:
+        $ref: '#/components/requestBodies/ContentBlocksWrite'
+      responses:
+        '200':
+          description: Textos salvos
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /api/v1/projects:
+    get:
+      tags: [Projects]
+      summary: Lista projetos
+      responses:
+        '200':
+          description: Projetos atuais
+    post:
+      tags: [Projects]
+      summary: Cria projeto
+      security:
+        - bearerAuth: []
+      requestBody:
+        $ref: '#/components/requestBodies/ProjectWrite'
+      responses:
+        '201':
+          description: Projeto criado
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /api/v1/projects/{id}:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    get:
+      tags: [Projects]
+      summary: Retorna projeto
+      responses:
+        '200':
+          description: Projeto encontrado
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags: [Projects]
+      summary: Atualiza projeto
+      security:
+        - bearerAuth: []
+      requestBody:
+        $ref: '#/components/requestBodies/ProjectWrite'
+      responses:
+        '200':
+          description: Projeto atualizado
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+    delete:
+      tags: [Projects]
+      summary: Remove projeto
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/ExpectedRevision'
+      responses:
+        '200':
+          description: Projeto removido
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /api/v1/projects/order:
+    put:
+      tags: [Projects]
+      summary: Reordena projetos
+      security:
+        - bearerAuth: []
+      requestBody:
+        $ref: '#/components/requestBodies/OrderWrite'
+      responses:
+        '200':
+          description: Projetos reordenados
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /api/v1/experience:
+    get:
+      tags: [Experience]
+      summary: Lista trajetória
+      responses:
+        '200':
+          description: Experiência atual
+    post:
+      tags: [Experience]
+      summary: Cria item de experiência
+      security:
+        - bearerAuth: []
+      requestBody:
+        $ref: '#/components/requestBodies/ExperienceWrite'
+      responses:
+        '201':
+          description: Experiência criada
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /api/v1/experience/{id}:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    get:
+      tags: [Experience]
+      summary: Retorna item de experiência
+      responses:
+        '200':
+          description: Experiência encontrada
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags: [Experience]
+      summary: Atualiza item de experiência
+      security:
+        - bearerAuth: []
+      requestBody:
+        $ref: '#/components/requestBodies/ExperienceWrite'
+      responses:
+        '200':
+          description: Experiência atualizada
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+    delete:
+      tags: [Experience]
+      summary: Remove item de experiência
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/ExpectedRevision'
+      responses:
+        '200':
+          description: Experiência removida
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /api/v1/experience/order:
+    put:
+      tags: [Experience]
+      summary: Reordena trajetória
+      security:
+        - bearerAuth: []
+      requestBody:
+        $ref: '#/components/requestBodies/OrderWrite'
+      responses:
+        '200':
+          description: Trajetória reordenada
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /api/v1/appearance:
+    get:
+      tags: [Appearance]
+      summary: Retorna aparência
+      responses:
+        '200':
+          description: Aparência atual
+    put:
+      tags: [Appearance]
+      summary: Atualiza aparência
+      security:
+        - bearerAuth: []
+      requestBody:
+        $ref: '#/components/requestBodies/AppearanceWrite'
+      responses:
+        '200':
+          description: Aparência atualizada
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /api/v1/editor:
+    get:
+      tags: [Editor]
+      summary: Retorna estado visual completo
+      responses:
+        '200':
+          description: Estado atual
+    put:
+      tags: [Editor]
+      summary: Atualiza estado visual completo
+      security:
+        - bearerAuth: []
+      requestBody:
+        $ref: '#/components/requestBodies/EditorWrite'
+      responses:
+        '200':
+          description: Editor atualizado
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /api/v1/editor/layouts:
+    put:
+      tags: [Editor]
+      summary: Atualiza layouts por seção
+      security:
+        - bearerAuth: []
+      requestBody:
+        $ref: '#/components/requestBodies/RecordWrite'
+      responses:
+        '200':
+          description: Layouts salvos
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /api/v1/editor/icons:
+    put:
+      tags: [Editor]
+      summary: Atualiza ícones por seção
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Ícones salvos
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /api/v1/editor/text-styles:
+    put:
+      tags: [Editor]
+      summary: Atualiza estilos de texto
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Estilos salvos
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /api/v1/editor/elements:
+    put:
+      tags: [Editor]
+      summary: Atualiza elementos livres
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Elementos salvos
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /api/v1/editor/assistant-layout:
+    put:
+      tags: [Editor]
+      summary: Atualiza posições do robô e CTA
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Layout do assistente salvo
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /api/v1/assistant/config:
+    get:
+      tags: [Assistant]
+      summary: Retorna configuração/contextos
+      responses:
+        '200':
+          description: Configuração atual
+    put:
+      tags: [Assistant]
+      summary: Atualiza configuração/contextos
+      security:
+        - bearerAuth: []
+      requestBody:
+        $ref: '#/components/requestBodies/AssistantWrite'
+      responses:
+        '200':
+          description: Configuração salva
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
 
   /api/v1/assistant/messages:
     post:
       tags: [Assistant]
-      summary: Responde perguntas sobre o portfólio
-      description: >
-        Na primeira versão a resposta é determinística e usa somente o
-        conteúdo salvo. A implementação poderá ser substituída por IA depois,
-        preservando o mesmo contrato.
+      summary: Envia mensagem ao assistente
       requestBody:
         required: true
         content:
@@ -195,17 +656,6 @@ paths:
       responses:
         '200':
           description: Resposta do assistente
-          content:
-            application/json:
-              schema:
-                type: object
-                required: [reply, source]
-                properties:
-                  reply:
-                    type: string
-                  source:
-                    type: string
-                    const: portfolio
         '400':
           $ref: '#/components/responses/ValidationError'
 
@@ -216,20 +666,232 @@ components:
       scheme: bearer
       bearerFormat: JWT
 
+  parameters:
+    ResourceId:
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+        minLength: 1
+    ExpectedRevision:
+      in: query
+      name: expectedRevision
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+
   responses:
+    ValidationError:
+      description: Request fora do contrato
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
     Unauthorized:
-      description: Token ausente, inválido ou expirado
+      description: Token ausente/inválido
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: Recurso não encontrado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Conflict:
+      description: Conflito de revisão ou recurso
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
 
-    ValidationError:
-      description: Requisição fora do contrato
+  requestBodies:
+    ProfileWrite:
+      required: true
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            allOf:
+              - $ref: '#/components/schemas/RevisionBase'
+              - type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Profile'
+    HeroWrite:
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/RevisionBase'
+              - type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Hero'
+    AboutWrite:
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/RevisionBase'
+              - type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: '#/components/schemas/About'
+    CompetenciesWrite:
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/RevisionBase'
+              - type: object
+                required: [data]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Competency'
+    EducationWrite:
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/RevisionBase'
+              - type: object
+                required: [data]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Education'
+    HighlightsWrite:
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/RevisionBase'
+              - type: object
+                required: [data]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Highlight'
+    ContentBlocksWrite:
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/RevisionBase'
+              - type: object
+                required: [data]
+                properties:
+                  data:
+                    type: object
+                    additionalProperties:
+                      type: string
+    ProjectWrite:
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/RevisionBase'
+              - type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Project'
+    ExperienceWrite:
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/RevisionBase'
+              - type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Experience'
+    OrderWrite:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [expectedRevision, ids]
+            additionalProperties: false
+            properties:
+              expectedRevision:
+                type: integer
+                minimum: 1
+              ids:
+                type: array
+                minItems: 1
+                uniqueItems: true
+                items:
+                  type: string
+    AppearanceWrite:
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/RevisionBase'
+              - type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Appearance'
+    EditorWrite:
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/RevisionBase'
+              - type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: '#/components/schemas/EditorState'
+    AssistantWrite:
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/RevisionBase'
+              - type: object
+                required: [data]
+                properties:
+                  data:
+                    $ref: '#/components/schemas/AssistantConfig'
+    RecordWrite:
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/RevisionBase'
+              - type: object
+                required: [data]
+                properties:
+                  data:
+                    type: object
+                    additionalProperties: true
 
   schemas:
     ErrorResponse:
@@ -238,198 +900,118 @@ components:
       properties:
         code:
           type: string
-          example: VALIDATION_ERROR
         message:
           type: string
         details:
           type: object
           additionalProperties: true
 
-    PortfolioSnapshot:
+    RevisionBase:
       type: object
-      required: [revision, updatedAt, data]
+      required: [expectedRevision]
       properties:
-        revision:
+        expectedRevision:
           type: integer
           minimum: 1
-        updatedAt:
-          type: string
-          format: date-time
-        data:
-          $ref: '#/components/schemas/PortfolioDocument'
-
-    PortfolioDocument:
-      type: object
-      required:
-        - profile
-        - hero
-        - about
-        - skills
-        - projects
-        - experience
-        - appearance
-        - assistant
-        - editor
-      additionalProperties: false
-      properties:
-        profile:
-          $ref: '#/components/schemas/Profile'
-        hero:
-          $ref: '#/components/schemas/Hero'
-        about:
-          $ref: '#/components/schemas/About'
-        skills:
-          type: array
-          maxItems: 100
-          items:
-            type: string
-            minLength: 1
-            maxLength: 80
-        projects:
-          type: array
-          maxItems: 100
-          items:
-            $ref: '#/components/schemas/Project'
-        experience:
-          type: array
-          maxItems: 100
-          items:
-            $ref: '#/components/schemas/ExperienceItem'
-        appearance:
-          $ref: '#/components/schemas/Appearance'
-        assistant:
-          $ref: '#/components/schemas/AssistantConfig'
-        editor:
-          $ref: '#/components/schemas/EditorState'
 
     Profile:
       type: object
-      required: [name, role, level, location, email, github, linkedin]
+      required:
+        [name, area, role, level, company, cep, address, location, email, whatsapp, github, linkedin]
       additionalProperties: false
       properties:
-        name:
-          type: string
-          minLength: 1
-          maxLength: 120
-        role:
-          type: string
-          minLength: 1
-          maxLength: 80
-        level:
-          type: string
-          minLength: 1
-          maxLength: 40
-        location:
-          type: string
-          minLength: 1
-          maxLength: 160
-        email:
-          type: string
-          format: email
-        github:
-          type: string
-          format: uri
-        linkedin:
-          type: string
-          format: uri
-        photoUrl:
-          type: string
-          format: uri
+        name: { type: string }
+        area: { type: string }
+        role: { type: string }
+        level: { type: string }
+        company: { type: string }
+        cep: { type: string }
+        address: { type: string }
+        location: { type: string }
+        email: { type: string, format: email }
+        whatsapp: { type: string }
+        github: { type: string, format: uri }
+        linkedin: { type: string, format: uri }
+        photoUrl: { type: string }
 
     Hero:
       type: object
       required: [title, intro]
-      additionalProperties: false
       properties:
-        title:
-          type: string
-          minLength: 1
-          maxLength: 220
-        intro:
-          type: string
-          minLength: 1
-          maxLength: 1200
+        title: { type: string }
+        intro: { type: string }
 
     About:
       type: object
       required: [title, body]
-      additionalProperties: false
       properties:
-        title:
-          type: string
-          minLength: 1
-          maxLength: 220
-        body:
-          type: string
-          minLength: 1
-          maxLength: 3000
+        title: { type: string }
+        body: { type: string }
+
+    Competency:
+      type: object
+      required: [id, title, description, tags]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        description: { type: string }
+        tags:
+          type: array
+          items: { type: string }
 
     Project:
       type: object
-      required: [id, name, description, stack, href, status]
-      additionalProperties: false
+      required: [id, name, description, stack, href, status, visibility, linked]
       properties:
-        id:
-          type: string
-          minLength: 1
-          maxLength: 100
-        name:
-          type: string
-          minLength: 1
-          maxLength: 160
-        description:
-          type: string
-          minLength: 1
-          maxLength: 2000
+        id: { type: string }
+        name: { type: string }
+        description: { type: string }
         stack:
           type: array
-          maxItems: 50
-          items:
-            type: string
-            minLength: 1
-            maxLength: 80
-        href:
+          items: { type: string }
+        href: { type: string, format: uri }
+        status: { type: string }
+        visibility:
           type: string
-          format: uri
-        status:
-          type: string
-          minLength: 1
-          maxLength: 80
+          enum: [public, private]
+        linked: { type: boolean }
 
-    ExperienceItem:
+    Experience:
       type: object
       required: [id, period, company, role, summary, details]
-      additionalProperties: false
       properties:
-        id:
-          type: string
-          minLength: 1
-          maxLength: 100
-        period:
-          type: string
-          minLength: 1
-          maxLength: 120
-        company:
-          type: string
-          minLength: 1
-          maxLength: 160
-        role:
-          type: string
-          minLength: 1
-          maxLength: 160
-        summary:
-          type: string
-          minLength: 1
-          maxLength: 1200
-        details:
-          type: string
-          minLength: 1
-          maxLength: 4000
+        id: { type: string }
+        period: { type: string }
+        company: { type: string }
+        role: { type: string }
+        summary: { type: string }
+        details: { type: string }
+
+    Education:
+      type: object
+      required: [id, title, institution, status]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        institution: { type: string }
+        status: { type: string }
+        period: { type: string }
+        description: { type: string }
+        href: { type: string, format: uri }
+
+    Highlight:
+      type: object
+      required: [id, title, description]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        description: { type: string }
+        href: { type: string, format: uri }
+        label: { type: string }
 
     Appearance:
       type: object
-      required: [theme, language, accent, pageStyle, spacing, footerText]
-      additionalProperties: false
+      required: [theme, language, accent, intensity, spacing, pageFormat, footerText]
       properties:
         theme:
           type: string
@@ -437,120 +1019,123 @@ components:
         language:
           type: string
           enum: [pt, en, es]
-        accent:
+        accent: { type: string }
+        intensity: { type: number }
+        spacing: { type: number }
+        pageFormat:
           type: string
-          pattern: '^#[0-9A-Fa-f]{6}$'
-        pageStyle:
-          type: string
-          enum: [current, light, direct]
-        spacing:
-          type: number
-          minimum: 0
-          maximum: 100
-        footerText:
-          type: string
-          maxLength: 500
+          enum: [balanced, editorial, panoramic]
+        footerText: { type: string }
+
+    AssistantContext:
+      type: object
+      required: [id, title, category, keywords, content, enabled]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        category: { type: string }
+        keywords:
+          type: array
+          items: { type: string }
+        content: { type: string }
+        enabled: { type: boolean }
 
     AssistantConfig:
       type: object
-      required: [greeting, suggestions]
-      additionalProperties: false
+      required: [greeting, suggestions, contexts]
       properties:
-        greeting:
-          type: string
-          minLength: 1
-          maxLength: 1000
+        greeting: { type: string }
         suggestions:
           type: array
-          maxItems: 20
+          items: { type: string }
+        contexts:
+          type: array
           items:
-            type: string
-            minLength: 1
-            maxLength: 120
+            $ref: '#/components/schemas/AssistantContext'
 
     EditorState:
       type: object
-      required: [sectionLayouts, textStyles, freeElements]
-      additionalProperties: false
+      required: [sectionLayouts, sectionIcons, textStyles, freeElements, assistantLayout]
       properties:
         sectionLayouts:
           type: object
-          additionalProperties:
-            type: string
+          additionalProperties: { type: string }
+        sectionIcons:
+          type: object
+          additionalProperties: true
         textStyles:
           type: object
-          additionalProperties:
-            $ref: '#/components/schemas/TextStyle'
+          additionalProperties: true
         freeElements:
           type: array
-          maxItems: 500
           items:
-            $ref: '#/components/schemas/FreeElement'
+            type: object
+            additionalProperties: true
+        assistantLayout:
+          type: object
+          additionalProperties: true
 
-    TextStyle:
+    PortfolioDocument:
       type: object
+      required:
+        [profile, hero, about, competencies, projects, experience, education, highlights, contentBlocks, appearance, assistant, editor]
+      properties:
+        profile:
+          $ref: '#/components/schemas/Profile'
+        hero:
+          $ref: '#/components/schemas/Hero'
+        about:
+          $ref: '#/components/schemas/About'
+        competencies:
+          type: array
+          items:
+            $ref: '#/components/schemas/Competency'
+        projects:
+          type: array
+          items:
+            $ref: '#/components/schemas/Project'
+        experience:
+          type: array
+          items:
+            $ref: '#/components/schemas/Experience'
+        education:
+          type: array
+          items:
+            $ref: '#/components/schemas/Education'
+        highlights:
+          type: array
+          items:
+            $ref: '#/components/schemas/Highlight'
+        contentBlocks:
+          type: object
+          additionalProperties:
+            type: string
+        appearance:
+          $ref: '#/components/schemas/Appearance'
+        assistant:
+          $ref: '#/components/schemas/AssistantConfig'
+        editor:
+          $ref: '#/components/schemas/EditorState'
+
+    PortfolioSnapshot:
+      type: object
+      required: [revision, updatedAt, data]
+      properties:
+        revision:
+          type: integer
+        updatedAt:
+          type: string
+          format: date-time
+        data:
+          $ref: '#/components/schemas/PortfolioDocument'
+
+    PortfolioWrite:
+      type: object
+      required: [expectedRevision, data]
       additionalProperties: false
       properties:
-        fontFamily:
-          type: string
-          maxLength: 200
-        fontSize:
-          type: number
-          minimum: 8
-          maximum: 160
-        fontWeight:
-          type: number
-          minimum: 100
-          maximum: 900
-        color:
-          type: string
-          maxLength: 40
-        textAlign:
-          type: string
-          enum: [left, center, right]
-        width:
-          type: string
-          maxLength: 30
-        paddingInline:
-          type: string
-          maxLength: 30
-
-    FreeElement:
-      type: object
-      required: [id, section, type]
-      additionalProperties: false
-      properties:
-        id:
-          type: string
-          minLength: 1
-          maxLength: 100
-        section:
-          type: string
-          minLength: 1
-          maxLength: 100
-        type:
-          type: string
-          enum: [icon, badge, divider]
-        icon:
-          type: string
-          maxLength: 100
-        text:
-          type: string
-          maxLength: 300
-        x:
-          type: number
-          minimum: 0
-          maximum: 100
-        y:
-          type: number
-          minimum: 0
-          maximum: 100
-        size:
-          type: number
-          minimum: 8
-          maximum: 256
-        color:
-          type: string
-          maxLength: 40
-        useSystemColor:
-          type: boolean
+        expectedRevision:
+          type: integer
+          minimum: 1
+        data:
+          $ref: '#/components/schemas/PortfolioDocument'
