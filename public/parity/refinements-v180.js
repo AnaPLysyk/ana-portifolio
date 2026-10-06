@@ -68,30 +68,31 @@
     if(!shellRect.width || !orbRect.width) return;
 
     const mobile=innerWidth<=620;
+    const bubbleHeight=follow.offsetHeight || 34;
 
-    /*
-      Desktop: balão fica na lateral inferior direita da esfera,
-      como uma chamada pertencente ao robô.
-      Mobile: centraliza abaixo para não escapar da viewport.
-    */
-    const x=mobile
-      ? (orbRect.left-shellRect.left)+(orbRect.width/2)
-      : (orbRect.right-shellRect.left)+14;
+    let x;
+    let y;
 
-    const y=mobile
-      ? (orbRect.bottom-shellRect.top)+18
-      : (orbRect.top-shellRect.top)+(orbRect.height*.68);
+    if(mobile){
+      x=(orbRect.left-shellRect.left)+(orbRect.width/2);
+      y=(orbRect.bottom-shellRect.top)+20;
+    }else{
+      // Balão no lado direito-superior: parece uma fala do próprio robô.
+      x=(orbRect.right-shellRect.left)+12;
+      y=(orbRect.top-shellRect.top)+(orbRect.height*.12)-bubbleHeight;
+    }
 
     if(Math.abs(x-lastX)>.08){
       follow.style.setProperty('left',x+'px','important');
       lastX=x;
     }
+
     if(Math.abs(y-lastY)>.08){
       follow.style.setProperty('top',y+'px','important');
       lastY=y;
     }
 
-    const transform=mobile?'translateX(-50%)':'translateX(0)';
+    const transform=mobile ? 'translateX(-50%)' : 'translateX(0)';
     if(follow.style.getPropertyValue('transform')!==transform){
       follow.style.setProperty('transform',transform,'important');
     }
