@@ -28,6 +28,8 @@ function applyFinalHtmlPatches(event: SyntheticEvent<HTMLIFrameElement>) {
   loadAsset(doc, 'css', 'portfolio-v163-final-css', '/parity/v163-final.css')
   loadAsset(doc, 'js', 'portfolio-v163-runtime-js', '/parity/v163-runtime.js')
   loadAsset(doc, 'js', 'portfolio-v163-drag-js', '/parity/v163-drag.js')
+  loadAsset(doc, 'css', 'portfolio-conversational-chat-css', '/parity/conversational-chat.css')
+  loadAsset(doc, 'js', 'portfolio-conversational-chat-js', '/parity/conversational-chat.js')
 }
 
 export default function App() {
