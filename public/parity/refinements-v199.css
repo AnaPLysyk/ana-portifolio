@@ -1199,3 +1199,102 @@ body.editor-studio-open:not(.editor-preview-v156) > main a{
     margin-bottom:20px!important;
   }
 }
+
+
+/* =========================================================
+   TÍTULOS EDITÁVEIS — escolha do usuário + teto responsivo
+   ========================================================= */
+
+/*
+  --text-user-size-v199 vem do editor.
+  Sem valor definido, 999px faz o min() usar apenas o teto visual.
+  Se a pessoa escolher 22px, por exemplo, 22px é respeitado.
+*/
+.hero-v70 h1,
+.hero-title{
+  font-size:min(
+    var(--text-user-size-v199,999px),
+    clamp(2.35rem,4.8vw,4.15rem)
+  )!important;
+}
+
+.section-title,
+.about-v52-head h2,
+.competencies-v59 .section-title,
+.experience-head-v62 .section-title,
+.experience-head-v66 .section-title,
+.contact-panel h2{
+  font-size:min(
+    var(--text-user-size-v199,999px),
+    clamp(1.8rem,2.75vw,2.65rem)
+  )!important;
+}
+
+/* tablet / preview médio */
+@container portfolioPreviewV199 (max-width:820px){
+  .hero-v70 h1,
+  .hero-title{
+    font-size:min(
+      var(--text-user-size-v199,999px),
+      clamp(2rem,6.6cqw,3rem)
+    )!important;
+  }
+
+  .section-title,
+  .about-v52-head h2,
+  #competencias .competencies-v59 .section-title,
+  #competencias .competencies-v59-head .section-title,
+  .experience-head-v62 .section-title,
+  .experience-head-v66 .section-title,
+  .contact-panel h2,
+  #projetos .github-title-v61 > .section-title{
+    font-size:min(
+      var(--text-user-size-v199,999px),
+      clamp(1.65rem,5.2cqw,2.15rem)
+    )!important;
+    line-height:1.06!important;
+  }
+}
+
+/* celular */
+@container portfolioPreviewV199 (max-width:520px){
+  .hero-v70 h1,
+  .hero-title{
+    font-size:min(
+      var(--text-user-size-v199,999px),
+      clamp(1.8rem,8.2cqw,2.45rem)
+    )!important;
+  }
+
+  .section-title,
+  .about-v52-head h2,
+  #competencias .competencies-v59 .section-title,
+  #competencias .competencies-v59-head .section-title,
+  .experience-head-v62 .section-title,
+  .experience-head-v66 .section-title,
+  .contact-panel h2,
+  #projetos .github-title-v61 > .section-title{
+    font-size:min(
+      var(--text-user-size-v199,999px),
+      clamp(1.4rem,6.4cqw,1.8rem)
+    )!important;
+    line-height:1.08!important;
+  }
+}
+
+/* preview muito estreito */
+@container portfolioPreviewV199 (max-width:390px){
+  .section-title,
+  .about-v52-head h2,
+  #competencias .competencies-v59 .section-title,
+  #competencias .competencies-v59-head .section-title,
+  .experience-head-v62 .section-title,
+  .experience-head-v66 .section-title,
+  .contact-panel h2,
+  #projetos .github-title-v61 > .section-title{
+    font-size:min(
+      var(--text-user-size-v199,999px),
+      clamp(1.3rem,6cqw,1.65rem)
+    )!important;
+  }
+}
