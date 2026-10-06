@@ -1,0 +1,217 @@
+/* ===== v194 — divisor lateral realmente ajustável ===== */
+
+:root{
+  /*
+    A largura do painel passa a ter UMA fonte de verdade:
+    o valor já controlado pelo resize legado (--editor-panel-width-v93).
+  */
+  --editor-side-panel-v190:var(--editor-panel-width-v93,460px)!important;
+  --editor-side-panel-v194:var(--editor-panel-width-v93,460px);
+  --editor-preview-width-v190:calc(100vw - var(--editor-side-panel-v194) - var(--editor-side-gap-v190,20px))!important;
+}
+
+/* painel respeita imediatamente a largura arrastada */
+@media (pointer:fine){
+  body.editor-studio-open:not(.editor-preview-v156) #editorStudio.editor-studio-v85{
+    width:var(--editor-side-panel-v194)!important;
+    max-width:var(--editor-side-panel-v194)!important;
+  }
+
+  body.editor-studio-open:not(.editor-preview-v156){
+    padding-right:calc(var(--editor-side-panel-v194) + var(--editor-side-gap-v190,20px))!important;
+  }
+
+  /*
+    Divisor ocupa toda a lateral.
+    A área de hit é maior que a linha visual para ficar fácil de pegar.
+  */
+  #editorStudio #editorResizeHandleV93{
+    position:absolute!important;
+    left:-13px!important;
+    top:0!important;
+    bottom:0!important;
+
+    width:26px!important;
+    height:auto!important;
+
+    margin:0!important;
+    padding:0!important;
+
+    border:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+
+    color:transparent!important;
+    opacity:1!important;
+
+    cursor:ew-resize!important;
+    touch-action:none!important;
+    user-select:none!important;
+
+    z-index:95!important;
+  }
+
+  /*
+    Linha vertical discreta que marca a divisão.
+  */
+  #editorStudio #editorResizeHandleV93::before{
+    content:""!important;
+    position:absolute!important;
+
+    left:12px!important;
+    top:8px!important;
+    bottom:8px!important;
+
+    width:1px!important;
+    height:auto!important;
+
+    border-radius:999px!important;
+    background:color-mix(in srgb,var(--line) 72%,transparent)!important;
+
+    box-shadow:none!important;
+    opacity:.72!important;
+
+    transition:
+      width .15s ease,
+      background .15s ease,
+      box-shadow .15s ease,
+      opacity .15s ease!important;
+  }
+
+  /*
+    Pequeno grip no centro. Não parece botão; é só uma alça.
+  */
+  #editorStudio #editorResizeHandleV93::after{
+    content:""!important;
+    position:absolute!important;
+
+    left:7px!important;
+    top:50%!important;
+
+    width:11px!important;
+    height:42px!important;
+
+    transform:translateY(-50%)!important;
+
+    border:1px solid color-mix(in srgb,var(--line) 82%,transparent)!important;
+    border-radius:999px!important;
+
+    background:
+      radial-gradient(circle at 50% 12px,currentColor 1px,transparent 1.5px),
+      radial-gradient(circle at 50% 20px,currentColor 1px,transparent 1.5px),
+      radial-gradient(circle at 50% 28px,currentColor 1px,transparent 1.5px),
+      color-mix(in srgb,var(--panel) 95%,transparent)!important;
+
+    color:color-mix(in srgb,var(--muted) 70%,transparent)!important;
+
+    box-shadow:0 5px 16px rgba(0,0,0,.14)!important;
+    opacity:.46!important;
+
+    pointer-events:none!important;
+
+    transition:
+      opacity .15s ease,
+      color .15s ease,
+      border-color .15s ease,
+      background .15s ease,
+      transform .15s ease!important;
+  }
+
+  #editorStudio:hover #editorResizeHandleV93::before,
+  #editorStudio #editorResizeHandleV93:hover::before,
+  #editorStudio #editorResizeHandleV93:focus-visible::before{
+    width:2px!important;
+    background:color-mix(in srgb,var(--system-accent) 42%,var(--line))!important;
+    opacity:1!important;
+    box-shadow:0 0 12px color-mix(in srgb,var(--system-accent) 12%,transparent)!important;
+  }
+
+  #editorStudio:hover #editorResizeHandleV93::after,
+  #editorStudio #editorResizeHandleV93:hover::after,
+  #editorStudio #editorResizeHandleV93:focus-visible::after{
+    opacity:1!important;
+    color:var(--system-accent)!important;
+    border-color:color-mix(in srgb,var(--system-accent) 34%,var(--line))!important;
+    background:
+      radial-gradient(circle at 50% 12px,currentColor 1px,transparent 1.5px),
+      radial-gradient(circle at 50% 20px,currentColor 1px,transparent 1.5px),
+      radial-gradient(circle at 50% 28px,currentColor 1px,transparent 1.5px),
+      color-mix(in srgb,var(--panel) 96%,transparent)!important;
+  }
+
+  #editorStudio #editorResizeHandleV93:focus-visible{
+    outline:none!important;
+  }
+
+  body.editor-resizing-v93 #editorResizeHandleV93::before,
+  body.editor-resizing-v150 #editorResizeHandleV93::before{
+    width:2px!important;
+    background:var(--system-accent)!important;
+    opacity:1!important;
+    box-shadow:0 0 14px color-mix(in srgb,var(--system-accent) 24%,transparent)!important;
+  }
+
+  body.editor-resizing-v93 #editorResizeHandleV93::after,
+  body.editor-resizing-v150 #editorResizeHandleV93::after{
+    opacity:1!important;
+    color:var(--system-accent)!important;
+    border-color:color-mix(in srgb,var(--system-accent) 48%,var(--line))!important;
+  }
+
+  body.editor-resizing-v93,
+  body.editor-resizing-v93 *,
+  body.editor-resizing-v150,
+  body.editor-resizing-v150 *{
+    cursor:ew-resize!important;
+    user-select:none!important;
+  }
+
+  /*
+    O preview de aparelho também acompanha a nova divisão.
+  */
+  .device-frame-v193{
+    left:calc(var(--editor-preview-width-v190)/2)!important;
+    width:min(
+      var(--device-preview-width-v193),
+      calc(var(--editor-preview-width-v190) - 18px)
+    )!important;
+  }
+
+  body.editor-studio-open:not(.editor-preview-v156)[data-device-preset-v193] .topbar,
+  body.editor-studio-open:not(.editor-preview-v156)[data-device-preset-v193]>main,
+  body.editor-studio-open:not(.editor-preview-v156)[data-device-preset-v193]>footer{
+    width:min(
+      var(--device-preview-width-v193),
+      calc(var(--editor-preview-width-v190) - 18px)
+    )!important;
+
+    max-width:min(
+      var(--device-preview-width-v193),
+      calc(var(--editor-preview-width-v190) - 18px)
+    )!important;
+  }
+
+  body.editor-studio-open:not(.editor-preview-v156)[data-device-preset-v193] .topbar{
+    left:calc(var(--editor-preview-width-v190)/2)!important;
+  }
+}
+
+/* claro */
+body.portfolio-theme-light #editorStudio #editorResizeHandleV93::after{
+  background:
+    radial-gradient(circle at 50% 12px,currentColor 1px,transparent 1.5px),
+    radial-gradient(circle at 50% 20px,currentColor 1px,transparent 1.5px),
+    radial-gradient(circle at 50% 28px,currentColor 1px,transparent 1.5px),
+    rgba(250,252,255,.96)!important;
+
+  border-color:rgba(54,82,120,.14)!important;
+  box-shadow:0 5px 14px rgba(45,66,96,.08)!important;
+}
+
+/* celular/tablet físico pequeno: não há espaço útil para resize lateral */
+@media(max-width:820px){
+  #editorStudio #editorResizeHandleV93{
+    display:none!important;
+  }
+}
