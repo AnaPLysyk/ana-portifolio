@@ -147,6 +147,71 @@ export const portfolioService = {
     return replaceField(expectedRevision, 'editor', data)
   },
 
+  updateSectionLayouts(
+    expectedRevision: number,
+    data: EditorState['sectionLayouts'],
+  ): PortfolioSnapshot {
+    return portfolioRepository.mutate(expectedRevision, (current) => ({
+      ...current,
+      editor: {
+        ...current.editor,
+        sectionLayouts: structuredClone(data),
+      },
+    }))
+  },
+
+  updateSectionIcons(
+    expectedRevision: number,
+    data: EditorState['sectionIcons'],
+  ): PortfolioSnapshot {
+    return portfolioRepository.mutate(expectedRevision, (current) => ({
+      ...current,
+      editor: {
+        ...current.editor,
+        sectionIcons: structuredClone(data),
+      },
+    }))
+  },
+
+  updateTextStyles(
+    expectedRevision: number,
+    data: EditorState['textStyles'],
+  ): PortfolioSnapshot {
+    return portfolioRepository.mutate(expectedRevision, (current) => ({
+      ...current,
+      editor: {
+        ...current.editor,
+        textStyles: structuredClone(data),
+      },
+    }))
+  },
+
+  updateFreeElements(
+    expectedRevision: number,
+    data: EditorState['freeElements'],
+  ): PortfolioSnapshot {
+    return portfolioRepository.mutate(expectedRevision, (current) => ({
+      ...current,
+      editor: {
+        ...current.editor,
+        freeElements: structuredClone(data),
+      },
+    }))
+  },
+
+  updateAssistantLayout(
+    expectedRevision: number,
+    data: EditorState['assistantLayout'],
+  ): PortfolioSnapshot {
+    return portfolioRepository.mutate(expectedRevision, (current) => ({
+      ...current,
+      editor: {
+        ...current.editor,
+        assistantLayout: structuredClone(data),
+      },
+    }))
+  },
+
   createProject(expectedRevision: number, project: Project): PortfolioSnapshot {
     return portfolioRepository.mutate(expectedRevision, (current) => {
       if (current.projects.some((item) => item.id === project.id)) {
