@@ -59,12 +59,12 @@
 #brainShell .agent-follow-hint-v180 button::after{
   content:""!important;
   position:absolute!important;
-  left:-5px!important;
-  top:9px!important;
-  width:9px!important;
-  height:9px!important;
+  left:11px!important;
+  bottom:-5px!important;
+  width:10px!important;
+  height:10px!important;
   transform:rotate(45deg)!important;
-  border-left:1px solid color-mix(in srgb,var(--system-accent,var(--accent,#6ea8ff)) 30%,var(--line))!important;
+  border-right:1px solid color-mix(in srgb,var(--system-accent,var(--accent,#6ea8ff)) 30%,var(--line))!important;
   border-bottom:1px solid color-mix(in srgb,var(--system-accent,var(--accent,#6ea8ff)) 30%,var(--line))!important;
   background:color-mix(in srgb,var(--bg) 91%,var(--system-accent,var(--accent,#6ea8ff)) 9%)!important;
 }
@@ -86,7 +86,7 @@ body.portfolio-theme-light #brainShell .agent-follow-hint-v180 button{
 }
 body.portfolio-theme-light #brainShell .agent-follow-hint-v180 button::after{
   background:color-mix(in srgb,#fff 93%,var(--system-accent,var(--accent,#6ea8ff)) 7%)!important;
-  border-left-color:color-mix(in srgb,var(--system-accent,var(--accent,#6ea8ff)) 26%,rgba(55,82,119,.16))!important;
+  border-right-color:color-mix(in srgb,var(--system-accent,var(--accent,#6ea8ff)) 26%,rgba(55,82,119,.16))!important;
   border-bottom-color:color-mix(in srgb,var(--system-accent,var(--accent,#6ea8ff)) 26%,rgba(55,82,119,.16))!important;
 }
 
