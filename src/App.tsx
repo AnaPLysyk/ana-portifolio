@@ -56,6 +56,8 @@ function applyFinalHtmlPatches(event: SyntheticEvent<HTMLIFrameElement>) {
   loadAsset(doc, 'css', 'portfolio-refinements-v190-css', '/parity/refinements-v190.css')
   loadAsset(doc, 'css', 'portfolio-refinements-v192-css', '/parity/refinements-v192.css')
   loadAsset(doc, 'js', 'portfolio-refinements-v192-js', '/parity/refinements-v192.js')
+  loadAsset(doc, 'css', 'portfolio-refinements-v193-css', '/parity/refinements-v193.css')
+  loadAsset(doc, 'js', 'portfolio-refinements-v193-js', '/parity/refinements-v193.js')
 }
 
 export default function App() {
