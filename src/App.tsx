@@ -32,6 +32,8 @@ function applyFinalHtmlPatches(event: SyntheticEvent<HTMLIFrameElement>) {
   loadAsset(doc, 'js', 'portfolio-conversational-chat-js', '/parity/conversational-chat.js')
   loadAsset(doc, 'css', 'portfolio-refinements-v171-css', '/parity/refinements-v171.css')
   loadAsset(doc, 'js', 'portfolio-refinements-v171-js', '/parity/refinements-v171.js')
+  loadAsset(doc, 'css', 'portfolio-refinements-v173-css', '/parity/refinements-v173.css')
+  loadAsset(doc, 'js', 'portfolio-refinements-v173-js', '/parity/refinements-v173.js')
 }
 
 export default function App() {
