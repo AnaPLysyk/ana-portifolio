@@ -1,0 +1,186 @@
+
+
+/* ===== v162 — toolbar inferior somente com ícones ===== */
+.editor-canvas-toolbar-v156{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+  padding:0!important;
+  gap:8px!important;
+  pointer-events:none!important;
+}
+.editor-canvas-toolbar-v156 button,
+.editor-canvas-toolbar-v156.toolbar-compact-v160 button,
+.editor-canvas-toolbar-v156.toolbar-vertical-v160 button{
+  width:34px!important;
+  height:34px!important;
+  min-width:34px!important;
+  max-width:34px!important;
+  flex:0 0 34px!important;
+  padding:0!important;
+  display:grid!important;
+  place-items:center!important;
+  border:0!important;
+  border-radius:9px!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  color:#8da2c2!important;
+  pointer-events:auto!important;
+  cursor:pointer!important;
+  transition:color .16s ease, background .16s ease, transform .16s ease!important;
+}
+.editor-canvas-toolbar-v156 button svg{
+  width:18px!important;
+  height:18px!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.7!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+  pointer-events:none!important;
+}
+.editor-canvas-toolbar-v156 button:hover,
+.editor-canvas-toolbar-v156 button:focus-visible,
+.editor-canvas-toolbar-v156 .is-primary-v156:hover,
+.editor-canvas-toolbar-v156 .is-primary-v156:focus-visible{
+  color:#eef5ff!important;
+  background:rgba(110,168,255,.09)!important;
+  transform:translateY(-1px)!important;
+  outline:none!important;
+}
+.editor-canvas-toolbar-v156 button:focus-visible{
+  box-shadow:0 0 0 2px rgba(110,168,255,.22)!important;
+}
+.editor-canvas-toolbar-v156 .is-primary-v156{
+  background:transparent!important;
+  border:0!important;
+  color:#9ab3d9!important;
+}
+.editor-canvas-toolbar-v156.toolbar-compact-v160{
+  gap:6px!important;
+  padding:0!important;
+}
+.editor-canvas-toolbar-v156.toolbar-vertical-v160{
+  width:34px!important;
+  gap:6px!important;
+  align-items:center!important;
+  background:transparent!important;
+}
+body.editor-panel-collapsed-v158 .editor-canvas-toolbar-v156,
+body.editor-preview-v156 .editor-canvas-toolbar-v156{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+body.portfolio-theme-light .editor-canvas-toolbar-v156{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+body.portfolio-theme-light .editor-canvas-toolbar-v156 button,
+body.portfolio-theme-light .editor-canvas-toolbar-v156 .is-primary-v156{
+  background:transparent!important;
+  border:0!important;
+  color:#5c7293!important;
+  box-shadow:none!important;
+}
+body.portfolio-theme-light .editor-canvas-toolbar-v156 button:hover,
+body.portfolio-theme-light .editor-canvas-toolbar-v156 button:focus-visible{
+  color:#173867!important;
+  background:rgba(78,119,184,.08)!important;
+}
+@media(max-width:520px){
+  .editor-canvas-toolbar-v156{gap:5px!important}
+  .editor-canvas-toolbar-v156 button,
+  .editor-canvas-toolbar-v156.toolbar-compact-v160 button,
+  .editor-canvas-toolbar-v156.toolbar-vertical-v160 button{
+    width:32px!important;height:32px!important;min-width:32px!important;max-width:32px!important;flex-basis:32px!important;
+  }
+}
+
+
+
+/* ===== v163 — card drag real + texto visível + foto única ===== */
+.editor-owner-photo-wrap-v163{
+  position:relative;
+  width:40px;
+  height:40px;
+  flex:0 0 40px;
+}
+.editor-owner-photo-wrap-v163 .editor-owner-photo-v86{
+  width:40px!important;
+  height:40px!important;
+  border-radius:50%!important;
+  display:block!important;
+}
+.editor-owner-photo-wrap-v163 .editor-owner-photo-edit-v163{
+  position:absolute!important;
+  right:-8px!important;
+  top:50%!important;
+  bottom:auto!important;
+  transform:translateY(-50%)!important;
+  width:22px!important;
+  height:22px!important;
+  z-index:4!important;
+  border-radius:50%!important;
+}
+.editor-owner-photo-wrap-v163 .editor-owner-photo-edit-v163 span{
+  font-size:.68rem!important;
+  transform:none!important;
+}
+.editor-identity-single-photo-v163{
+  grid-template-columns:minmax(0,1fr)!important;
+}
+.editor-identity-single-photo-v163 > #editorIdentityPhotoV86{
+  display:none!important;
+}
+
+/* O texto nunca some quando o card entra em edição. */
+.custom-element-v156.is-editing-v157,
+.custom-element-v156.is-editing-v157 *:not(.custom-controls-v157):not(.custom-controls-v157 *){
+  opacity:1!important;
+  visibility:visible!important;
+}
+.custom-element-v156.is-editing-v157 [contenteditable="true"]{
+  display:block!important;
+  opacity:1!important;
+  visibility:visible!important;
+  color:inherit!important;
+  -webkit-text-fill-color:currentColor!important;
+  caret-color:#8cbcff!important;
+  min-height:1em!important;
+}
+.custom-card-v156.is-editing-v157 h3,
+.custom-card-v156.is-editing-v157 p,
+.custom-text-v156.is-editing-v157 p,
+.custom-text-v156.is-editing-v157 h2{
+  opacity:1!important;
+  visibility:visible!important;
+}
+
+/* Arraste mais próximo do Canva: elemento flutua e deixa espaço real no layout. */
+.custom-drag-placeholder-v163{
+  min-height:72px;
+  border:1px dashed rgba(110,168,255,.46);
+  border-radius:11px;
+  background:rgba(110,168,255,.045);
+  margin:0 0 10px;
+}
+.custom-element-v156.is-pointer-dragging-v163{
+  position:fixed!important;
+  z-index:15050!important;
+  pointer-events:none!important;
+  margin:0!important;
+  opacity:.96!important;
+  cursor:grabbing!important;
+  box-shadow:0 22px 58px rgba(0,0,0,.38)!important;
+  transform:none!important;
+}
+body.portfolio-theme-light .custom-drag-placeholder-v163{
+  border-color:rgba(75,119,188,.46);
+  background:rgba(75,119,188,.06);
+}
+body.portfolio-theme-light .custom-element-v156.is-pointer-dragging-v163{
+  box-shadow:0 22px 54px rgba(48,74,112,.22)!important;
+}
