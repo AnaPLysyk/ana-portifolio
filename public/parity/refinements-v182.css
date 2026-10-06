@@ -1,0 +1,210 @@
+/* ===== v182 — elementos visíveis + edição contextual de texto ===== */
+
+/* garante que elementos gerados sejam realmente visíveis */
+.section-title-line-v181{
+  display:flex!important;
+  align-items:center!important;
+  gap:12px!important;
+  flex-wrap:wrap!important;
+}
+.github-title-v61.section-title-line-v181{
+  display:flex!important;
+}
+.generated-element-v181{
+  opacity:1!important;
+  visibility:visible!important;
+  pointer-events:none!important;
+}
+.generated-icon-v181{
+  display:grid!important;
+  place-items:center!important;
+  flex:0 0 auto!important;
+}
+.generated-divider-v181{
+  display:block!important;
+}
+.generated-badge-v181{
+  display:inline-flex!important;
+}
+
+/* preview temporário no portfólio enquanto o elemento é criado */
+[data-element-live-preview-v182]{
+  opacity:.62!important;
+  outline:1px dashed color-mix(in srgb,var(--system-accent) 48%,transparent)!important;
+  outline-offset:4px!important;
+}
+
+/* barra contextual de edição de texto */
+.text-context-v182{
+  position:fixed!important;
+  z-index:10080!important;
+  display:none!important;
+  width:min(620px,calc(100vw - 24px))!important;
+  min-height:44px!important;
+  padding:6px!important;
+  border:1px solid rgba(126,154,198,.22)!important;
+  border-radius:13px!important;
+  background:rgba(5,11,23,.96)!important;
+  box-shadow:0 16px 42px rgba(0,0,0,.32)!important;
+  backdrop-filter:blur(16px)!important;
+  color:#dce7f7!important;
+}
+body.editor-page-text-mode .text-context-v182.is-open{
+  display:flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  flex-wrap:wrap!important;
+}
+body.portfolio-theme-light .text-context-v182{
+  background:rgba(249,252,255,.97)!important;
+  border-color:rgba(58,86,126,.16)!important;
+  box-shadow:0 14px 34px rgba(39,62,96,.14)!important;
+  color:#243a57!important;
+}
+
+.text-context-v182 select,
+.text-context-v182 input[type="number"]{
+  height:31px!important;
+  min-height:31px!important;
+  border:1px solid rgba(126,154,198,.17)!important;
+  border-radius:8px!important;
+  background:rgba(255,255,255,.035)!important;
+  color:inherit!important;
+  outline:none!important;
+  font-size:.58rem!important;
+}
+body.portfolio-theme-light .text-context-v182 select,
+body.portfolio-theme-light .text-context-v182 input[type="number"]{
+  background:#fff!important;
+  border-color:rgba(58,86,126,.14)!important;
+}
+.text-font-v182{
+  width:118px!important;
+  padding:0 26px 0 8px!important;
+}
+.text-size-v182{
+  width:55px!important;
+  padding:0 6px!important;
+  text-align:center!important;
+}
+.text-color-v182{
+  width:31px!important;
+  height:31px!important;
+  padding:2px!important;
+  border:1px solid rgba(126,154,198,.17)!important;
+  border-radius:8px!important;
+  background:transparent!important;
+  cursor:pointer!important;
+}
+.text-tool-divider-v182{
+  width:1px!important;
+  height:22px!important;
+  margin:0 1px!important;
+  background:rgba(126,154,198,.16)!important;
+}
+.text-range-control-v182{
+  display:grid!important;
+  grid-template-columns:auto 72px auto!important;
+  gap:5px!important;
+  align-items:center!important;
+  min-height:31px!important;
+  padding:0 6px!important;
+  border:1px solid rgba(126,154,198,.14)!important;
+  border-radius:8px!important;
+}
+.text-range-control-v182 span{
+  font-size:.48rem!important;
+  color:#8397b4!important;
+}
+.text-range-control-v182 input{
+  width:72px!important;
+  accent-color:var(--system-accent,var(--accent,#6ea8ff))!important;
+}
+.text-range-control-v182 output{
+  min-width:30px!important;
+  font:600 .48rem "IBM Plex Mono",monospace!important;
+  color:#9eb0c8!important;
+}
+.text-reset-v182{
+  height:31px!important;
+  padding:0 8px!important;
+  border:1px solid rgba(126,154,198,.14)!important;
+  border-radius:8px!important;
+  background:transparent!important;
+  color:#8fa4c2!important;
+  font-size:.52rem!important;
+  cursor:pointer!important;
+}
+.text-reset-v182:hover{
+  color:var(--system-accent,var(--accent,#6ea8ff))!important;
+  border-color:color-mix(in srgb,var(--system-accent,var(--accent,#6ea8ff)) 36%,rgba(126,154,198,.14))!important;
+}
+
+/* seleção mais clara sem apagar o texto */
+body.editor-page-text-mode [contenteditable="true"].text-selected-v182{
+  outline:1px solid color-mix(in srgb,var(--system-accent,var(--accent,#6ea8ff)) 62%,transparent)!important;
+  outline-offset:4px!important;
+  background:color-mix(in srgb,var(--system-accent,var(--accent,#6ea8ff)) 5%,transparent)!important;
+}
+
+/* card/bloco selecionado recebe feedback sutil */
+.text-block-selected-v182{
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--system-accent,var(--accent,#6ea8ff)) 20%,transparent)!important;
+}
+
+/* estilos dos layouts garantidos mesmo quando adicionados pelo builder */
+#projetos[data-section-layout-v178="grid"] .repo-list{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:14px!important;
+  border:0!important;
+}
+#projetos[data-section-layout-v178="grid"] .repo-card{
+  border:1px solid var(--line)!important;
+  border-radius:16px!important;
+  padding:0 14px!important;
+}
+#projetos[data-section-layout-v178="minimal"] .repo-card summary{
+  padding:13px 0!important;
+}
+
+#experiencia[data-section-layout-v178="stack"] .timeline-v66::before{
+  display:none!important;
+}
+#experiencia[data-section-layout-v178="stack"] .timeline-item-v66{
+  margin:0 0 10px!important;
+  padding:0 14px!important;
+  border:1px solid var(--line)!important;
+  border-radius:15px!important;
+}
+#experiencia[data-section-layout-v178="minimal"] .timeline-v66::before{
+  opacity:.32!important;
+}
+
+#competencias[data-section-layout-v178="list"] .competencies-v59-grid,
+#competencias[data-section-layout-v178="steps"] .competencies-v59-grid{
+  grid-template-columns:1fr!important;
+}
+#competencias[data-section-layout-v178="steps"] .competencies-v59-grid{
+  position:relative!important;
+}
+#competencias[data-section-layout-v178="steps"] .competencies-v59-item{
+  grid-template-columns:44px minmax(0,1fr)!important;
+  min-height:auto!important;
+}
+
+#sobre[data-section-layout-v178="grid"] .about-v52-routine-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
+#sobre[data-section-layout-v178="minimal"] .about-v52-bottom{
+  margin-top:18px!important;
+}
+
+@media(max-width:760px){
+  #projetos[data-section-layout-v178="grid"] .repo-list{
+    grid-template-columns:1fr!important;
+  }
+  .text-context-v182{
+    width:min(440px,calc(100vw - 16px))!important;
+  }
+}
