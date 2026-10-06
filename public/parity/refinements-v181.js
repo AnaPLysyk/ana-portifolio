@@ -121,6 +121,10 @@
       title.parentNode.insertBefore(host,title);
       host.appendChild(title);
     }
+    host.classList.add('section-title-line-v181');
+    host.style.setProperty('display','flex','important');
+    host.style.setProperty('align-items','center','important');
+    host.style.setProperty('gap','12px','important');
     return host;
   }
 
@@ -618,6 +622,14 @@
 
   cancel?.addEventListener('click',()=>setTimeout(restoreSaved,0),true);
   exitConfirm?.addEventListener('click',()=>setTimeout(restoreSaved,0),true);
+
+  window.__portfolioElementsV181={
+    getDraft:()=>clone(draft),
+    getSaved:()=>clone(saved),
+    applyAll,
+    renderList,
+    refresh:()=>{applyAll();renderList();}
+  };
 
   applyAll();
   renderList();
