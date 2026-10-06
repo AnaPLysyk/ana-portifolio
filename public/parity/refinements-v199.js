@@ -197,9 +197,11 @@
     document.documentElement.style.setProperty('--preview-device-width-v199',d.w+'px');
     document.documentElement.style.setProperty('--preview-device-height-v199',d.h+'px');
     document.documentElement.style.setProperty('--preview-device-radius-v199',d.r+'px');
+    document.body.dataset.previewDeviceV199=d.id;
 
     button.innerHTML=d.icon;
-    button.title=d.name+' · '+d.w+' × '+d.h;
+    button.removeAttribute('title');
+    button.dataset.deviceLabelV199=d.name+' · '+d.w+' × '+d.h;
     button.setAttribute('aria-label','Prévia '+d.name+', '+d.w+' por '+d.h+'. Clique para próximo aparelho.');
 
     try{localStorage.setItem(DEVICE_KEY,id)}catch{}
