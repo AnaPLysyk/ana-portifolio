@@ -39,6 +39,16 @@ export class InvalidOrderError extends Error {
   }
 }
 
+export class InvalidResourceIdError extends Error {
+  constructor(
+    public readonly resource: string,
+    public readonly pathId: string,
+    public readonly bodyId: string,
+  ) {
+    super(`Resource id mismatch for ${resource}`)
+  }
+}
+
 const replaceField = <K extends keyof PortfolioDocument>(
   expectedRevision: number,
   key: K,
@@ -160,7 +170,7 @@ export const portfolioService = {
 
       if (index < 0) throw new ResourceNotFoundError('project', id)
       if (project.id !== id) {
-        throw new ResourceAlreadyExistsError('project-id-mismatch', project.id)
+        throw new InvalidResourceIdError('project', id, project.id)
       }
 
       const projects = [...current.projects]
@@ -215,7 +225,7 @@ export const portfolioService = {
 
       if (index < 0) throw new ResourceNotFoundError('experience', id)
       if (item.id !== id) {
-        throw new ResourceAlreadyExistsError('experience-id-mismatch', item.id)
+        throw new InvalidResourceIdError('experience', id, item.id)
       }
 
       const experience = [...current.experience]
