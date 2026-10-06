@@ -82,6 +82,7 @@
 
   function editorOpen(){
     return document.body.classList.contains('editor-studio-open') &&
+      !document.body.classList.contains('editor-preview-v156') &&
       !stage.classList.contains('chat-active');
   }
 
