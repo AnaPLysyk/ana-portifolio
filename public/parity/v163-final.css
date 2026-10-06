@@ -194,3 +194,75 @@ body.portfolio-theme-light .custom-element-v156.is-pointer-dragging-v163{
 .quantum-field-v37.is-orbit-ready-v169 #quantumCanvas{
   opacity:1!important;
 }
+
+
+/* ===== v170 — resize 100% invisível, sem risco lateral ===== */
+#editorStudio #editorResizeHandleV93,
+#editorStudio #editorResizeHandleV93:hover,
+#editorStudio #editorResizeHandleV93:focus,
+#editorStudio #editorResizeHandleV93:focus-visible,
+#aiContextPanel .context-resize-edge-v150,
+#aiContextPanel .context-resize-edge-v150:hover,
+#aiContextPanel .context-resize-edge-v150:focus,
+#aiContextPanel .context-resize-edge-v150:focus-visible{
+  position:absolute!important;
+  left:-12px!important;
+  top:0!important;
+  bottom:0!important;
+  width:26px!important;
+  height:auto!important;
+  min-height:100%!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  outline:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  background-image:none!important;
+  box-shadow:none!important;
+  color:transparent!important;
+  text-shadow:none!important;
+  opacity:0!important;
+  cursor:ew-resize!important;
+  z-index:80!important;
+  touch-action:none!important;
+  user-select:none!important;
+  appearance:none!important;
+  -webkit-appearance:none!important;
+  pointer-events:auto!important;
+}
+
+#editorStudio #editorResizeHandleV93::before,
+#editorStudio #editorResizeHandleV93::after,
+#editorStudio #editorResizeHandleV93:hover::before,
+#editorStudio #editorResizeHandleV93:hover::after,
+#editorStudio #editorResizeHandleV93:focus::before,
+#editorStudio #editorResizeHandleV93:focus::after,
+#editorStudio #editorResizeHandleV93:focus-visible::before,
+#editorStudio #editorResizeHandleV93:focus-visible::after,
+#aiContextPanel .context-resize-edge-v150::before,
+#aiContextPanel .context-resize-edge-v150::after{
+  display:none!important;
+  content:none!important;
+  width:0!important;
+  height:0!important;
+  opacity:0!important;
+  visibility:hidden!important;
+  border:0!important;
+  outline:0!important;
+  background:none!important;
+  box-shadow:none!important;
+}
+
+#editorStudio #editorResizeHandleV93 *,
+#aiContextPanel .context-resize-edge-v150 *{
+  display:none!important;
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+
+/* O cursor continua denunciando a área arrastável sem desenhar nada. */
+#editorStudio #editorResizeHandleV93{
+  pointer-events:auto!important;
+}
