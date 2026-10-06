@@ -11,7 +11,8 @@
     "dev:api": "tsx watch server/index.ts",
     "build:front": "tsc -b && vite build",
     "build:api": "tsc -p tsconfig.server.json",
-    "start:api": "node dist-server/index.js"
+    "start:api": "node dist-server/index.js",
+    "validate:api": "tsx server/validation/api.smoke.ts"
   },
   "dependencies": {
     "react": "^19.1.1",
