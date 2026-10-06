@@ -145,6 +145,7 @@
           el.style.setProperty('--free-x-v184',point.x+'%');
           el.style.setProperty('--free-y-v184',point.y+'%');
           el.style.setProperty('--element-color',item.system!==false?'var(--system-accent)':(item.color||'#6ea8ff'));
+          el.style.setProperty('--free-original-size-v184',(item.size||30)+'px');
           el.style.width=(item.size||30)+'px';
           el.style.height=(item.size||30)+'px';
 
