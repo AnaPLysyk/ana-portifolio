@@ -53,17 +53,9 @@ function applyFinalHtmlPatches(event: SyntheticEvent<HTMLIFrameElement>) {
   loadAsset(doc, 'js', 'portfolio-refinements-v184-js', '/parity/refinements-v184.js')
   loadAsset(doc, 'css', 'portfolio-refinements-v185-css', '/parity/refinements-v185.css')
   loadAsset(doc, 'js', 'portfolio-refinements-v185-js', '/parity/refinements-v185.js')
-  loadAsset(doc, 'css', 'portfolio-refinements-v190-css', '/parity/refinements-v190.css')
-  loadAsset(doc, 'css', 'portfolio-refinements-v192-css', '/parity/refinements-v192.css')
-  loadAsset(doc, 'js', 'portfolio-refinements-v192-js', '/parity/refinements-v192.js')
-  loadAsset(doc, 'css', 'portfolio-refinements-v193-css', '/parity/refinements-v193.css')
-  loadAsset(doc, 'js', 'portfolio-refinements-v193-js', '/parity/refinements-v193.js')
-  loadAsset(doc, 'css', 'portfolio-refinements-v194-css', '/parity/refinements-v194.css')
-  loadAsset(doc, 'css', 'portfolio-refinements-v195-css', '/parity/refinements-v195.css')
-  loadAsset(doc, 'js', 'portfolio-refinements-v195-js', '/parity/refinements-v195.js')
-  loadAsset(doc, 'css', 'portfolio-refinements-v196-css', '/parity/refinements-v196.css')
-  loadAsset(doc, 'css', 'portfolio-refinements-v197-css', '/parity/refinements-v197.css')
-  loadAsset(doc, 'css', 'portfolio-refinements-v198-css', '/parity/refinements-v198.css')
+  // v199 substitui a pilha experimental v190-v198 por uma única fonte de verdade.
+  loadAsset(doc, 'css', 'portfolio-refinements-v199-css', '/parity/refinements-v199.css')
+  loadAsset(doc, 'js', 'portfolio-refinements-v199-js', '/parity/refinements-v199.js')
 }
 
 export default function App() {
