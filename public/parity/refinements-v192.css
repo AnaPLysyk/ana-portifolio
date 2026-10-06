@@ -1,0 +1,161 @@
+/* ===== v192 — troca de aparelho segura no modo edição ===== */
+
+.editor-device-toggle-v192{
+  display:none!important;
+  width:30px!important;
+  height:30px!important;
+  min-width:30px!important;
+  padding:0!important;
+  border:1px solid color-mix(in srgb,var(--system-accent) 18%,var(--line))!important;
+  border-radius:8px!important;
+  background:transparent!important;
+  color:var(--muted)!important;
+  align-items:center!important;
+  justify-content:center!important;
+  cursor:pointer!important;
+  transition:
+    color .15s ease,
+    border-color .15s ease,
+    background .15s ease!important;
+}
+
+body.editor-studio-open:not(.editor-preview-v156) .editor-device-toggle-v192{
+  display:inline-flex!important;
+}
+
+.editor-device-toggle-v192:hover,
+.editor-device-toggle-v192:focus-visible{
+  color:var(--system-accent)!important;
+  border-color:color-mix(in srgb,var(--system-accent) 38%,var(--line))!important;
+  background:var(--system-accent-soft)!important;
+  outline:none!important;
+}
+
+.editor-device-toggle-v192 svg{
+  width:15px!important;
+  height:15px!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.7!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+
+/* indicador discreto do aparelho atual */
+.editor-device-toggle-v192::after{
+  content:attr(data-device-label)!important;
+  position:absolute!important;
+  left:50%!important;
+  bottom:calc(100% + 7px)!important;
+  transform:translateX(-50%)!important;
+  display:none!important;
+  padding:4px 6px!important;
+  border:1px solid var(--line)!important;
+  border-radius:6px!important;
+  background:var(--panel)!important;
+  color:var(--muted)!important;
+  font:600 .45rem/1 "IBM Plex Mono",monospace!important;
+  white-space:nowrap!important;
+  pointer-events:none!important;
+  box-shadow:0 6px 18px rgba(0,0,0,.12)!important;
+}
+
+.editor-device-toggle-v192:hover::after{
+  display:block!important;
+}
+
+/* =======================================================
+   A troca afeta SOMENTE a prévia.
+   Não move/recria DOM, não usa observer e não toca no painel.
+   ======================================================= */
+
+/* DESKTOP: comportamento atual */
+body.editor-studio-open.editor-device-desktop-v192:not(.editor-preview-v156)>main,
+body.editor-studio-open.editor-device-desktop-v192:not(.editor-preview-v156)>footer{
+  width:auto!important;
+  max-width:none!important;
+}
+
+/* TABLET */
+body.editor-studio-open.editor-device-tablet-v192:not(.editor-preview-v156)>main,
+body.editor-studio-open.editor-device-tablet-v192:not(.editor-preview-v156)>footer{
+  width:min(768px,calc(100vw - 390px))!important;
+  max-width:768px!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+
+body.editor-studio-open.editor-device-tablet-v192:not(.editor-preview-v156) .hero-v70{
+  grid-template-columns:1fr!important;
+  gap:18px!important;
+  min-height:auto!important;
+  padding-top:54px!important;
+  padding-bottom:58px!important;
+}
+
+body.editor-studio-open.editor-device-tablet-v192:not(.editor-preview-v156) .agent-stage{
+  display:grid!important;
+  width:min(620px,100%)!important;
+  min-height:430px!important;
+  margin-inline:auto!important;
+}
+
+body.editor-studio-open.editor-device-tablet-v192:not(.editor-preview-v156) .about-v52-head-grid,
+body.editor-studio-open.editor-device-tablet-v192:not(.editor-preview-v156) .competencies-v59-head{
+  grid-template-columns:1fr!important;
+}
+
+/* CELULAR */
+body.editor-studio-open.editor-device-mobile-v192:not(.editor-preview-v156)>main,
+body.editor-studio-open.editor-device-mobile-v192:not(.editor-preview-v156)>footer{
+  width:min(390px,calc(100vw - 390px))!important;
+  max-width:390px!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+
+body.editor-studio-open.editor-device-mobile-v192:not(.editor-preview-v156) .container{
+  width:calc(100% - 28px)!important;
+  max-width:none!important;
+}
+
+body.editor-studio-open.editor-device-mobile-v192:not(.editor-preview-v156) .hero-v70{
+  grid-template-columns:1fr!important;
+  gap:10px!important;
+  min-height:auto!important;
+  padding-top:40px!important;
+  padding-bottom:44px!important;
+}
+
+body.editor-studio-open.editor-device-mobile-v192:not(.editor-preview-v156) .agent-stage{
+  display:grid!important;
+  width:100%!important;
+  min-height:350px!important;
+}
+
+body.editor-studio-open.editor-device-mobile-v192:not(.editor-preview-v156) .about-v52-head-grid,
+body.editor-studio-open.editor-device-mobile-v192:not(.editor-preview-v156) .about-v52-routine-grid,
+body.editor-studio-open.editor-device-mobile-v192:not(.editor-preview-v156) .competencies-v59-grid{
+  grid-template-columns:1fr!important;
+}
+
+body.editor-studio-open.editor-device-mobile-v192:not(.editor-preview-v156) .repo-card summary{
+  grid-template-columns:38px minmax(0,1fr) 28px!important;
+  gap:9px!important;
+}
+
+body.editor-studio-open.editor-device-mobile-v192:not(.editor-preview-v156) .repo-visibility{
+  display:none!important;
+}
+
+/* no Visualizar não simulamos aparelho: é a página pública real */
+body.editor-preview-v156 .editor-device-toggle-v192{
+  display:none!important;
+}
+
+/* em celular real não faz sentido simular outro aparelho */
+@media(max-width:760px) and (pointer:coarse){
+  .editor-device-toggle-v192{
+    display:none!important;
+  }
+}
