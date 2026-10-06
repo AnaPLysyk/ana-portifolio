@@ -626,6 +626,28 @@
   window.__portfolioElementsV181={
     getDraft:()=>clone(draft),
     getSaved:()=>clone(saved),
+    updateItem:(itemId,patch={},options={})=>{
+      const index=draft.findIndex(item=>item.id===itemId);
+      if(index<0) return null;
+
+      draft[index]={...draft[index],...patch};
+      const next=clone(draft[index]);
+
+      if(options.markDirty!==false){
+        dirty(options.message||'Posição do elemento atualizada na prévia.');
+      }
+      if(options.apply===true) applyAll();
+      if(options.render===true) renderList();
+
+      return next;
+    },
+    replaceDraft:(items,options={})=>{
+      draft=clone(Array.isArray(items)?items:[]);
+      if(options.markDirty!==false) dirty(options.message||'Elementos do quadro atualizados na prévia.');
+      if(options.apply!==false) applyAll();
+      if(options.render!==false) renderList();
+      return clone(draft);
+    },
     applyAll,
     renderList,
     refresh:()=>{applyAll();renderList();}
