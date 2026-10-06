@@ -148,32 +148,60 @@
   const toolbar=document.createElement('div');
   toolbar.className='text-context-v182';
   toolbar.innerHTML=`
-    <select class="text-font-v182" id="textFontV182" aria-label="Fonte">
+    <select class="text-font-v182" id="textFontV182" aria-label="Fonte" title="Fonte">
       <option value='"Inter",system-ui,sans-serif'>Inter</option>
       <option value='"Space Grotesk","Inter",sans-serif'>Space Grotesk</option>
       <option value='"IBM Plex Mono",ui-monospace,monospace'>IBM Plex Mono</option>
       <option value='Georgia,"Times New Roman",serif'>Georgia</option>
       <option value='system-ui,-apple-system,"Segoe UI",sans-serif'>Sistema</option>
     </select>
-    <input class="text-size-v182" id="textSizeV182" type="number" min="10" max="96" step="1" aria-label="Tamanho da fonte">
-    <input class="text-color-v182" id="textColorV182" type="color" aria-label="Cor do texto">
+
+    <div class="text-size-stepper-v182" aria-label="Tamanho da fonte">
+      <button id="textSizeMinusV182" type="button" title="Diminuir texto">−</button>
+      <input class="text-size-v182" id="textSizeV182" type="number" min="10" max="96" step="1" aria-label="Tamanho da fonte">
+      <button id="textSizePlusV182" type="button" title="Aumentar texto">+</button>
+    </div>
+
+    <select class="text-weight-v182" id="textWeightV182" aria-label="Peso da fonte" title="Peso">
+      <option value="400">Regular</option>
+      <option value="500">Médio</option>
+      <option value="600">Semi</option>
+      <option value="700">Negrito</option>
+      <option value="800">Extra</option>
+    </select>
+
+    <div class="text-align-v182" aria-label="Alinhamento">
+      <button type="button" data-align-v182="left" title="Alinhar à esquerda">≡</button>
+      <button type="button" data-align-v182="center" title="Centralizar">≡</button>
+      <button type="button" data-align-v182="right" title="Alinhar à direita">≡</button>
+    </div>
+
+    <input class="text-color-v182" id="textColorV182" type="color" aria-label="Cor do texto" title="Cor">
+
     <span class="text-tool-divider-v182"></span>
+
     <label class="text-range-control-v182" title="Largura do bloco">
       <span>Bloco</span>
       <input id="textBlockWidthV182" type="range" min="40" max="100" step="2">
       <output id="textBlockWidthOutputV182"></output>
     </label>
+
     <label class="text-range-control-v182" title="Espaço interno do bloco">
       <span>Espaço</span>
       <input id="textBlockPaddingV182" type="range" min="0" max="36" step="2">
       <output id="textBlockPaddingOutputV182"></output>
     </label>
+
     <button class="text-reset-v182" id="textResetV182" type="button">Redefinir</button>
   `;
   document.body.appendChild(toolbar);
 
   const font=$('#textFontV182');
   const size=$('#textSizeV182');
+  const sizeMinus=$('#textSizeMinusV182');
+  const sizePlus=$('#textSizePlusV182');
+  const weight=$('#textWeightV182');
+  const alignButtons=$('[data-align-v182]');
   const color=$('#textColorV182');
   const width=$('#textBlockWidthV182');
   const widthOut=$('#textBlockWidthOutputV182');
@@ -268,6 +296,35 @@
     toolbar.style.top=top+'px';
   }
 
+  function isResponsiveTitle(el){
+    return !!el?.matches?.('h1,h2,.section-title');
+  }
+
+  function selectedFontSize(el,computed){
+    if(isResponsiveTitle(el)){
+      const user=el.style.getPropertyValue('--text-user-size-v199');
+      if(user) return Math.round(parseFloat(user)||16);
+    }
+    return Math.round(parseFloat(computed.fontSize)||16);
+  }
+
+  function applyFontSize(px){
+    if(!active) return;
+    const value=Math.max(10,Math.min(96,Number(px)||16));
+
+    if(isResponsiveTitle(active)){
+      /* O usuário define a base. A responsividade só aplica um teto seguro. */
+      active.style.setProperty('--text-user-size-v199',value+'px');
+      active.style.removeProperty('font-size');
+    }else{
+      active.style.fontSize=value+'px';
+    }
+
+    size.value=String(value);
+    markDirty();
+    positionToolbar();
+  }
+
   function updateToolbar(){
     if(!active) return;
 
@@ -281,8 +338,14 @@
     });
     if(match) font.value=match.value;
 
-    size.value=String(Math.round(parseFloat(computed.fontSize)||16));
+    size.value=String(selectedFontSize(active,computed));
     color.value=hex(computed.color);
+
+    const numericWeight=Math.max(400,Math.min(800,Math.round((parseInt(computed.fontWeight,10)||400)/100)*100));
+    weight.value=String(numericWeight);
+
+    const currentAlign=computed.textAlign==='center'?'center':computed.textAlign==='right'?'right':'left';
+    alignButtons.forEach(button=>button.classList.toggle('is-active',button.dataset.alignV182===currentAlign));
 
     activeBlock=blockFor(active);
     const blockComputed=getComputedStyle(activeBlock);
@@ -352,13 +415,30 @@
     positionToolbar();
   });
 
-  size.addEventListener('input',()=>{
-    if(!active) return;
-    const px=Math.max(10,Math.min(96,Number(size.value)||16));
-    active.style.fontSize=px+'px';
-    markDirty();
-    positionToolbar();
+  size.addEventListener('input',()=>applyFontSize(size.value));
+
+  sizeMinus?.addEventListener('click',()=>{
+    const current=Number(size.value)||16;
+    applyFontSize(current-2);
   });
+
+  sizePlus?.addEventListener('click',()=>{
+    const current=Number(size.value)||16;
+    applyFontSize(current+2);
+  });
+
+  weight?.addEventListener('change',()=>{
+    if(!active) return;
+    active.style.fontWeight=weight.value;
+    markDirty();
+  });
+
+  alignButtons.forEach(button=>button.addEventListener('click',()=>{
+    if(!active) return;
+    active.style.textAlign=button.dataset.alignV182||'left';
+    alignButtons.forEach(item=>item.classList.toggle('is-active',item===button));
+    markDirty();
+  }));
 
   color.addEventListener('input',()=>{
     if(!active) return;
@@ -406,6 +486,9 @@
 
     active.style.removeProperty('font-family');
     active.style.removeProperty('font-size');
+    active.style.removeProperty('--text-user-size-v199');
+    active.style.removeProperty('font-weight');
+    active.style.removeProperty('text-align');
     active.style.removeProperty('color');
     active.style.removeProperty('-webkit-text-fill-color');
 
