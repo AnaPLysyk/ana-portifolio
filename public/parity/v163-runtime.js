@@ -729,3 +729,35 @@
     console.warn("Não foi possível aplicar o ajuste das órbitas v167.", error);
   }
 })();
+
+
+/* ===== v168 — cleanup final abaixo da esfera ===== */
+(() => {
+  if (window.__portfolioOrbitCleanupV168) return;
+  window.__portfolioOrbitCleanupV168 = true;
+
+  const previousDrawQuantum = typeof drawQuantum === 'function' ? drawQuantum : null;
+  if (!previousDrawQuantum) return;
+
+  drawQuantum = function(t) {
+    previousDrawQuantum(t);
+
+    try {
+      if (!qCtx || !quantumCanvas) return;
+
+      const cx = qW / 2 + qPointerX * 5;
+      const cy = qH / 2 + qPointerY * 3;
+
+      const cleanupWidth = Math.max(118, qW * 0.20);
+      const cleanupHeight = Math.max(10, qH * 0.022);
+      const cleanupX = cx - cleanupWidth / 2;
+      const cleanupY = cy + Math.max(84, qH * 0.185);
+
+      qCtx.save();
+      qCtx.globalCompositeOperation = 'destination-out';
+      qCtx.fillStyle = '#000';
+      qCtx.fillRect(cleanupX, cleanupY, cleanupWidth, cleanupHeight);
+      qCtx.restore();
+    } catch (_) {}
+  };
+})();
