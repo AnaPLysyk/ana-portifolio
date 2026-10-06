@@ -285,3 +285,71 @@ body.portfolio-theme-light #editorStudio .editor-owner-photo-edit-v163{
     min-width:34px!important;
   }
 }
+
+
+/* ===== v174 — borda da esfera no tamanho real do PNG ===== */
+/* O PNG do robô tem bastante transparência ao redor. A esfera ocupa
+   aproximadamente 55% da área total; por isso o efeito precisa seguir
+   esse círculo real, não o tamanho inteiro do <img>. */
+#agentButton .orb-face-shade-v173{
+  display:none!important;
+  background:none!important;
+  opacity:0!important;
+  mix-blend-mode:normal!important;
+}
+
+#agentButton .orb-edge-v173{
+  inset:auto!important;
+  left:50%!important;
+  top:50%!important;
+  width:55%!important;
+  height:55%!important;
+  transform:translate(-50%,-50%)!important;
+  border-radius:50%!important;
+  z-index:7!important;
+  background:
+    conic-gradient(
+      from 208deg,
+      transparent 0deg 24deg,
+      rgba(255,63,94,.18) 38deg,
+      rgba(255,63,94,.76) 63deg,
+      rgba(255,88,112,.92) 82deg,
+      rgba(255,88,112,.34) 105deg,
+      transparent 126deg 244deg,
+      rgba(230,241,255,.18) 260deg,
+      rgba(244,249,255,.54) 284deg,
+      rgba(117,174,255,.36) 311deg,
+      transparent 338deg 360deg
+    )!important;
+  -webkit-mask:
+    radial-gradient(
+      circle,
+      transparent 0 90.4%,
+      #000 91.7% 97.2%,
+      transparent 98.4%
+    )!important;
+  mask:
+    radial-gradient(
+      circle,
+      transparent 0 90.4%,
+      #000 91.7% 97.2%,
+      transparent 98.4%
+    )!important;
+  filter:
+    drop-shadow(0 0 4px rgba(255,72,101,.20))
+    drop-shadow(0 0 3px rgba(117,174,255,.10))!important;
+  opacity:.96!important;
+}
+
+body.portfolio-theme-light #agentButton .orb-edge-v173{
+  opacity:.90!important;
+  filter:
+    drop-shadow(0 0 3px rgba(223,65,93,.16))
+    drop-shadow(0 0 2px rgba(80,132,210,.09))!important;
+}
+
+.agent-stage.chat-active #agentButton .orb-edge-v173{
+  width:55%!important;
+  height:55%!important;
+  opacity:.78!important;
+}
