@@ -761,3 +761,78 @@
     } catch (_) {}
   };
 })();
+
+
+/* ===== v169 — estabilização final e limpeza inferior ampliada ===== */
+(() => {
+  if (window.__portfolioOrbitStableV169) return;
+  window.__portfolioOrbitStableV169 = true;
+
+  const field = document.querySelector('.quantum-field-v37');
+  const canvas = document.getElementById('quantumCanvas');
+
+  /* Evita a "tremida" de bootstrap: zera influência do ponteiro e
+     deixa o campo aparecer só quando tamanho/fontes/layout já assentaram. */
+  try {
+    qPointerX = 0;
+    qPointerY = 0;
+    qRingPullX = 0;
+    qRingPullY = 0;
+    qHover = 0;
+  } catch (_) {}
+
+  function revealStableOrbit() {
+    try {
+      if (typeof resizeQuantum === 'function') resizeQuantum();
+      qPointerX = 0;
+      qPointerY = 0;
+      qRingPullX = 0;
+      qRingPullY = 0;
+      qHover = 0;
+    } catch (_) {}
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        field?.classList.add('is-orbit-ready-v169');
+      });
+    });
+  }
+
+  if (document.fonts?.ready) {
+    document.fonts.ready.then(() => setTimeout(revealStableOrbit, 90)).catch(() => {
+      setTimeout(revealStableOrbit, 150);
+    });
+  } else {
+    setTimeout(revealStableOrbit, 150);
+  }
+
+  window.addEventListener('load', () => setTimeout(revealStableOrbit, 80), { once:true });
+
+  /* Camada de limpeza final: pega também o pequeno resíduo lateral,
+     mas continua limitada a uma faixa rasa abaixo da esfera. */
+  if (typeof drawQuantum === 'function') {
+    const stableDraw = drawQuantum;
+
+    drawQuantum = function(t) {
+      stableDraw(t);
+
+      try {
+        if (!qCtx || !canvas || !qW || !qH) return;
+
+        const cx = qW / 2 + qPointerX * 5;
+        const cy = qH / 2 + qPointerY * 3;
+
+        const cleanupWidth = Math.max(190, qW * 0.42);
+        const cleanupHeight = Math.max(13, qH * 0.029);
+        const cleanupX = cx - cleanupWidth / 2;
+        const cleanupY = cy + Math.max(82, qH * 0.178);
+
+        qCtx.save();
+        qCtx.globalCompositeOperation = 'destination-out';
+        qCtx.fillStyle = '#000';
+        qCtx.fillRect(cleanupX, cleanupY, cleanupWidth, cleanupHeight);
+        qCtx.restore();
+      } catch (_) {}
+    };
+  }
+})();
