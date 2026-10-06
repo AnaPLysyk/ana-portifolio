@@ -1,0 +1,239 @@
+/* ===== v198 — editor full-height + preview livre na lateral ===== */
+
+:root{
+  --editor-full-panel-v198:var(--editor-panel-width-v93,460px);
+  --editor-preview-gap-v198:14px;
+}
+
+/*
+  Desktop/notebook:
+  painel é uma coluna estrutural de altura inteira.
+  A prévia usa todo o restante da tela.
+*/
+@media(pointer:fine){
+  body.editor-studio-open:not(.editor-preview-v156){
+    padding-right:calc(var(--editor-full-panel-v198) + var(--editor-preview-gap-v198))!important;
+  }
+
+  body.editor-studio-open:not(.editor-preview-v156) #editorStudio.editor-studio-v85{
+    position:fixed!important;
+
+    top:0!important;
+    right:0!important;
+    bottom:0!important;
+    left:auto!important;
+
+    width:var(--editor-full-panel-v198)!important;
+    min-width:340px!important;
+    max-width:min(620px,48vw)!important;
+
+    height:100dvh!important;
+    min-height:100dvh!important;
+    max-height:100dvh!important;
+
+    margin:0!important;
+    padding:0!important;
+
+    border-top:0!important;
+    border-right:0!important;
+    border-bottom:0!important;
+    border-radius:18px 0 0 18px!important;
+
+    transform:none!important;
+    overflow:hidden!important;
+
+    z-index:12120!important;
+  }
+
+  /*
+    A largura da prévia sempre deriva da largura atual do editor.
+    Quando o usuário arrasta o divisor, os dois lados continuam
+    se compensando automaticamente.
+  */
+  body.editor-studio-open:not(.editor-preview-v156){
+    --editor-preview-width-v190:
+      calc(100vw - var(--editor-full-panel-v198) - var(--editor-preview-gap-v198))!important;
+  }
+
+  body.editor-studio-open:not(.editor-preview-v156) > .topbar,
+  body.editor-studio-open:not(.editor-preview-v156) > main,
+  body.editor-studio-open:not(.editor-preview-v156) > footer{
+    width:var(--editor-preview-width-v190)!important;
+    max-width:var(--editor-preview-width-v190)!important;
+    margin-left:0!important;
+    margin-right:auto!important;
+  }
+
+  body.editor-studio-open:not(.editor-preview-v156) > .topbar{
+    left:0!important;
+    right:auto!important;
+  }
+
+  /*
+    A moldura simulada de aparelho fica centralizada somente
+    dentro do espaço visual da esquerda.
+  */
+  body.editor-studio-open:not(.editor-preview-v156) .device-frame-v193{
+    left:calc(var(--editor-preview-width-v190)/2)!important;
+    max-width:calc(var(--editor-preview-width-v190) - 16px)!important;
+  }
+
+  body.editor-studio-open:not(.editor-preview-v156)[data-device-preset-v193] > .topbar{
+    left:calc(var(--editor-preview-width-v190)/2)!important;
+    right:auto!important;
+  }
+
+  /*
+    Divisor acompanha toda a altura do painel, inclusive no topo.
+  */
+  #editorStudio #editorResizeHandleV93{
+    top:0!important;
+    bottom:0!important;
+    height:100%!important;
+    left:-13px!important;
+  }
+
+  #editorStudio #editorResizeHandleV93::before{
+    top:0!important;
+    bottom:0!important;
+    border-radius:0!important;
+  }
+
+  /*
+    Toolbar de edição pertence à área visual da esquerda.
+  */
+  body.editor-studio-open:not(.editor-preview-v156) .editor-canvas-toolbar-v156{
+    left:auto!important;
+    right:calc(var(--editor-full-panel-v198) + var(--editor-preview-gap-v198) + 12px)!important;
+    bottom:14px!important;
+    transform:none!important;
+  }
+}
+
+/* =========================================================
+   ESTRUTURA INTERNA DO PAINEL
+   Cabeçalho e rodapé ficam fixos dentro da coluna;
+   só o conteúdo central rola.
+   ========================================================= */
+
+#editorStudio.editor-studio-v85{
+  display:flex!important;
+  flex-direction:column!important;
+}
+
+#editorStudio .editor-studio-head-v85{
+  flex:0 0 auto!important;
+}
+
+#editorStudio .editor-studio-tabs-v85{
+  flex:0 0 auto!important;
+}
+
+#editorStudio .editor-studio-body-v85{
+  flex:1 1 auto!important;
+  min-height:0!important;
+
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+
+  overscroll-behavior:contain!important;
+}
+
+#editorStudio .editor-studio-footer-v85{
+  flex:0 0 auto!important;
+
+  position:relative!important;
+  bottom:auto!important;
+
+  margin-top:auto!important;
+
+  background:color-mix(in srgb,var(--panel) 96%,transparent)!important;
+  backdrop-filter:blur(14px)!important;
+
+  z-index:10!important;
+}
+
+/* deixa a base da coluna visualmente limpa */
+#editorStudio .editor-studio-footer-v85{
+  border-radius:0 0 0 18px!important;
+}
+
+/* scroll interno discreto */
+#editorStudio .editor-studio-body-v85{
+  scrollbar-width:thin!important;
+  scrollbar-color:
+    color-mix(in srgb,var(--system-accent) 24%,var(--line))
+    transparent!important;
+}
+
+#editorStudio .editor-studio-body-v85::-webkit-scrollbar{
+  width:7px!important;
+}
+
+#editorStudio .editor-studio-body-v85::-webkit-scrollbar-track{
+  background:transparent!important;
+}
+
+#editorStudio .editor-studio-body-v85::-webkit-scrollbar-thumb{
+  border:2px solid transparent!important;
+  border-radius:999px!important;
+  background:
+    color-mix(in srgb,var(--system-accent) 26%,var(--line))
+    padding-box!important;
+}
+
+#editorStudio .editor-studio-body-v85::-webkit-scrollbar-thumb:hover{
+  background:
+    color-mix(in srgb,var(--system-accent) 44%,var(--line))
+    padding-box!important;
+}
+
+/* tema claro */
+body.portfolio-theme-light #editorStudio .editor-studio-footer-v85{
+  background:rgba(247,250,254,.97)!important;
+}
+
+/*
+  Visualizar = página pública.
+  A coluna deixa de reservar espaço e o editor some.
+*/
+body.editor-studio-open.editor-preview-v156{
+  padding-right:0!important;
+}
+
+body.editor-studio-open.editor-preview-v156 > .topbar,
+body.editor-studio-open.editor-preview-v156 > main,
+body.editor-studio-open.editor-preview-v156 > footer{
+  width:100%!important;
+  max-width:none!important;
+}
+
+/*
+  Celular físico: o editor já ocupa a tela inteira.
+*/
+@media(max-width:760px) and (pointer:coarse){
+  body.editor-studio-open:not(.editor-preview-v156){
+    padding-right:0!important;
+  }
+
+  body.editor-studio-open:not(.editor-preview-v156) #editorStudio.editor-studio-v85{
+    top:0!important;
+    right:0!important;
+    bottom:0!important;
+    left:0!important;
+
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+
+    height:100dvh!important;
+    min-height:100dvh!important;
+    max-height:100dvh!important;
+
+    border-radius:0!important;
+  }
+
+  #editorStudio .editor-studio-footer-v85{
+    border-radius:0!important;
+  }
+}
