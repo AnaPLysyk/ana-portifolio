@@ -1,0 +1,161 @@
+/* ===== v171 — refinamentos visuais finais ===== */
+
+/* Repositórios: índices mais legíveis */
+.projects-v61 .repo-index{
+  font-size:.88rem!important;
+  font-weight:600!important;
+  letter-spacing:.08em!important;
+  min-width:38px!important;
+  color:#7187aa!important;
+}
+body.portfolio-theme-light .projects-v61 .repo-index{
+  color:#496584!important;
+}
+
+/* Ícone do título de projetos maior e configurável */
+.github-title-v61{
+  gap:15px!important;
+}
+.github-title-v61 .projects-heading-icon-v171,
+.github-title-v61>svg{
+  width:34px!important;
+  height:34px!important;
+  flex:0 0 34px!important;
+  color:var(--projects-icon-color-v171,#dfe8f6)!important;
+  fill:var(--projects-icon-color-v171,#dfe8f6)!important;
+  stroke:var(--projects-icon-color-v171,#dfe8f6)!important;
+}
+.github-title-v61 .projects-heading-icon-v171[data-icon-style="stroke"]{
+  fill:none!important;
+  stroke:var(--projects-icon-color-v171,#dfe8f6)!important;
+  stroke-width:1.8!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+.github-title-v61.projects-icon-after-v171 .projects-heading-icon-v171{
+  order:2;
+}
+.github-title-v61.projects-icon-after-v171 .section-title{
+  order:1;
+}
+body.portfolio-theme-light .github-title-v61 .projects-heading-icon-v171,
+body.portfolio-theme-light .github-title-v61>svg{
+  color:var(--projects-icon-color-v171,#17365d)!important;
+  fill:var(--projects-icon-color-v171,#17365d)!important;
+  stroke:var(--projects-icon-color-v171,#17365d)!important;
+}
+
+/* Controles do ícone na aba Aparência */
+.projects-icon-editor-v171{
+  display:grid;
+  gap:12px;
+}
+.projects-icon-editor-v171 .projects-icon-editor-grid-v171{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.projects-icon-editor-v171 label{
+  display:grid;
+  gap:6px;
+  font-size:.64rem;
+  color:#8293ad;
+}
+.projects-icon-editor-v171 select,
+.projects-icon-editor-v171 input[type="color"],
+.projects-icon-editor-v171 input[type="range"]{
+  width:100%;
+}
+.projects-icon-editor-v171 input[type="color"]{
+  height:34px;
+  padding:3px;
+  border-radius:9px;
+}
+.projects-icon-size-row-v171{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:10px;
+  align-items:center;
+}
+.projects-icon-size-value-v171{
+  min-width:42px;
+  text-align:right;
+  font:.61rem "IBM Plex Mono",monospace;
+  color:#8ea1bd;
+}
+
+/* Editor claro: menos escuro, mais coerente com o tema */
+body.portfolio-theme-light #editorStudio.editor-studio-v85{
+  background:linear-gradient(180deg,#f5f8fc 0%,#edf3fa 100%)!important;
+  color:#243954!important;
+  border-color:rgba(68,96,137,.16)!important;
+  box-shadow:0 22px 56px rgba(45,70,108,.13)!important;
+}
+body.portfolio-theme-light #editorStudio .editor-studio-head-v85{
+  background:rgba(241,246,252,.96)!important;
+  border-bottom-color:rgba(70,97,138,.13)!important;
+}
+body.portfolio-theme-light #editorStudio .editor-studio-tabs-v85{
+  background:#e8eff8!important;
+  border-bottom-color:rgba(70,97,138,.12)!important;
+}
+body.portfolio-theme-light #editorStudio .editor-studio-tabs-v85 button{
+  color:#607695!important;
+}
+body.portfolio-theme-light #editorStudio .editor-studio-tabs-v85 button.is-active,
+body.portfolio-theme-light #editorStudio .editor-studio-tabs-v85 button[aria-selected="true"]{
+  color:#23456f!important;
+  background:#f9fbfe!important;
+  border-color:rgba(79,113,166,.20)!important;
+  box-shadow:0 5px 14px rgba(52,80,120,.08)!important;
+}
+body.portfolio-theme-light #editorStudio .editor-intro-v85 p,
+body.portfolio-theme-light #editorStudio .editor-section-title-v85 small,
+body.portfolio-theme-light #editorStudio .editor-owner-v85 p,
+body.portfolio-theme-light #editorStudio .editor-owner-v85 small,
+body.portfolio-theme-light #editorStudio .editor-studio-status{
+  color:#617996!important;
+}
+body.portfolio-theme-light #editorStudio input,
+body.portfolio-theme-light #editorStudio select,
+body.portfolio-theme-light #editorStudio textarea{
+  background:#fff!important;
+  color:#243954!important;
+  border-color:rgba(72,101,143,.18)!important;
+}
+
+/* Foto do editor um pouco maior; lápis menor e claro no tema claro */
+#editorStudio .editor-owner-photo-wrap-v163{
+  width:50px!important;
+  height:50px!important;
+  flex:0 0 50px!important;
+}
+#editorStudio .editor-owner-photo-wrap-v163 #editorOwnerPhotoV86{
+  width:50px!important;
+  height:50px!important;
+}
+#editorStudio .editor-owner-photo-edit-v163{
+  width:21px!important;
+  height:21px!important;
+  min-width:21px!important;
+  min-height:21px!important;
+  right:-4px!important;
+  bottom:0!important;
+  font-size:.58rem!important;
+}
+body.portfolio-theme-light #editorStudio .editor-owner-photo-edit-v163{
+  background:#fff!important;
+  color:#31557f!important;
+  border-color:rgba(72,101,143,.20)!important;
+  box-shadow:0 4px 10px rgba(46,72,109,.12)!important;
+}
+body.portfolio-theme-light #editorStudio .editor-owner-photo-edit-v163:hover{
+  background:#edf4fc!important;
+  color:#1f4677!important;
+}
+
+@media(max-width:560px){
+  .projects-icon-editor-v171 .projects-icon-editor-grid-v171{
+    grid-template-columns:1fr;
+  }
+}
