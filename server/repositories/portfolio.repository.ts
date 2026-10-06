@@ -28,14 +28,23 @@ export const portfolioRepository = {
   },
 
   save(input: SavePortfolioRequest): PortfolioSnapshot {
-    if (input.expectedRevision !== state.revision) {
-      throw new RevisionConflictError(input.expectedRevision, state.revision)
+    return this.mutate(input.expectedRevision, () => input.data)
+  },
+
+  mutate(
+    expectedRevision: number,
+    updater: (current: PortfolioDocument) => PortfolioDocument,
+  ): PortfolioSnapshot {
+    if (expectedRevision !== state.revision) {
+      throw new RevisionConflictError(expectedRevision, state.revision)
     }
+
+    const next = updater(clone(state.data))
 
     state = {
       revision: state.revision + 1,
       updatedAt: new Date().toISOString(),
-      data: clone(input.data),
+      data: clone(next),
     }
 
     return clone(state)
