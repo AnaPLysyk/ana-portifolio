@@ -1,0 +1,367 @@
+/* ===== v188 — editor lado a lado sem reparent/loop ===== */
+
+:root{
+  --editor-panel-v188:clamp(460px,var(--editor-panel-width-v93,490px),560px);
+  --editor-gap-v188:20px;
+  --editor-preview-max-v188:calc(100vw - var(--editor-panel-v188) - var(--editor-gap-v188));
+}
+
+/* Desktop/notebook: painel e portfólio sempre lado a lado.
+   O zoom do navegador não troca o editor para modal. */
+@media (pointer:fine){
+  body.editor-studio-open:not(.editor-preview-v156){
+    box-sizing:border-box!important;
+    min-width:980px!important;
+    padding-right:calc(var(--editor-panel-v188) + var(--editor-gap-v188))!important;
+    overflow-x:auto!important;
+  }
+
+  body.editor-studio-open:not(.editor-preview-v156) #editorStudio.editor-studio-v85{
+    position:fixed!important;
+    top:10px!important;
+    right:10px!important;
+    bottom:10px!important;
+    left:auto!important;
+    width:var(--editor-panel-v188)!important;
+    min-width:460px!important;
+    max-width:560px!important;
+    height:auto!important;
+    max-height:calc(100vh - 20px)!important;
+    transform:none!important;
+    z-index:12002!important;
+  }
+
+  /* página de preview ocupa apenas a coluna esquerda */
+  body.editor-studio-open:not(.editor-preview-v156)>header.topbar,
+  body.editor-studio-open:not(.editor-preview-v156)>main,
+  body.editor-studio-open:not(.editor-preview-v156)>footer{
+    width:var(--editor-preview-width-v188,100%)!important;
+    max-width:100%!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+  }
+
+  /* remove o comportamento legado que desmontava a Home ao editar */
+  body.editor-studio-open:not(.editor-preview-v156) .hero-v70{
+    grid-template-columns:minmax(0,.94fr) minmax(320px,1.06fr)!important;
+    gap:28px!important;
+    min-height:calc(100vh - 74px)!important;
+    align-items:center!important;
+  }
+
+  body.editor-studio-open:not(.editor-preview-v156) .agent-stage{
+    display:grid!important;
+    min-height:520px!important;
+  }
+
+  body.editor-studio-open:not(.editor-preview-v156) .hero-copy-v75{
+    width:auto!important;
+    max-width:640px!important;
+  }
+
+  body.editor-studio-open:not(.editor-preview-v156) .container{
+    width:min(var(--max),calc(100% - 36px))!important;
+    max-width:none!important;
+  }
+
+  /* toolbar fica na coluna da página, não em cima do painel */
+  body.editor-studio-open:not(.editor-preview-v156) .editor-canvas-toolbar-v156{
+    left:calc(var(--editor-preview-max-v188)/2)!important;
+    right:auto!important;
+    transform:translateX(-50%)!important;
+  }
+}
+
+/* painel utilizável */
+#editorStudio .editor-studio-body-v85{
+  min-width:0!important;
+  overflow-x:hidden!important;
+}
+
+#editorStudio .editor-studio-section,
+#editorStudio .editor-studio-section-v85,
+#editorStudio .element-builder-v181,
+#editorStudio .assistant-layout-editor-v185,
+#editorStudio .element-creator-v181{
+  min-width:0!important;
+}
+
+#editorStudio input:not([type="range"]):not([type="color"]),
+#editorStudio select,
+#editorStudio textarea{
+  width:100%!important;
+  max-width:100%!important;
+}
+
+#editorStudio .element-inline-grid-v181{
+  grid-template-columns:minmax(0,1fr) minmax(0,.85fr)!important;
+}
+
+/* ---------- troca de aparelho ---------- */
+.preview-device-switcher-v188{
+  position:fixed!important;
+  top:12px!important;
+  left:calc(var(--editor-preview-max-v188)/2)!important;
+  z-index:12005!important;
+  display:none!important;
+  align-items:center!important;
+  gap:4px!important;
+  padding:4px!important;
+  transform:translateX(-50%)!important;
+  border:1px solid rgba(130,154,193,.18)!important;
+  border-radius:11px!important;
+  background:rgba(5,10,19,.90)!important;
+  box-shadow:0 9px 24px rgba(0,0,0,.18)!important;
+  backdrop-filter:blur(12px)!important;
+}
+
+body.editor-studio-open:not(.editor-preview-v156) .preview-device-switcher-v188{
+  display:flex!important;
+}
+
+body.portfolio-theme-light .preview-device-switcher-v188{
+  background:rgba(250,252,255,.95)!important;
+  border-color:rgba(50,78,116,.15)!important;
+  box-shadow:0 8px 20px rgba(45,65,94,.10)!important;
+}
+
+.preview-device-switcher-v188 button{
+  width:30px!important;
+  height:28px!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:7px!important;
+  background:transparent!important;
+  color:#7f91ac!important;
+  cursor:pointer!important;
+}
+
+.preview-device-switcher-v188 button.is-active{
+  color:var(--system-accent)!important;
+  background:var(--system-accent-soft)!important;
+}
+
+.preview-device-switcher-v188 svg{
+  width:15px!important;
+  height:15px!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.7!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+
+.preview-device-label-v188{
+  min-width:55px!important;
+  padding:0 5px!important;
+  color:#7f91ac!important;
+  font:600 .47rem "IBM Plex Mono",monospace!important;
+  text-align:center!important;
+}
+
+/* desktop selecionado */
+body.editor-studio-open.editor-device-desktop-v188:not(.editor-preview-v156){
+  --editor-preview-width-v188:100%;
+}
+
+/* tablet selecionado */
+body.editor-studio-open.editor-device-tablet-v188:not(.editor-preview-v156){
+  --editor-preview-width-v188:min(768px,var(--editor-preview-max-v188));
+}
+
+body.editor-studio-open.editor-device-tablet-v188:not(.editor-preview-v156) .hero-v70{
+  grid-template-columns:1fr!important;
+  min-height:auto!important;
+  gap:18px!important;
+  padding-top:54px!important;
+  padding-bottom:58px!important;
+}
+
+body.editor-studio-open.editor-device-tablet-v188:not(.editor-preview-v156) .agent-stage{
+  width:min(620px,100%)!important;
+  min-height:430px!important;
+  margin:0 auto!important;
+}
+
+body.editor-studio-open.editor-device-tablet-v188:not(.editor-preview-v156) .about-v52-head-grid,
+body.editor-studio-open.editor-device-tablet-v188:not(.editor-preview-v156) .competencies-v59-head{
+  grid-template-columns:1fr!important;
+}
+
+/* mobile selecionado */
+body.editor-studio-open.editor-device-mobile-v188:not(.editor-preview-v156){
+  --editor-preview-width-v188:min(390px,var(--editor-preview-max-v188));
+}
+
+body.editor-studio-open.editor-device-mobile-v188:not(.editor-preview-v156) .container{
+  width:calc(100% - 28px)!important;
+}
+
+body.editor-studio-open.editor-device-mobile-v188:not(.editor-preview-v156) .nav{
+  min-height:58px!important;
+  height:auto!important;
+  padding:9px 0!important;
+  gap:8px!important;
+}
+
+body.editor-studio-open.editor-device-mobile-v188:not(.editor-preview-v156) .brand-copy{
+  display:none!important;
+}
+
+body.editor-studio-open.editor-device-mobile-v188:not(.editor-preview-v156) .nav-links{
+  max-width:168px!important;
+  overflow-x:auto!important;
+  flex-wrap:nowrap!important;
+  gap:8px!important;
+  scrollbar-width:none!important;
+}
+
+body.editor-studio-open.editor-device-mobile-v188:not(.editor-preview-v156) .nav-links a{
+  flex:0 0 auto!important;
+  font-size:.68rem!important;
+}
+
+body.editor-studio-open.editor-device-mobile-v188:not(.editor-preview-v156) .hero-v70{
+  grid-template-columns:1fr!important;
+  min-height:auto!important;
+  gap:10px!important;
+  padding-top:40px!important;
+  padding-bottom:44px!important;
+}
+
+body.editor-studio-open.editor-device-mobile-v188:not(.editor-preview-v156) .agent-stage{
+  width:100%!important;
+  min-height:350px!important;
+}
+
+body.editor-studio-open.editor-device-mobile-v188:not(.editor-preview-v156) .about-v52-head-grid,
+body.editor-studio-open.editor-device-mobile-v188:not(.editor-preview-v156) .about-v52-routine-grid,
+body.editor-studio-open.editor-device-mobile-v188:not(.editor-preview-v156) .competencies-v59-grid{
+  grid-template-columns:1fr!important;
+}
+
+body.editor-studio-open.editor-device-mobile-v188:not(.editor-preview-v156) .repo-card summary{
+  grid-template-columns:38px minmax(0,1fr) 28px!important;
+}
+
+body.editor-studio-open.editor-device-mobile-v188:not(.editor-preview-v156) .repo-visibility{
+  display:none!important;
+}
+
+/* ---------- Visualizar = página pública ---------- */
+body.editor-studio-open.editor-preview-v156{
+  min-width:0!important;
+  padding-right:0!important;
+  overflow:auto!important;
+}
+
+/* painel já é escondido pelo handler legado; retiramos apenas artefatos de edição */
+body.editor-studio-open.editor-preview-v156 .assistant-robot-frame-v185,
+body.editor-studio-open.editor-preview-v156 .assistant-element-label-v185,
+body.editor-studio-open.editor-preview-v156 .free-icon-hint-v184,
+body.editor-studio-open.editor-preview-v156 .text-context-v182,
+body.editor-studio-open.editor-preview-v156 .inline-text-tools-v156{
+  display:none!important;
+}
+
+body.editor-studio-open.editor-preview-v156 [contenteditable],
+body.editor-studio-open.editor-preview-v156 [data-was-editable-v156]{
+  outline:none!important;
+  background:transparent!important;
+}
+
+/* restaura regras públicas do editor que eram alteradas pelo estado editor-studio-open */
+body.editor-studio-open.editor-preview-v156 .container{
+  width:min(var(--max),calc(100% - 44px))!important;
+  max-width:none!important;
+}
+
+body.editor-studio-open.editor-preview-v156 .hero-v70{
+  grid-template-columns:minmax(0,.94fr) minmax(420px,1.06fr)!important;
+  gap:42px!important;
+  min-height:calc(100vh - 74px)!important;
+  align-items:center!important;
+}
+
+body.editor-studio-open.editor-preview-v156 .agent-stage{
+  display:grid!important;
+}
+
+body.editor-studio-open.editor-preview-v156 .free-icon-v184{
+  cursor:default!important;
+}
+
+body.editor-studio-open.editor-preview-v156 #agentButton,
+body.editor-studio-open.editor-preview-v156 #brainShell .agent-follow-hint-v180{
+  cursor:pointer!important;
+}
+
+/* toolbar fica apenas como saída do preview, sem afetar o layout */
+body.editor-studio-open.editor-preview-v156 .editor-canvas-toolbar-v156{
+  position:fixed!important;
+  left:auto!important;
+  right:18px!important;
+  bottom:18px!important;
+  transform:none!important;
+  opacity:.30!important;
+  transition:opacity .18s ease!important;
+}
+
+body.editor-studio-open.editor-preview-v156 .editor-canvas-toolbar-v156:hover{
+  opacity:1!important;
+}
+
+/* responsividade pública no Visualizar */
+@media(max-width:1100px){
+  body.editor-studio-open.editor-preview-v156 .container{
+    width:min(100% - 40px,var(--max))!important;
+  }
+
+  body.editor-studio-open.editor-preview-v156 .hero-v70{
+    grid-template-columns:1fr!important;
+    gap:24px!important;
+    min-height:auto!important;
+    padding:68px 0 72px!important;
+  }
+
+  body.editor-studio-open.editor-preview-v156 .agent-stage{
+    width:min(620px,100%)!important;
+    min-height:430px!important;
+    margin:0 auto!important;
+  }
+}
+
+@media(max-width:760px){
+  body.editor-studio-open.editor-preview-v156 .container{
+    width:min(100% - 28px,var(--max))!important;
+  }
+
+  body.editor-studio-open.editor-preview-v156 .hero-v70{
+    padding:52px 0 58px!important;
+    gap:18px!important;
+  }
+}
+
+/* celular real: painel assume a tela; não tentamos duas colunas impossíveis */
+@media(max-width:760px) and (pointer:coarse){
+  body.editor-studio-open:not(.editor-preview-v156){
+    min-width:0!important;
+    padding-right:0!important;
+    overflow:hidden!important;
+  }
+
+  body.editor-studio-open:not(.editor-preview-v156) #editorStudio.editor-studio-v85{
+    inset:8px!important;
+    width:auto!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:auto!important;
+    max-height:none!important;
+  }
+
+  .preview-device-switcher-v188{
+    display:none!important;
+  }
+}
