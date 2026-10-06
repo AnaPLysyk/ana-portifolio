@@ -99,6 +99,69 @@
 
   handle.addEventListener('dblclick',()=>setWidth(460,true));
 
+  /* header responsivo: menu hamburguer quando o CSS esconder os links */
+  const navActions=$('.nav-actions-v100');
+  const navLinks=$('.nav-links');
+
+  if(navActions && navLinks){
+    const menuButton=document.createElement('button');
+    menuButton.type='button';
+    menuButton.className='nav-menu-toggle-v199';
+    menuButton.setAttribute('aria-label','Abrir menu de navegação');
+    menuButton.setAttribute('aria-expanded','false');
+    menuButton.setAttribute('aria-controls','navMenuPanelV199');
+    menuButton.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14"/></svg>';
+
+    const menuPanel=document.createElement('nav');
+    menuPanel.id='navMenuPanelV199';
+    menuPanel.className='nav-menu-panel-v199';
+    menuPanel.setAttribute('aria-label','Navegação compacta');
+
+    [...navLinks.querySelectorAll('a')].forEach(link=>{
+      const clone=link.cloneNode(true);
+      menuPanel.appendChild(clone);
+    });
+
+    navActions.appendChild(menuButton);
+    navActions.appendChild(menuPanel);
+
+    const closeMenu=()=>{
+      menuPanel.classList.remove('is-open');
+      menuButton.setAttribute('aria-expanded','false');
+      menuButton.setAttribute('aria-label','Abrir menu de navegação');
+    };
+
+    const openMenu=()=>{
+      menuPanel.classList.add('is-open');
+      menuButton.setAttribute('aria-expanded','true');
+      menuButton.setAttribute('aria-label','Fechar menu de navegação');
+    };
+
+    menuButton.addEventListener('click',event=>{
+      event.preventDefault();
+      event.stopPropagation();
+      if(menuPanel.classList.contains('is-open')) closeMenu();
+      else openMenu();
+    });
+
+    menuPanel.addEventListener('click',event=>{
+      const link=event.target.closest('a');
+      if(link) closeMenu();
+    });
+
+    document.addEventListener('pointerdown',event=>{
+      if(!menuPanel.classList.contains('is-open')) return;
+      if(event.target.closest('.nav-menu-toggle-v199,.nav-menu-panel-v199')) return;
+      closeMenu();
+    });
+
+    document.addEventListener('keydown',event=>{
+      if(event.key==='Escape') closeMenu();
+    });
+
+    window.__portfolioNavMenuV199={open:openMenu,close:closeMenu};
+  }
+
   /* device control */
   const button=document.createElement('button');
   button.type='button';
