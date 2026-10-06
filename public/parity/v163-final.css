@@ -184,3 +184,13 @@ body.portfolio-theme-light .custom-drag-placeholder-v163{
 body.portfolio-theme-light .custom-element-v156.is-pointer-dragging-v163{
   box-shadow:0 22px 54px rgba(48,74,112,.22)!important;
 }
+
+
+/* ===== v169 — entrada estável do campo quântico ===== */
+.quantum-field-v37 #quantumCanvas{
+  opacity:0!important;
+  transition:opacity .22s ease!important;
+}
+.quantum-field-v37.is-orbit-ready-v169 #quantumCanvas{
+  opacity:1!important;
+}
