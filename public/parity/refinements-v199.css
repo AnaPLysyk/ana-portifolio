@@ -818,3 +818,156 @@ body.editor-preview-v156 .editor-device-toggle-v199{
     display:none!important;
   }
 }
+
+
+/* =========================================================
+   ESTABILIDADE DOS PRESETS — tamanho e elementos livres
+   ========================================================= */
+
+/* O botão do aparelho nunca muda de tamanho conforme o SVG/preset. */
+.editor-canvas-toolbar-v156 .editor-device-toggle-v199,
+.editor-device-toggle-v199{
+  flex:0 0 30px!important;
+  inline-size:30px!important;
+  block-size:30px!important;
+  min-inline-size:30px!important;
+  max-inline-size:30px!important;
+  min-block-size:30px!important;
+  max-block-size:30px!important;
+  box-sizing:border-box!important;
+  overflow:hidden!important;
+  line-height:0!important;
+  aspect-ratio:1/1!important;
+}
+
+.editor-device-toggle-v199 svg{
+  flex:0 0 15px!important;
+  inline-size:15px!important;
+  block-size:15px!important;
+  min-inline-size:15px!important;
+  max-inline-size:15px!important;
+  min-block-size:15px!important;
+  max-block-size:15px!important;
+}
+
+/* Elementos livres mantêm a configuração salva, mas não estouram a tela. */
+body.editor-studio-open:not(.editor-preview-v156) .free-icon-v184{
+  --free-render-size-v199:var(--free-original-size-v184,30px);
+  width:var(--free-render-size-v199)!important;
+  height:var(--free-render-size-v199)!important;
+
+  left:clamp(
+    calc(var(--free-render-size-v199)/2 + 8px),
+    var(--free-x-v184,10%),
+    calc(100% - var(--free-render-size-v199)/2 - 8px)
+  )!important;
+
+  top:clamp(
+    calc(var(--free-render-size-v199)/2 + 8px),
+    var(--free-y-v184,10%),
+    calc(100% - var(--free-render-size-v199)/2 - 8px)
+  )!important;
+}
+
+/* Tablet: reduz apenas a representação visual do ícone. */
+@container portfolioPreviewV199 (max-width:820px){
+  .free-icon-v184{
+    --free-render-size-v199:min(var(--free-original-size-v184,30px),26px);
+  }
+
+  .github-title-v61{
+    display:flex!important;
+    align-items:flex-start!important;
+    gap:10px!important;
+    min-width:0!important;
+  }
+
+  .github-title-v61 .section-title{
+    min-width:0!important;
+    max-width:100%!important;
+    overflow-wrap:normal!important;
+    word-break:normal!important;
+  }
+
+  #portfolioFooterText{
+    max-width:100%!important;
+    white-space:normal!important;
+    overflow-wrap:anywhere!important;
+  }
+}
+
+/* Celular: nenhum ícone livre pode dominar ou cortar o conteúdo. */
+@container portfolioPreviewV199 (max-width:520px){
+  .free-icon-v184{
+    --free-render-size-v199:min(var(--free-original-size-v184,30px),21px);
+  }
+
+  .free-icon-v184::before{
+    inset:-5px!important;
+  }
+
+  .github-title-v61{
+    width:100%!important;
+    display:flex!important;
+    align-items:flex-start!important;
+    gap:8px!important;
+  }
+
+  .github-title-v61 .section-title{
+    flex:1 1 auto!important;
+    width:auto!important;
+    max-width:100%!important;
+    font-size:clamp(1.55rem,8.2cqw,2.05rem)!important;
+    line-height:1.04!important;
+    overflow-wrap:normal!important;
+    word-break:normal!important;
+  }
+
+  .github-head-v61 .github-profile{
+    max-width:100%!important;
+    overflow-wrap:anywhere!important;
+  }
+
+  #portfolioFooterText{
+    width:100%!important;
+    max-width:100%!important;
+    display:flex!important;
+    flex-wrap:wrap!important;
+    gap:6px!important;
+    padding:9px 12px!important;
+    border-radius:12px!important;
+    white-space:normal!important;
+    overflow-wrap:anywhere!important;
+  }
+}
+
+/* Segurança geral: conteúdo público nunca pode ultrapassar a prévia. */
+body.editor-studio-open:not(.editor-preview-v156) > main section,
+body.editor-studio-open:not(.editor-preview-v156) > main section > .container{
+  min-width:0!important;
+  max-width:100%!important;
+}
+
+body.editor-studio-open:not(.editor-preview-v156) > main h1,
+body.editor-studio-open:not(.editor-preview-v156) > main h2,
+body.editor-studio-open:not(.editor-preview-v156) > main h3,
+body.editor-studio-open:not(.editor-preview-v156) > main p,
+body.editor-studio-open:not(.editor-preview-v156) > main a{
+  max-width:100%;
+}
+
+/* A moldura representa o aparelho, mas nunca força overflow na coluna. */
+.device-frame-v199{
+  width:min(
+    var(--preview-device-width-v199),
+    max(280px,calc(var(--preview-column-width-v199) - 16px))
+  )!important;
+  max-width:calc(var(--preview-column-width-v199) - 16px)!important;
+  overflow:hidden!important;
+}
+
+/* Toolbar também não muda de tamanho por causa do preset. */
+.editor-canvas-toolbar-v156{
+  min-width:0!important;
+  max-width:calc(var(--preview-column-width-v199) - 24px)!important;
+}
