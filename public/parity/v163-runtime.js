@@ -234,7 +234,7 @@
     const sphereBottom = orbRect.bottom - shellRect.top;
     const visualBottom = Math.max(sphereBottom, orbitBottom - 18);
 
-    const gap = innerWidth <= 480 ? 28 : (innerWidth <= 760 ? 30 : 34);
+    const gap = innerWidth <= 480 ? 42 : (innerWidth <= 760 ? 46 : 52);
 
     let left = centerX;
     let top = visualBottom + gap;
@@ -274,4 +274,129 @@
   }
 
   schedule();
+})();
+
+
+/* ===== v165 — remove micro-arcos que criavam efeito de chão ===== */
+(() => {
+  if (window.__portfolioNoOrbitFloorV165) return;
+  window.__portfolioNoOrbitFloorV165 = true;
+
+  /*
+    O protótipo original desenhava, além dos anéis e dos dois highlights móveis,
+    um terceiro "micro arco" muito curto em cada órbita. Quando dois ou três
+    chegavam perto da tangente inferior ao mesmo tempo, visualmente viravam
+    uma base/chão. Mantemos os anéis, partículas e highlights principais e
+    eliminamos apenas esse terceiro acento.
+  */
+  try {
+    drawQuantum = function(t) {
+      if (!qCtx || !quantumCanvas) {
+        requestAnimationFrame(drawQuantum);
+        return;
+      }
+
+      qCtx.clearRect(0, 0, qW, qH);
+
+      const active = !agentStage?.classList.contains("chat-active");
+      const targetHover = active && quantumField?.matches(":hover") ? 1 : 0;
+      qHover += (targetHover - qHover) * .045;
+
+      const cx = qW / 2 + qPointerX * 5;
+      const cy = qH / 2 + qPointerY * 3;
+      const ringInfluence = qHover;
+      const isLightThemeV101 = document.body.classList.contains("portfolio-theme-light");
+
+      qCtx.save();
+      qCtx.globalCompositeOperation = isLightThemeV101 ? "source-over" : "lighter";
+
+      qOrbits.forEach((o, oi) => {
+        const rx = qW * o.rx;
+        const ry = qH * o.ry;
+        const tilt = o.tilt;
+        const spin = t * o.speed + o.phase;
+        const cA = quantumThemeColorV101(o.colorA, isLightThemeV101);
+        const cB = quantumThemeColorV101(o.colorB, isLightThemeV101);
+
+        /* anel completo */
+        qCtx.beginPath();
+        drawOrbitPath(qCtx, cx, cy, rx, ry, tilt, oi, t);
+        qCtx.setLineDash(o.dotted ? (isLightThemeV101 ? [3, 4] : [4, 5]) : []);
+        qCtx.strokeStyle = isLightThemeV101
+          ? `rgba(36,58,93,${o.trackAlpha * 1.55})`
+          : `rgba(${cA[0]},${cA[1]},${cA[2]},${o.trackAlpha})`;
+        qCtx.lineWidth = o.width + (isLightThemeV101 ? .18 : 0);
+        qCtx.lineCap = "round";
+        qCtx.shadowBlur = 0;
+        qCtx.stroke();
+
+        /* apoio de contraste somente no modo claro */
+        if (isLightThemeV101) {
+          qCtx.beginPath();
+          drawOrbitPath(qCtx, cx, cy, rx, ry, tilt, oi, t);
+          qCtx.setLineDash(o.dotted ? [3, 4] : []);
+          qCtx.strokeStyle = `rgba(17,31,56,${Math.min(.16, o.trackAlpha * .9)})`;
+          qCtx.lineWidth = o.width + 1.25;
+          qCtx.stroke();
+        }
+
+        /* highlight móvel A */
+        qCtx.beginPath();
+        drawOrbitArc(qCtx, cx, cy, rx, ry, tilt, spin, o.lenA * Math.PI * 2, oi, t);
+        qCtx.setLineDash([]);
+        qCtx.strokeStyle =
+          `rgba(${cA[0]},${cA[1]},${cA[2]},${Math.min(1, o.alpha * (isLightThemeV101 ? 1.2 : 1) * (1 + ringInfluence * .08))})`;
+        qCtx.lineWidth = o.width + (isLightThemeV101 ? .85 : .55);
+        qCtx.lineCap = "round";
+        qCtx.shadowColor =
+          `rgba(${cA[0]},${cA[1]},${cA[2]},${isLightThemeV101 ? .30 : .42})`;
+        qCtx.shadowBlur = isLightThemeV101 ? 10 : 12;
+        qCtx.stroke();
+
+        /* highlight móvel B */
+        qCtx.beginPath();
+        drawOrbitArc(qCtx, cx, cy, rx, ry, tilt, spin + Math.PI, o.lenB * Math.PI * 2, oi, t);
+        qCtx.strokeStyle =
+          `rgba(${cB[0]},${cB[1]},${cB[2]},${Math.min(1, (o.alpha * .78) * (isLightThemeV101 ? 1.15 : 1) * (1 + ringInfluence * .06))})`;
+        qCtx.lineWidth = o.width + (isLightThemeV101 ? .38 : .2);
+        qCtx.lineCap = "round";
+        qCtx.shadowColor =
+          `rgba(${cB[0]},${cB[1]},${cB[2]},${isLightThemeV101 ? .20 : .30})`;
+        qCtx.shadowBlur = isLightThemeV101 ? 7 : 9;
+        qCtx.stroke();
+
+        /*
+          Sem o antigo "front accent micro arc".
+          Era ele que criava os pequenos traços horizontais abaixo do robô.
+        */
+      });
+
+      qParticles.forEach((p, idx) => {
+        const o = qOrbits[p.orbit];
+        const a = t * (o.speed + p.speed) + p.phase;
+        const pt = orbitFlexPoint(cx, cy, qW * o.rx, qH * o.ry, a, o.tilt, p.orbit, t);
+        const pulse = .55 + .45 * Math.sin(t * .0024 + idx);
+        const alpha = p.alpha * (.76 + qHover * .34) * (.72 + pulse * .3);
+        const col = idx % 3 === 0
+          ? [255, 82, 108]
+          : (idx % 3 === 1 ? [116, 173, 255] : [244, 247, 255]);
+        const drawCol = quantumThemeColorV101(col, isLightThemeV101);
+
+        qCtx.beginPath();
+        qCtx.arc(pt.x, pt.y, p.size * (1 + qHover * .18), 0, Math.PI * 2);
+        qCtx.shadowColor =
+          `rgba(${drawCol[0]},${drawCol[1]},${drawCol[2]},${alpha * (isLightThemeV101 ? .22 : .52)})`;
+        qCtx.shadowBlur = isLightThemeV101 ? 4 : 5;
+        qCtx.fillStyle =
+          `rgba(${drawCol[0]},${drawCol[1]},${drawCol[2]},${Math.min(1, alpha * (isLightThemeV101 ? 1.08 : 1))})`;
+        qCtx.fill();
+        qCtx.shadowBlur = 0;
+      });
+
+      qCtx.restore();
+      requestAnimationFrame(drawQuantum);
+    };
+  } catch (error) {
+    console.warn("Não foi possível aplicar o ajuste das órbitas v165.", error);
+  }
 })();
