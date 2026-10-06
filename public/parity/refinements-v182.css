@@ -208,3 +208,92 @@ body.editor-page-text-mode [contenteditable="true"].text-selected-v182{
     width:min(440px,calc(100vw - 16px))!important;
   }
 }
+
+
+/* ===== v199 bridge — edição de texto mais simples ===== */
+.text-context-v182{
+  width:min(760px,calc(100vw - 24px))!important;
+}
+
+.text-size-stepper-v182,
+.text-align-v182{
+  display:flex!important;
+  align-items:center!important;
+  height:31px!important;
+  border:1px solid rgba(126,154,198,.17)!important;
+  border-radius:8px!important;
+  overflow:hidden!important;
+}
+
+.text-size-stepper-v182 button,
+.text-align-v182 button{
+  width:30px!important;
+  height:29px!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  color:#91a4bf!important;
+  cursor:pointer!important;
+  font-size:.72rem!important;
+}
+
+.text-size-stepper-v182 button:hover,
+.text-align-v182 button:hover,
+.text-align-v182 button.is-active{
+  color:var(--system-accent,var(--accent,#6ea8ff))!important;
+  background:color-mix(in srgb,var(--system-accent,var(--accent,#6ea8ff)) 9%,transparent)!important;
+}
+
+.text-size-stepper-v182 .text-size-v182{
+  width:46px!important;
+  min-width:46px!important;
+  height:29px!important;
+  min-height:29px!important;
+  padding:0 3px!important;
+  border:0!important;
+  border-left:1px solid rgba(126,154,198,.12)!important;
+  border-right:1px solid rgba(126,154,198,.12)!important;
+  border-radius:0!important;
+  text-align:center!important;
+  appearance:textfield!important;
+}
+
+.text-size-stepper-v182 .text-size-v182::-webkit-inner-spin-button,
+.text-size-stepper-v182 .text-size-v182::-webkit-outer-spin-button{
+  appearance:none!important;
+  margin:0!important;
+}
+
+.text-weight-v182{
+  width:76px!important;
+  padding:0 22px 0 7px!important;
+}
+
+.text-align-v182 button:nth-child(2){
+  transform:scaleX(.82)!important;
+}
+.text-align-v182 button:nth-child(3){
+  transform:scaleX(-1)!important;
+}
+
+body.portfolio-theme-light .text-size-stepper-v182,
+body.portfolio-theme-light .text-align-v182{
+  border-color:rgba(58,86,126,.14)!important;
+  background:#fff!important;
+}
+
+@media(max-width:760px){
+  .text-context-v182{
+    width:min(94vw,620px)!important;
+  }
+
+  .text-range-control-v182{
+    grid-template-columns:auto 58px auto!important;
+  }
+
+  .text-range-control-v182 input{
+    width:58px!important;
+  }
+}
