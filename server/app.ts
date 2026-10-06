@@ -97,7 +97,7 @@ export const buildApp = async () => {
   await registerEditorRoutes(app)
   await registerAssistantRoutes(app)
 
-  app.setErrorHandler((error, request, reply) => {
+  app.setErrorHandler((error: any, request, reply) => {
     if (error.validation) {
       return reply.code(400).send({
         code: 'VALIDATION_ERROR',
