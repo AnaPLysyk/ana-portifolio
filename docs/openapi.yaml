@@ -1,0 +1,556 @@
+openapi: 3.1.0
+info:
+  title: Ana Portfolio API
+  version: 1.0.0
+  description: >
+    API do portfólio profissional. A leitura do portfólio é pública.
+    Edição exige JWT e usa controle de revisão para evitar sobrescrita silenciosa.
+servers:
+  - url: http://localhost:3333
+    description: Desenvolvimento local
+
+tags:
+  - name: Health
+  - name: Auth
+  - name: Portfolio
+  - name: Assistant
+
+paths:
+  /api/v1/health:
+    get:
+      tags: [Health]
+      summary: Verifica se a API está disponível
+      responses:
+        '200':
+          description: API disponível
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status, service, timestamp]
+                properties:
+                  status:
+                    type: string
+                    const: ok
+                  service:
+                    type: string
+                    example: ana-portfolio-api
+                  timestamp:
+                    type: string
+                    format: date-time
+
+  /api/v1/auth/login:
+    post:
+      tags: [Auth]
+      summary: Autentica o editor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, password]
+              additionalProperties: false
+              properties:
+                username:
+                  type: string
+                  minLength: 1
+                password:
+                  type: string
+                  minLength: 1
+      responses:
+        '200':
+          description: Login realizado
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [accessToken, tokenType, expiresIn]
+                properties:
+                  accessToken:
+                    type: string
+                  tokenType:
+                    type: string
+                    const: Bearer
+                  expiresIn:
+                    type: string
+                    example: 2h
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          description: Autenticação ainda não configurada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/auth/me:
+    get:
+      tags: [Auth]
+      summary: Retorna a sessão autenticada
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Sessão válida
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [username]
+                properties:
+                  username:
+                    type: string
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/v1/auth/logout:
+    post:
+      tags: [Auth]
+      summary: Encerra a sessão no cliente
+      description: >
+        A primeira versão usa JWT stateless. O logout consiste em descartar
+        o token no cliente.
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: Sessão encerrada no cliente
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/v1/portfolio:
+    get:
+      tags: [Portfolio]
+      summary: Retorna o portfólio publicado
+      responses:
+        '200':
+          description: Documento atual
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PortfolioSnapshot'
+
+    put:
+      tags: [Portfolio]
+      summary: Salva o documento completo do portfólio
+      description: >
+        expectedRevision deve ser igual à revisão atualmente persistida.
+        Em caso contrário, a API retorna 409 REVISION_CONFLICT.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [expectedRevision, data]
+              additionalProperties: false
+              properties:
+                expectedRevision:
+                  type: integer
+                  minimum: 1
+                data:
+                  $ref: '#/components/schemas/PortfolioDocument'
+      responses:
+        '200':
+          description: Documento salvo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PortfolioSnapshot'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          description: A revisão enviada está desatualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/assistant/messages:
+    post:
+      tags: [Assistant]
+      summary: Responde perguntas sobre o portfólio
+      description: >
+        Na primeira versão a resposta é determinística e usa somente o
+        conteúdo salvo. A implementação poderá ser substituída por IA depois,
+        preservando o mesmo contrato.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [message]
+              additionalProperties: false
+              properties:
+                message:
+                  type: string
+                  minLength: 1
+                  maxLength: 1000
+      responses:
+        '200':
+          description: Resposta do assistente
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [reply, source]
+                properties:
+                  reply:
+                    type: string
+                  source:
+                    type: string
+                    const: portfolio
+        '400':
+          $ref: '#/components/responses/ValidationError'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    Unauthorized:
+      description: Token ausente, inválido ou expirado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    ValidationError:
+      description: Requisição fora do contrato
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+  schemas:
+    ErrorResponse:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          example: VALIDATION_ERROR
+        message:
+          type: string
+        details:
+          type: object
+          additionalProperties: true
+
+    PortfolioSnapshot:
+      type: object
+      required: [revision, updatedAt, data]
+      properties:
+        revision:
+          type: integer
+          minimum: 1
+        updatedAt:
+          type: string
+          format: date-time
+        data:
+          $ref: '#/components/schemas/PortfolioDocument'
+
+    PortfolioDocument:
+      type: object
+      required:
+        - profile
+        - hero
+        - about
+        - skills
+        - projects
+        - experience
+        - appearance
+        - assistant
+        - editor
+      additionalProperties: false
+      properties:
+        profile:
+          $ref: '#/components/schemas/Profile'
+        hero:
+          $ref: '#/components/schemas/Hero'
+        about:
+          $ref: '#/components/schemas/About'
+        skills:
+          type: array
+          maxItems: 100
+          items:
+            type: string
+            minLength: 1
+            maxLength: 80
+        projects:
+          type: array
+          maxItems: 100
+          items:
+            $ref: '#/components/schemas/Project'
+        experience:
+          type: array
+          maxItems: 100
+          items:
+            $ref: '#/components/schemas/ExperienceItem'
+        appearance:
+          $ref: '#/components/schemas/Appearance'
+        assistant:
+          $ref: '#/components/schemas/AssistantConfig'
+        editor:
+          $ref: '#/components/schemas/EditorState'
+
+    Profile:
+      type: object
+      required: [name, role, level, location, email, github, linkedin]
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 120
+        role:
+          type: string
+          minLength: 1
+          maxLength: 80
+        level:
+          type: string
+          minLength: 1
+          maxLength: 40
+        location:
+          type: string
+          minLength: 1
+          maxLength: 160
+        email:
+          type: string
+          format: email
+        github:
+          type: string
+          format: uri
+        linkedin:
+          type: string
+          format: uri
+        photoUrl:
+          type: string
+          format: uri
+
+    Hero:
+      type: object
+      required: [title, intro]
+      additionalProperties: false
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 220
+        intro:
+          type: string
+          minLength: 1
+          maxLength: 1200
+
+    About:
+      type: object
+      required: [title, body]
+      additionalProperties: false
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 220
+        body:
+          type: string
+          minLength: 1
+          maxLength: 3000
+
+    Project:
+      type: object
+      required: [id, name, description, stack, href, status]
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          minLength: 1
+          maxLength: 100
+        name:
+          type: string
+          minLength: 1
+          maxLength: 160
+        description:
+          type: string
+          minLength: 1
+          maxLength: 2000
+        stack:
+          type: array
+          maxItems: 50
+          items:
+            type: string
+            minLength: 1
+            maxLength: 80
+        href:
+          type: string
+          format: uri
+        status:
+          type: string
+          minLength: 1
+          maxLength: 80
+
+    ExperienceItem:
+      type: object
+      required: [id, period, company, role, summary, details]
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          minLength: 1
+          maxLength: 100
+        period:
+          type: string
+          minLength: 1
+          maxLength: 120
+        company:
+          type: string
+          minLength: 1
+          maxLength: 160
+        role:
+          type: string
+          minLength: 1
+          maxLength: 160
+        summary:
+          type: string
+          minLength: 1
+          maxLength: 1200
+        details:
+          type: string
+          minLength: 1
+          maxLength: 4000
+
+    Appearance:
+      type: object
+      required: [theme, language, accent, pageStyle, spacing, footerText]
+      additionalProperties: false
+      properties:
+        theme:
+          type: string
+          enum: [dark, light]
+        language:
+          type: string
+          enum: [pt, en, es]
+        accent:
+          type: string
+          pattern: '^#[0-9A-Fa-f]{6}$'
+        pageStyle:
+          type: string
+          enum: [current, light, direct]
+        spacing:
+          type: number
+          minimum: 0
+          maximum: 100
+        footerText:
+          type: string
+          maxLength: 500
+
+    AssistantConfig:
+      type: object
+      required: [greeting, suggestions]
+      additionalProperties: false
+      properties:
+        greeting:
+          type: string
+          minLength: 1
+          maxLength: 1000
+        suggestions:
+          type: array
+          maxItems: 20
+          items:
+            type: string
+            minLength: 1
+            maxLength: 120
+
+    EditorState:
+      type: object
+      required: [sectionLayouts, textStyles, freeElements]
+      additionalProperties: false
+      properties:
+        sectionLayouts:
+          type: object
+          additionalProperties:
+            type: string
+        textStyles:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/TextStyle'
+        freeElements:
+          type: array
+          maxItems: 500
+          items:
+            $ref: '#/components/schemas/FreeElement'
+
+    TextStyle:
+      type: object
+      additionalProperties: false
+      properties:
+        fontFamily:
+          type: string
+          maxLength: 200
+        fontSize:
+          type: number
+          minimum: 8
+          maximum: 160
+        fontWeight:
+          type: number
+          minimum: 100
+          maximum: 900
+        color:
+          type: string
+          maxLength: 40
+        textAlign:
+          type: string
+          enum: [left, center, right]
+        width:
+          type: string
+          maxLength: 30
+        paddingInline:
+          type: string
+          maxLength: 30
+
+    FreeElement:
+      type: object
+      required: [id, section, type]
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          minLength: 1
+          maxLength: 100
+        section:
+          type: string
+          minLength: 1
+          maxLength: 100
+        type:
+          type: string
+          enum: [icon, badge, divider]
+        icon:
+          type: string
+          maxLength: 100
+        text:
+          type: string
+          maxLength: 300
+        x:
+          type: number
+          minimum: 0
+          maximum: 100
+        y:
+          type: number
+          minimum: 0
+          maximum: 100
+        size:
+          type: number
+          minimum: 8
+          maximum: 256
+        color:
+          type: string
+          maxLength: 40
+        useSystemColor:
+          type: boolean
