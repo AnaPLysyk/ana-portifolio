@@ -400,3 +400,156 @@
     console.warn("Não foi possível aplicar o ajuste das órbitas v165.", error);
   }
 })();
+
+
+/* ===== v166 — suprime tangentes inferiores dos highlights ===== */
+(() => {
+  if (window.__portfolioNoOrbitTangentsV166) return;
+  window.__portfolioNoOrbitTangentsV166 = true;
+
+  /*
+    Os highlights móveis ainda podiam formar pequenos segmentos horizontais
+    no ponto mais baixo da elipse. Esta função quebra somente o trecho do
+    highlight quando ele está na tangente inferior; o track completo do anel
+    continua existindo, então a órbita não perde forma.
+  */
+  function drawOrbitHighlightNoFloor(ctx, cx, cy, rx, ry, tilt, start, len, orbitIndex, time) {
+    let drawing = false;
+    let previous = null;
+
+    for (let j = 0; j <= 72; j++) {
+      const a = start + len * (j / 72);
+      const p = orbitFlexPoint(cx, cy, rx, ry, a, tilt, orbitIndex, time);
+
+      const nearBottom = p.y > cy + Math.max(18, ry * .70);
+      const nearHorizontal = previous ? Math.abs(p.y - previous.y) < 1.25 : false;
+      const suppress = nearBottom && nearHorizontal;
+
+      if (suppress) {
+        drawing = false;
+        previous = p;
+        continue;
+      }
+
+      if (!drawing) {
+        ctx.moveTo(p.x, p.y);
+        drawing = true;
+      } else {
+        ctx.lineTo(p.x, p.y);
+      }
+
+      previous = p;
+    }
+  }
+
+  try {
+    drawQuantum = function(t) {
+      if (!qCtx || !quantumCanvas) {
+        requestAnimationFrame(drawQuantum);
+        return;
+      }
+
+      qCtx.clearRect(0, 0, qW, qH);
+
+      const active = !agentStage?.classList.contains("chat-active");
+      const targetHover = active && quantumField?.matches(":hover") ? 1 : 0;
+      qHover += (targetHover - qHover) * .045;
+
+      const cx = qW / 2 + qPointerX * 5;
+      const cy = qH / 2 + qPointerY * 3;
+      const ringInfluence = qHover;
+      const isLightThemeV101 = document.body.classList.contains("portfolio-theme-light");
+
+      qCtx.save();
+      qCtx.globalCompositeOperation = isLightThemeV101 ? "source-over" : "lighter";
+
+      qOrbits.forEach((o, oi) => {
+        const rx = qW * o.rx;
+        const ry = qH * o.ry;
+        const tilt = o.tilt;
+        const spin = t * o.speed + o.phase;
+        const cA = quantumThemeColorV101(o.colorA, isLightThemeV101);
+        const cB = quantumThemeColorV101(o.colorB, isLightThemeV101);
+
+        /* track completo e discreto */
+        qCtx.beginPath();
+        drawOrbitPath(qCtx, cx, cy, rx, ry, tilt, oi, t);
+        qCtx.setLineDash(o.dotted ? (isLightThemeV101 ? [3, 4] : [4, 5]) : []);
+        qCtx.strokeStyle = isLightThemeV101
+          ? `rgba(36,58,93,${o.trackAlpha * 1.55})`
+          : `rgba(${cA[0]},${cA[1]},${cA[2]},${o.trackAlpha})`;
+        qCtx.lineWidth = o.width + (isLightThemeV101 ? .18 : 0);
+        qCtx.lineCap = "round";
+        qCtx.shadowBlur = 0;
+        qCtx.stroke();
+
+        if (isLightThemeV101) {
+          qCtx.beginPath();
+          drawOrbitPath(qCtx, cx, cy, rx, ry, tilt, oi, t);
+          qCtx.setLineDash(o.dotted ? [3, 4] : []);
+          qCtx.strokeStyle = `rgba(17,31,56,${Math.min(.16, o.trackAlpha * .9)})`;
+          qCtx.lineWidth = o.width + 1.25;
+          qCtx.stroke();
+        }
+
+        /* highlight A — sem tangente inferior */
+        qCtx.beginPath();
+        drawOrbitHighlightNoFloor(
+          qCtx, cx, cy, rx, ry, tilt,
+          spin, o.lenA * Math.PI * 2, oi, t
+        );
+        qCtx.setLineDash([]);
+        qCtx.strokeStyle =
+          `rgba(${cA[0]},${cA[1]},${cA[2]},${Math.min(1, o.alpha * (isLightThemeV101 ? 1.2 : 1) * (1 + ringInfluence * .08))})`;
+        qCtx.lineWidth = o.width + (isLightThemeV101 ? .85 : .55);
+        qCtx.lineCap = "round";
+        qCtx.shadowColor =
+          `rgba(${cA[0]},${cA[1]},${cA[2]},${isLightThemeV101 ? .30 : .42})`;
+        qCtx.shadowBlur = isLightThemeV101 ? 10 : 12;
+        qCtx.stroke();
+
+        /* highlight B — sem tangente inferior */
+        qCtx.beginPath();
+        drawOrbitHighlightNoFloor(
+          qCtx, cx, cy, rx, ry, tilt,
+          spin + Math.PI, o.lenB * Math.PI * 2, oi, t
+        );
+        qCtx.strokeStyle =
+          `rgba(${cB[0]},${cB[1]},${cB[2]},${Math.min(1, (o.alpha * .78) * (isLightThemeV101 ? 1.15 : 1) * (1 + ringInfluence * .06))})`;
+        qCtx.lineWidth = o.width + (isLightThemeV101 ? .38 : .2);
+        qCtx.lineCap = "round";
+        qCtx.shadowColor =
+          `rgba(${cB[0]},${cB[1]},${cB[2]},${isLightThemeV101 ? .20 : .30})`;
+        qCtx.shadowBlur = isLightThemeV101 ? 7 : 9;
+        qCtx.stroke();
+      });
+
+      qParticles.forEach((p, idx) => {
+        const o = qOrbits[p.orbit];
+        const a = t * (o.speed + p.speed) + p.phase;
+        const pt = orbitFlexPoint(cx, cy, qW * o.rx, qH * o.ry, a, o.tilt, p.orbit, t);
+        const pulse = .55 + .45 * Math.sin(t * .0024 + idx);
+        const alpha = p.alpha * (.76 + qHover * .34) * (.72 + pulse * .3);
+        const col = idx % 3 === 0
+          ? [255, 82, 108]
+          : (idx % 3 === 1 ? [116, 173, 255] : [244, 247, 255]);
+        const drawCol = quantumThemeColorV101(col, isLightThemeV101);
+
+        qCtx.beginPath();
+        qCtx.arc(pt.x, pt.y, p.size * (1 + qHover * .18), 0, Math.PI * 2);
+        qCtx.shadowColor =
+          `rgba(${drawCol[0]},${drawCol[1]},${drawCol[2]},${alpha * (isLightThemeV101 ? .22 : .52)})`;
+        qCtx.shadowBlur = isLightThemeV101 ? 4 : 5;
+        qCtx.fillStyle =
+          `rgba(${drawCol[0]},${drawCol[1]},${drawCol[2]},${Math.min(1, alpha * (isLightThemeV101 ? 1.08 : 1))})`;
+        qCtx.fill();
+        qCtx.shadowBlur = 0;
+      });
+
+      qCtx.restore();
+      requestAnimationFrame(drawQuantum);
+    };
+  } catch (error) {
+    console.warn("Não foi possível aplicar o ajuste de tangentes v166.", error);
+  }
+})();
