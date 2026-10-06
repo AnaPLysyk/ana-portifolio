@@ -1,4 +1,4 @@
-/* ===== v180 — CTA segue a esfera frame a frame ===== */
+/* ===== v182 — CTA acompanha a esfera como balão lateral ===== */
 (() => {
   if (window.__portfolioAgentHintFollowV180) return;
   window.__portfolioAgentHintFollowV180 = true;
@@ -6,7 +6,6 @@
   const stage=document.querySelector('.agent-stage');
   const shell=document.querySelector('#brainShell');
   const orb=document.querySelector('#agentButton');
-  const legacyIdle=shell?.querySelector(':scope > .brain-idle');
   const legacyHint=document.querySelector('#agentHint');
 
   if(!stage || !shell || !orb || !legacyHint) return;
@@ -16,13 +15,10 @@
   if(!follow){
     follow=document.createElement('div');
     follow.className='agent-follow-hint-v180';
-    follow.setAttribute('aria-hidden','false');
 
     const button=document.createElement('button');
     button.type='button';
     button.className='agent-follow-hint-button-v180';
-    button.textContent=legacyHint.textContent?.trim() || 'Clique para conversar comigo.';
-    button.setAttribute('aria-label',button.textContent);
 
     button.addEventListener('click',event=>{
       event.preventDefault();
@@ -34,17 +30,21 @@
     shell.appendChild(follow);
   }
 
-  const followButton=follow.querySelector('button');
+  const button=follow.querySelector('button');
 
-  /* Mantém PT/EN/ES sincronizado com o CTA legado. */
-  const syncText=()=>{
-    const text=legacyHint.textContent?.trim();
-    if(!text || !followButton) return;
-    if(followButton.textContent!==text){
-      followButton.textContent=text;
-      followButton.setAttribute('aria-label',text);
-    }
-  };
+  function compactLabel(){
+    const source=(legacyHint.textContent||'').toLowerCase();
+
+    if(source.includes('click to') || source.includes('chat with')) return 'Chat with me';
+    if(source.includes('habla') || source.includes('conversar conmigo')) return 'Habla conmigo';
+    return 'Fale comigo';
+  }
+
+  function syncText(){
+    if(!button) return;
+    button.textContent=compactLabel();
+    button.setAttribute('aria-label',legacyHint.textContent?.trim() || button.textContent);
+  }
 
   if('MutationObserver' in window){
     new MutationObserver(syncText).observe(legacyHint,{
@@ -58,46 +58,42 @@
   let lastX=NaN;
   let lastY=NaN;
 
-  function gapForViewport(){
-    const light=document.body.classList.contains('portfolio-theme-light');
-
-    if(innerWidth<=480) return light ? 54 : 48;
-    if(innerWidth<=760) return light ? 60 : 54;
-    return light ? 66 : 58;
-  }
-
   function position(){
     raf=requestAnimationFrame(position);
 
-    if(stage.classList.contains('chat-active')){
-      return;
-    }
+    if(stage.classList.contains('chat-active')) return;
 
     const shellRect=shell.getBoundingClientRect();
     const orbRect=orb.getBoundingClientRect();
-
     if(!shellRect.width || !orbRect.width) return;
 
+    const mobile=innerWidth<=620;
+
     /*
-      Usamos o retângulo transformado real da esfera.
-      Portanto, qualquer movimento aplicado ao agentButton
-      já chega automaticamente ao CTA.
+      Desktop: balão fica na lateral inferior direita da esfera,
+      como uma chamada pertencente ao robô.
+      Mobile: centraliza abaixo para não escapar da viewport.
     */
-    const x=(orbRect.left-shellRect.left)+(orbRect.width/2);
-    const y=(orbRect.bottom-shellRect.top)+gapForViewport();
+    const x=mobile
+      ? (orbRect.left-shellRect.left)+(orbRect.width/2)
+      : (orbRect.right-shellRect.left)+14;
+
+    const y=mobile
+      ? (orbRect.bottom-shellRect.top)+18
+      : (orbRect.top-shellRect.top)+(orbRect.height*.68);
 
     if(Math.abs(x-lastX)>.08){
       follow.style.setProperty('left',x+'px','important');
       lastX=x;
     }
-
     if(Math.abs(y-lastY)>.08){
       follow.style.setProperty('top',y+'px','important');
       lastY=y;
     }
 
-    if(follow.style.getPropertyValue('transform')!=='translateX(-50%)'){
-      follow.style.setProperty('transform','translateX(-50%)','important');
+    const transform=mobile?'translateX(-50%)':'translateX(0)';
+    if(follow.style.getPropertyValue('transform')!==transform){
+      follow.style.setProperty('transform',transform,'important');
     }
   }
 
