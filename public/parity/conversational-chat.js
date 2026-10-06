@@ -1,6 +1,6 @@
 (() => {
-  if (window.__portfolioConversationalChatV164) return;
-  window.__portfolioConversationalChatV164 = true;
+  if (window.__portfolioConversationalChatV172) return;
+  window.__portfolioConversationalChatV172 = true;
 
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -18,6 +18,23 @@
   let answering = false;
   let lastTopic = '';
 
+  const headTitle = $('.chat-head strong');
+  const headSubtitle = $('.chat-head span');
+  if (headTitle) headTitle.textContent = 'Ana';
+  if (headSubtitle) headSubtitle.textContent = 'converse comigo sobre minha trajetória, projetos e competências';
+
+  const promptLabels = {
+    sobre: 'Quem é você?',
+    experiencia: 'Sua trajetória',
+    automacao: 'Automação',
+    projetos: 'Projetos'
+  };
+
+  $$('[data-prompt]').forEach(button => {
+    const label = promptLabels[button.dataset.prompt];
+    if (label) button.textContent = label;
+  });
+
   function scrollBottom() {
     chatMessages.scrollTo({
       top: chatMessages.scrollHeight,
@@ -34,7 +51,6 @@
           who: el.classList.contains('user') ? 'user' : 'bot',
           text: el.textContent || ''
         }));
-
       localStorage.setItem(storageKey, JSON.stringify(items));
     } catch {}
   }
@@ -52,7 +68,7 @@
   function showTyping() {
     const el = document.createElement('div');
     el.className = 'msg bot typing-v164';
-    el.setAttribute('aria-label', 'Assistente digitando');
+    el.setAttribute('aria-label', 'Ana está digitando');
     el.innerHTML = [
       '<span class="typing-dot-v164"></span>',
       '<span class="typing-dot-v164"></span>',
@@ -95,7 +111,6 @@
   function scoreContext(item, question) {
     const q = normalize(question);
     const tokens = q.split(' ').filter(token => token.length >= 3);
-
     const title = normalize(item.title);
     const category = normalize(item.category);
     const content = normalize(item.content);
@@ -113,32 +128,15 @@
     tokens.forEach(token => {
       if (title.includes(token)) score += 4;
       if (category.includes(token)) score += 2.5;
-      if (content.includes(token)) score += 1.25;
+      if (content.includes(token)) score += 1.2;
     });
 
     return score;
   }
 
-  function selectContexts(question) {
-    const ranked = contexts()
-      .map(item => ({ item, score: scoreContext(item, question) }))
-      .filter(row => row.score >= 2.5)
-      .sort((a, b) => b.score - a.score);
-
-    if (!ranked.length && lastTopic) {
-      return contexts()
-        .map(item => ({ item, score: scoreContext(item, lastTopic) }))
-        .filter(row => row.score >= 2.5)
-        .sort((a, b) => b.score - a.score)
-        .slice(0, 1)
-        .map(row => row.item);
-    }
-
-    return ranked.slice(0, 2).map(row => row.item);
-  }
-
   function detectTopic(question) {
     const q = normalize(question);
+
     if (/automat|playwright|typescript|bdd|e2e/.test(q)) return 'automação';
     if (/api|postman|rest|json|payload|integrac/.test(q)) return 'API e integrações';
     if (/banco|sql|mysql|persist/.test(q)) return 'banco e persistência';
@@ -147,12 +145,76 @@
     if (/ferrament|stack|qase|jira|sonar|git|keycloak/.test(q)) return 'ferramentas';
     if (/formac|curso|faculdade|ciencia da computacao|udemy/.test(q)) return 'formação';
     if (/contato|linkedin|email|whatsapp|telefone/.test(q)) return 'contato';
-    if (/quem|sobre|perfil|ana/.test(q)) return 'perfil';
+    if (/quem|sobre|perfil|voce|você|ana/.test(q)) return 'perfil';
+
     return '';
   }
 
+  function selectContexts(question) {
+    const ranked = contexts()
+      .map(item => ({ item, score: scoreContext(item, question) }))
+      .filter(row => row.score >= 2.5)
+      .sort((a, b) => b.score - a.score);
+
+    if (ranked.length) return ranked.slice(0, 2).map(row => row.item);
+
+    if (lastTopic) {
+      return contexts()
+        .map(item => ({ item, score: scoreContext(item, lastTopic) }))
+        .filter(row => row.score >= 2.5)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 1)
+        .map(row => row.item);
+    }
+
+    return [];
+  }
+
+  function firstPerson(raw) {
+    let text = String(raw || '').replace(/\s+/g, ' ').trim();
+
+    const replacements = [
+      [/Ana Paula de Lima Lysyk é QA Analyst Pleno/gi, 'Eu sou QA Analyst Pleno'],
+      [/Ana Paula de Lima Lysyk é/gi, 'Eu sou'],
+      [/Ana já trabalhou/gi, 'Eu já trabalhei'],
+      [/Ana trabalhou/gi, 'Eu trabalhei'],
+      [/Ana está cursando/gi, 'Estou cursando'],
+      [/Ana está aprofundando/gi, 'Eu estou aprofundando'],
+      [/Ana está/gi, 'Eu estou'],
+      [/Ana segue desenvolvendo/gi, 'Eu sigo desenvolvendo'],
+      [/Ana valida/gi, 'Eu valido'],
+      [/Ana usa/gi, 'Eu uso'],
+      [/Ana utiliza/gi, 'Eu utilizo'],
+      [/Ana desenvolve/gi, 'Eu desenvolvo'],
+      [/Ana trabalha/gi, 'Eu trabalho'],
+      [/Na automação, Ana/gi, 'Na automação, eu'],
+      [/Em API e integração, Ana/gi, 'Em API e integração, eu'],
+      [/No banco, Ana/gi, 'No banco, eu'],
+      [/No fluxo de QA, Ana/gi, 'No meu fluxo de QA, eu'],
+      [/Você pode falar com a Ana/gi, 'Você pode falar comigo'],
+      [/desenvolvimentos atuais da Ana/gi, 'meus desenvolvimentos atuais'],
+      [/projetos atuais da Ana/gi, 'meus projetos atuais'],
+      [/da Ana/gi, 'do meu portfólio'],
+      [/Entre os cursos já realizados estão/gi, 'Entre os cursos que eu já realizei estão'],
+      [/Em desenvolvimento técnico, aprofunda/gi, 'Em desenvolvimento técnico, estou aprofundando']
+    ];
+
+    replacements.forEach(([pattern, value]) => {
+      text = text.replace(pattern, value);
+    });
+
+    text = text
+      .replace(/\bela está\b/gi, 'eu estou')
+      .replace(/\bela usa\b/gi, 'eu uso')
+      .replace(/\bela trabalha\b/gi, 'eu trabalho')
+      .replace(/\bela valida\b/gi, 'eu valido')
+      .replace(/\bela desenvolve\b/gi, 'eu desenvolvo');
+
+    return text;
+  }
+
   function trimContent(content, max = 560) {
-    const text = String(content || '').replace(/\s+/g, ' ').trim();
+    const text = firstPerson(content);
     if (text.length <= max) return text;
 
     const cut = text.slice(0, max);
@@ -162,68 +224,88 @@
       cut.lastIndexOf('? ')
     );
 
-    return (lastSentence > 220 ? cut.slice(0, lastSentence + 1) : cut.trim() + '…');
+    return lastSentence > 220
+      ? cut.slice(0, lastSentence + 1)
+      : cut.trim() + '…';
   }
 
   function friendlyLead(topic, question) {
     const q = normalize(question);
 
-    if (/como ela|como a ana/.test(q)) {
-      if (topic === 'automação') return 'Claro. Na automação, a Ana está construindo essa prática de forma bem aplicada ao trabalho de QA.';
-      if (topic === 'API e integrações') return 'Sim. Essa é uma parte bem técnica do trabalho dela.';
-      if (topic === 'projetos') return 'Claro. Os projetos ajudam bastante a enxergar como ela organiza e aplica o trabalho de QA.';
-      if (topic === 'trajetória') return 'Claro. A trajetória dela mostra uma evolução bem gradual, saindo de experiências de atendimento e investigação até chegar ao QA.';
+    if (/^(oi|ola|olá|bom dia|boa tarde|boa noite)/.test(q)) {
+      return 'Oi! Tudo bem? ';
     }
 
-    if (/por que|porque/.test(q)) return 'Pelo que a Ana deixou registrado no portfólio,';
-    if (/me conte|fala|fale|conta/.test(q)) return 'Claro. ';
-    if (/qual|quais/.test(q)) return 'Sim. ';
-    if (/oi|ola|bom dia|boa tarde|boa noite/.test(q)) return 'Oi! Que bom ter você por aqui. ';
+    if (topic === 'automação') {
+      return 'Claro. Na automação, eu venho construindo minha prática de forma bem aplicada ao trabalho de QA. ';
+    }
 
-    return topic ? 'Claro. ' : '';
+    if (topic === 'projetos') {
+      return 'Claro. Meus projetos são uma forma bem prática de mostrar como eu penso e organizo qualidade. ';
+    }
+
+    if (topic === 'trajetória') {
+      return 'Claro. Minha trajetória foi acontecendo por etapas, e cada uma delas contribuiu bastante para o jeito como eu trabalho hoje. ';
+    }
+
+    if (topic === 'API e integrações') {
+      return 'Sim. Essa é uma parte mais técnica do meu dia a dia e eu gosto bastante de investigar esse tipo de fluxo. ';
+    }
+
+    if (topic === 'perfil') {
+      return 'Claro. ';
+    }
+
+    return 'Claro. ';
   }
 
-  function conversationalResponse(question) {
+  function closingFor(topic) {
+    if (topic === 'automação') {
+      return ' Eu gosto de deixar claro que automação já faz parte do meu trabalho, mas ainda é uma frente que estou aprofundando.';
+    }
+
+    if (topic === 'projetos') {
+      return ' Se quiser, posso te contar um pouco mais sobre um projeto específico.';
+    }
+
+    if (topic === 'trajetória') {
+      return ' Se quiser, posso detalhar uma das experiências ou focar só na minha evolução dentro de QA.';
+    }
+
+    if (topic === 'ferramentas') {
+      return ' Também posso separar o que eu uso no dia a dia do que ainda estou aprofundando tecnicamente.';
+    }
+
+    return '';
+  }
+
+  function responseFor(question) {
     const topic = detectTopic(question);
     if (topic) lastTopic = topic;
 
     const selected = selectContexts(question);
 
     if (!selected.length) {
-      return 'Eu consigo te contar bastante coisa sobre a Ana, mas prefiro não inventar o que não está registrado no portfólio. Você pode me perguntar sobre trajetória, automação, projetos, API e integrações, ferramentas, formação ou formas de contato.';
+      return 'Essa informação não está registrada no meu portfólio hoje, então prefiro não inventar. Mas pode me perguntar sobre minha trajetória, projetos, automação, API e integrações, ferramentas, formação ou formas de contato.';
     }
 
-    const lead = friendlyLead(topic, question);
     const primary = trimContent(selected[0].content, 500);
-
     let body = primary;
 
     if (selected[1] && selected[1].id !== selected[0].id) {
-      const secondary = trimContent(selected[1].content, 260);
-      if (secondary && !primary.includes(secondary)) {
-        body += ' ' + secondary;
-      }
+      const secondary = trimContent(selected[1].content, 240);
+      if (secondary && !primary.includes(secondary)) body += ' ' + secondary;
     }
 
-    const q = normalize(question);
-    let close = '';
-
-    if (/automat|playwright|typescript/.test(q)) {
-      close = ' O ponto importante é que ela apresenta automação como uma frente em evolução, sem tentar passar uma experiência maior do que realmente tem.';
-    } else if (/projet|github|repo/.test(q)) {
-      close = ' Se quiser, eu também posso detalhar um projeto específico.';
-    } else if (/experi|trajet|carreira/.test(q)) {
-      close = ' Se quiser, posso te contar essa trajetória por empresa ou focar só na evolução dela dentro de QA.';
-    } else if (/ferrament|stack/.test(q)) {
-      close = ' Posso separar também o que ela usa no dia a dia do que ainda está aprofundando tecnicamente.';
-    }
-
-    return (lead + body + close).replace(/\s+/g, ' ').trim();
+    return (friendlyLead(topic, question) + body + closingFor(topic))
+      .replace(/\s+/g, ' ')
+      .trim();
   }
 
   function setBusy(value) {
     answering = value;
     chatInput.disabled = value;
+
     const button = chatForm.querySelector('button[type="submit"]');
     if (button) button.disabled = value;
   }
@@ -242,9 +324,8 @@
     setBusy(true);
 
     const typing = showTyping();
-    const response = conversationalResponse(value);
-
-    const delay = Math.min(1250, Math.max(520, 320 + response.length * 1.35));
+    const response = responseFor(value);
+    const delay = Math.min(1350, Math.max(560, 320 + response.length * 1.25));
 
     await new Promise(resolve => setTimeout(resolve, delay));
 
@@ -254,7 +335,6 @@
     chatInput.focus();
   }
 
-  /* Captura antes do listener legado para evitar resposta duplicada. */
   chatForm.addEventListener('submit', event => {
     event.preventDefault();
     event.stopPropagation();
@@ -271,24 +351,27 @@
     event.stopImmediatePropagation();
 
     const prompts = {
-      sobre: 'Quem é a Ana?',
-      experiencia: 'Me conta um pouco sobre a trajetória profissional da Ana.',
-      api: 'Como a Ana trabalha com API e integrações?',
-      projetos: 'Quais projetos representam melhor o trabalho da Ana?',
-      ferramentas: 'Quais ferramentas a Ana usa no dia a dia?',
-      automacao: 'Como ela trabalha com automação?',
-      banco: 'Como ela valida banco e persistência?'
+      sobre: 'Oi, Ana. Me conta um pouco sobre você.',
+      experiencia: 'Me conta um pouco sobre a sua trajetória profissional.',
+      api: 'Como você trabalha com API e integrações?',
+      projetos: 'Quais projetos representam melhor o seu trabalho?',
+      ferramentas: 'Quais ferramentas você usa no dia a dia?',
+      automacao: 'Como você trabalha com automação?',
+      banco: 'Como você valida banco e persistência?'
     };
 
     sendMessage(prompts[button.dataset.prompt] || button.textContent);
   }, true);
 
-  /* Saudação mais natural para uma sessão nova. */
+  /* Para uma conversa nova, a apresentação já nasce em primeira pessoa. */
   if (!chatMessages.querySelector('.msg.user')) {
     const firstBot = chatMessages.querySelector('.msg.bot');
-    if (firstBot && /Oi\. Eu sou o assistente da Ana/i.test(firstBot.textContent || '')) {
-      firstBot.textContent = 'Oi! Eu sou o assistente da Ana. Posso te contar sobre a trajetória dela, projetos, competências e a forma como ela trabalha com QA. Pode perguntar do seu jeito.';
+
+    if (firstBot) {
+      firstBot.textContent = 'Oi, tudo bem? Eu sou a Ana. Posso te contar sobre minha trajetória, meus projetos, minhas competências e a forma como eu trabalho com QA. Pode perguntar do seu jeito.';
       persistHistory();
+    } else {
+      addMessage('Oi, tudo bem? Eu sou a Ana. Posso te contar sobre minha trajetória, meus projetos, minhas competências e a forma como eu trabalho com QA. Pode perguntar do seu jeito.', 'bot');
     }
   }
 })();
