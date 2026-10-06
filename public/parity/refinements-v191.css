@@ -1,0 +1,149 @@
+/* ===== v191 — header full width + alternância do lado do painel ===== */
+
+:root{
+  --editor-side-panel-v191:clamp(320px,34vw,460px);
+  --editor-side-gap-v191:20px;
+}
+
+/* CABEÇALHO SEMPRE DE CANTO A CANTO */
+.topbar,
+body.editor-studio-open .topbar,
+body.editor-context-open .topbar,
+body.editor-preview-v156 .topbar{
+  position:fixed!important;
+  top:0!important;
+  left:0!important;
+  right:0!important;
+  width:100vw!important;
+  max-width:100vw!important;
+  margin:0!important;
+  transform:none!important;
+  z-index:12100!important;
+}
+
+.topbar .nav,
+body.editor-studio-open .topbar .nav,
+body.editor-context-open .topbar .nav,
+body.editor-preview-v156 .topbar .nav{
+  width:min(var(--max),calc(100% - 36px))!important;
+  max-width:min(var(--max),calc(100% - 36px))!important;
+  margin-inline:auto!important;
+}
+
+/* painel à direita */
+@media (pointer:fine){
+  body.editor-studio-open:not(.editor-preview-v156):not(.editor-panel-left-v191){
+    padding-left:0!important;
+    padding-right:calc(var(--editor-side-panel-v191) + var(--editor-side-gap-v191))!important;
+  }
+
+  body.editor-studio-open:not(.editor-preview-v156):not(.editor-panel-left-v191) #editorStudio.editor-studio-v85{
+    left:auto!important;
+    right:10px!important;
+    width:var(--editor-side-panel-v191)!important;
+    max-width:var(--editor-side-panel-v191)!important;
+  }
+
+  /* painel à esquerda */
+  body.editor-studio-open.editor-panel-left-v191:not(.editor-preview-v156){
+    padding-left:calc(var(--editor-side-panel-v191) + var(--editor-side-gap-v191))!important;
+    padding-right:0!important;
+  }
+
+  body.editor-studio-open.editor-panel-left-v191:not(.editor-preview-v156) #editorStudio.editor-studio-v85{
+    left:10px!important;
+    right:auto!important;
+    width:var(--editor-side-panel-v191)!important;
+    max-width:var(--editor-side-panel-v191)!important;
+  }
+
+  /* toolbar acompanha o lado livre */
+  body.editor-studio-open.editor-panel-left-v191:not(.editor-preview-v156) .editor-canvas-toolbar-v156{
+    left:auto!important;
+    right:12px!important;
+  }
+
+  body.editor-studio-open:not(.editor-panel-left-v191):not(.editor-preview-v156) .editor-canvas-toolbar-v156{
+    left:12px!important;
+    right:auto!important;
+  }
+}
+
+/* botão no cabeçalho */
+.editor-panel-side-toggle-v191{
+  display:none!important;
+  width:34px!important;
+  height:34px!important;
+  min-width:34px!important;
+  padding:0!important;
+  border:1px solid color-mix(in srgb,var(--system-accent) 20%,var(--line))!important;
+  border-radius:10px!important;
+  background:transparent!important;
+  color:var(--muted)!important;
+  align-items:center!important;
+  justify-content:center!important;
+  cursor:pointer!important;
+  transition:
+    color .16s ease,
+    border-color .16s ease,
+    background .16s ease,
+    transform .16s ease!important;
+}
+
+body.editor-studio-open:not(.editor-preview-v156) .editor-panel-side-toggle-v191{
+  display:inline-flex!important;
+}
+
+.editor-panel-side-toggle-v191:hover,
+.editor-panel-side-toggle-v191:focus-visible{
+  color:var(--system-accent)!important;
+  border-color:color-mix(in srgb,var(--system-accent) 40%,var(--line))!important;
+  background:var(--system-accent-soft)!important;
+  outline:none!important;
+}
+
+.editor-panel-side-toggle-v191 svg{
+  width:16px!important;
+  height:16px!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.7!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+
+/* no preview público o botão desaparece */
+body.editor-preview-v156 .editor-panel-side-toggle-v191{
+  display:none!important;
+}
+
+/* claro */
+body.portfolio-theme-light .editor-panel-side-toggle-v191{
+  border-color:rgba(54,79,116,.14)!important;
+  color:#60738e!important;
+}
+
+body.portfolio-theme-light .editor-panel-side-toggle-v191:hover,
+body.portfolio-theme-light .editor-panel-side-toggle-v191:focus-visible{
+  color:var(--system-accent)!important;
+  background:color-mix(in srgb,var(--system-accent) 7%,#fff 93%)!important;
+}
+
+/* celular real: sem troca de lado */
+@media(max-width:760px) and (pointer:coarse){
+  .editor-panel-side-toggle-v191{
+    display:none!important;
+  }
+
+  body.editor-studio-open.editor-panel-left-v191{
+    padding-left:0!important;
+    padding-right:0!important;
+  }
+
+  body.editor-studio-open.editor-panel-left-v191 #editorStudio.editor-studio-v85{
+    left:0!important;
+    right:0!important;
+    width:100%!important;
+    max-width:none!important;
+  }
+}
