@@ -209,7 +209,8 @@
   }
 
   function editorIsOpen(){
-    return document.body.classList.contains('editor-studio-open');
+    return document.body.classList.contains('editor-studio-open') &&
+      !document.body.classList.contains('editor-preview-v156');
   }
 
   function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
