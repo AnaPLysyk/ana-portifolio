@@ -1,5 +1,12 @@
 import type { FastifyInstance } from 'fastify'
 import { authConfigured, config } from '../config.js'
+import {
+  err400,
+  err401,
+  privateDoc,
+  publicDoc,
+  secured,
+} from '../openapi.docs.js'
 
 interface LoginBody {
   username: string
@@ -12,28 +19,81 @@ export const registerAuthRoutes = async (app: FastifyInstance) => {
     {
       schema: {
         tags: ['Auth'],
-        summary: 'Autentica o editor do portfólio',
+        summary: 'Faz login e recebe o token',
+        description: publicDoc(
+          'Envie usuário e senha do editor. Copie o `accessToken` retornado e cole no botão **Authorize** (topo da página) para liberar os endpoints 🔒. Cole só o token, sem a palavra "Bearer".',
+        ),
         body: {
           type: 'object',
           required: ['username', 'password'],
           additionalProperties: false,
           properties: {
-            username: { type: 'string', minLength: 1 },
-            password: { type: 'string', minLength: 1 },
+            username: {
+              type: 'string',
+              minLength: 1,
+              description: 'Usuário do editor (definido em ADMIN_USERNAME).',
+              examples: ['admin'],
+            },
+            password: {
+              type: 'string',
+              minLength: 1,
+              description: 'Senha do editor (definida em ADMIN_PASSWORD).',
+              examples: ['sua-senha'],
+            },
           },
+          examples: [{ username: 'admin', password: 'sua-senha' }],
         },
         response: {
           200: {
+            description: 'Login feito. Use o `accessToken` no botão Authorize.',
             type: 'object',
             required: ['accessToken', 'tokenType', 'expiresIn'],
             properties: {
-              accessToken: { type: 'string' },
-              tokenType: { type: 'string', const: 'Bearer' },
-              expiresIn: { type: 'string' },
+              accessToken: {
+                type: 'string',
+                description: 'Token JWT. Cole no botão Authorize.',
+                examples: ['eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.exemplo.assinatura'],
+              },
+              tokenType: {
+                type: 'string',
+                const: 'Bearer',
+                description: 'Tipo do token (sempre "Bearer").',
+                examples: ['Bearer'],
+              },
+              expiresIn: {
+                type: 'string',
+                description: 'Tempo de validade do token.',
+                examples: ['15m'],
+              },
             },
           },
-          401: { $ref: 'ErrorResponse#' },
-          503: { $ref: 'ErrorResponse#' },
+          400: err400,
+          401: {
+            description: 'Usuário ou senha incorretos.',
+            type: 'object',
+            required: ['code', 'message'],
+            properties: {
+              code: { type: 'string', examples: ['INVALID_CREDENTIALS'] },
+              message: {
+                type: 'string',
+                examples: ['Usuário ou senha inválidos.'],
+              },
+            },
+          },
+          503: {
+            description: 'Login ainda não configurado no servidor.',
+            type: 'object',
+            required: ['code', 'message'],
+            properties: {
+              code: { type: 'string', examples: ['AUTH_NOT_CONFIGURED'] },
+              message: {
+                type: 'string',
+                examples: [
+                  'Configure ADMIN_USERNAME, ADMIN_PASSWORD e JWT_SECRET antes de usar a autenticação.',
+                ],
+              },
+            },
+          },
         },
       },
     },
@@ -79,17 +139,25 @@ export const registerAuthRoutes = async (app: FastifyInstance) => {
     {
       schema: {
         tags: ['Auth'],
-        summary: 'Retorna a sessão autenticada',
-        security: [{ bearerAuth: [] }],
+        summary: 'Mostra quem está logado',
+        description: privateDoc(
+          'Serve para testar se o token está valendo: retorna o usuário dono do token.',
+        ),
+        security: secured,
         response: {
           200: {
+            description: 'Token válido.',
             type: 'object',
             required: ['username'],
             properties: {
-              username: { type: 'string' },
+              username: {
+                type: 'string',
+                description: 'Usuário logado.',
+                examples: ['admin'],
+              },
             },
           },
-          401: { $ref: 'ErrorResponse#' },
+          401: err401,
         },
       },
     },
@@ -104,15 +172,17 @@ export const registerAuthRoutes = async (app: FastifyInstance) => {
     {
       schema: {
         tags: ['Auth'],
-        summary: 'Encerra a sessão no cliente',
-        description:
-          'JWT é stateless nesta primeira versão. O cliente deve descartar o token recebido no login.',
-        security: [{ bearerAuth: [] }],
+        summary: 'Encerra a sessão',
+        description: privateDoc(
+          'Não tem corpo. O token não é invalidado no servidor: depois de chamar, descarte o token (no Swagger, use **Logout** no botão Authorize).',
+        ),
+        security: secured,
         response: {
           204: {
+            description: 'Sessão encerrada (resposta vazia).',
             type: 'null',
           },
-          401: { $ref: 'ErrorResponse#' },
+          401: err401,
         },
       },
     },

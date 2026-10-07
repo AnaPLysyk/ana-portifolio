@@ -1,6 +1,17 @@
 import type { FastifyInstance } from 'fastify'
 import type { Appearance, RevisionWrite } from '../domain/types.js'
 import { portfolioService } from '../services/portfolio.service.js'
+import {
+  err400,
+  err401,
+  err409,
+  privateDoc,
+  publicDoc,
+  revisionHint,
+  savedResponse,
+  secured,
+  snapshotOf as snapshotDoc,
+} from '../openapi.docs.js'
 
 export const registerAppearanceRoutes = async (app: FastifyInstance) => {
   app.get(
@@ -8,7 +19,13 @@ export const registerAppearanceRoutes = async (app: FastifyInstance) => {
     {
       schema: {
         tags: ['Appearance'],
-        summary: 'Retorna a configuração visual publicada',
+        summary: 'Mostra a aparência do portfólio',
+        description: publicDoc(
+          'Retorna tema, idioma, cor de destaque, espaçamento, formato da página e texto do rodapé.',
+        ),
+        response: {
+          200: snapshotDoc('Aparência atual.', { $ref: 'Appearance#' }),
+        },
       },
     },
     async () => {
@@ -26,13 +43,17 @@ export const registerAppearanceRoutes = async (app: FastifyInstance) => {
     {
       schema: {
         tags: ['Appearance'],
-        summary: 'Atualiza tema, cor, intensidade, espaçamento e formato',
-        security: [{ bearerAuth: [] }],
+        summary: 'Atualiza a aparência',
+        description: privateDoc(
+          `Troca tema, idioma, cor, intensidade, espaçamento, formato e rodapé. Envie todos os campos de \`data\`. ${revisionHint}`,
+        ),
+        security: secured,
         body: { $ref: 'AppearanceWrite#' },
         response: {
-          200: { $ref: 'PortfolioSnapshot#' },
-          401: { $ref: 'ErrorResponse#' },
-          409: { $ref: 'ErrorResponse#' },
+          200: savedResponse(),
+          400: err400,
+          401: err401,
+          409: err409,
         },
       },
     },

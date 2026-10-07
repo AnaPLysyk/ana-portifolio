@@ -12,7 +12,9 @@
     "build:front": "tsc -b && vite build",
     "build:api": "tsc -p tsconfig.server.json",
     "start:api": "node dist-server/index.js",
-    "validate:api": "tsx server/validation/api.smoke.ts"
+    "validate:api": "tsx server/validation/api.smoke.ts",
+    "docs:openapi": "tsx server/validation/export-openapi.ts",
+    "docs:openapi:check": "tsx server/validation/export-openapi.ts --check"
   },
   "dependencies": {
     "react": "^19.1.1",

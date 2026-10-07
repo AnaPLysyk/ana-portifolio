@@ -1,6 +1,16 @@
 import type { FastifyInstance } from 'fastify'
 import type { SavePortfolioRequest } from '../domain/types.js'
 import { portfolioService } from '../services/portfolio.service.js'
+import {
+  err400,
+  err401,
+  err409,
+  expectedRevisionField,
+  privateDoc,
+  publicDoc,
+  savedResponse,
+  secured,
+} from '../openapi.docs.js'
 
 export const registerPortfolioRoutes = async (app: FastifyInstance) => {
   app.get(
@@ -8,9 +18,15 @@ export const registerPortfolioRoutes = async (app: FastifyInstance) => {
     {
       schema: {
         tags: ['Portfolio'],
-        summary: 'Retorna o documento completo publicado',
+        summary: 'Retorna o portfólio completo',
+        description: publicDoc(
+          'Devolve todos os dados de uma vez: perfil, textos, projetos, experiência, aparência, assistente e editor. Também traz `revision`, usado nas escritas.',
+        ),
         response: {
-          200: { $ref: 'PortfolioSnapshot#' },
+          200: {
+            description: 'Portfólio completo com `revision` e `updatedAt`.',
+            $ref: 'PortfolioSnapshot#',
+          },
         },
       },
     },
@@ -22,24 +38,30 @@ export const registerPortfolioRoutes = async (app: FastifyInstance) => {
     {
       schema: {
         tags: ['Portfolio'],
-        summary: 'Salva o documento completo do portfólio',
-        description:
-          'Endpoint agregado usado quando o front salva toda a edição de uma vez. Também existe API granular por domínio.',
-        security: [{ bearerAuth: [] }],
+        summary: 'Salva o portfólio completo',
+        description: privateDoc(
+          'Substitui **todos** os dados de uma vez. Dica: faça `GET /api/v1/portfolio`, altere o que precisar e envie o resultado em `data`. Para mudar só uma parte, prefira os endpoints específicos (profile, projects etc.).',
+        ),
+        security: secured,
         body: {
           type: 'object',
+          description: 'Versão atual + portfólio completo.',
           required: ['expectedRevision', 'data'],
           additionalProperties: false,
           properties: {
-            expectedRevision: { type: 'integer', minimum: 1 },
-            data: { $ref: 'PortfolioDocument#' },
+            expectedRevision: expectedRevisionField,
+            data: {
+              description:
+                'Portfólio completo (o mesmo formato retornado pelo GET, dentro de `data`).',
+              $ref: 'PortfolioDocument#',
+            },
           },
         },
         response: {
-          200: { $ref: 'PortfolioSnapshot#' },
-          400: { $ref: 'ErrorResponse#' },
-          401: { $ref: 'ErrorResponse#' },
-          409: { $ref: 'ErrorResponse#' },
+          200: savedResponse(),
+          400: err400,
+          401: err401,
+          409: err409,
         },
       },
     },

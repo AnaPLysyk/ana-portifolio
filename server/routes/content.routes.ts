@@ -8,6 +8,19 @@ import type {
   RevisionWrite,
 } from '../domain/types.js'
 import { portfolioService } from '../services/portfolio.service.js'
+import { examples } from '../openapi.schemas.js'
+import {
+  err400,
+  err401,
+  err409,
+  privateDoc,
+  publicDoc,
+  revisionHint,
+  savedResponse,
+  secured,
+  snapshotOf as snapshotDoc,
+  writeBody,
+} from '../openapi.docs.js'
 
 const snapshotOf = (revision: number, updatedAt: string, data: unknown) => ({
   revision,
@@ -15,19 +28,30 @@ const snapshotOf = (revision: number, updatedAt: string, data: unknown) => ({
   data,
 })
 
-const listWriteSchema = (itemRef: string) => ({
-  type: 'object',
-  required: ['expectedRevision', 'data'],
-  additionalProperties: false,
-  properties: {
-    expectedRevision: { type: 'integer', minimum: 1 },
-    data: {
+const listWriteSchema = (itemRef: string, example: unknown) =>
+  writeBody(
+    {
       type: 'array',
       maxItems: 100,
+      description: 'Lista completa. Ela **substitui** a lista atual.',
       items: { $ref: itemRef },
     },
-  },
-})
+    [example],
+    'Versão atual + lista completa de itens.',
+  )
+
+const listResponse = (description: string, itemRef: string, example: unknown) =>
+  snapshotDoc(description, { type: 'array', items: { $ref: itemRef } }, [example])
+
+const writeResponses = {
+  200: savedResponse(),
+  400: err400,
+  401: err401,
+  409: err409,
+}
+
+const listHint = (what: string) =>
+  `Envia a lista **inteira** de ${what}: itens que não estiverem na lista serão removidos. Dica: faça o GET, ajuste a lista e envie de volta. ${revisionHint}`
 
 export const registerContentRoutes = async (app: FastifyInstance) => {
   app.get(
@@ -35,7 +59,11 @@ export const registerContentRoutes = async (app: FastifyInstance) => {
     {
       schema: {
         tags: ['Content'],
-        summary: 'Retorna o conteúdo da Home',
+        summary: 'Mostra o texto da Home',
+        description: publicDoc('Retorna o título e a apresentação da página inicial.'),
+        response: {
+          200: snapshotDoc('Conteúdo da Home.', { $ref: 'HeroContent#' }),
+        },
       },
     },
     async () => {
@@ -49,14 +77,13 @@ export const registerContentRoutes = async (app: FastifyInstance) => {
     {
       schema: {
         tags: ['Content'],
-        summary: 'Atualiza o conteúdo da Home',
-        security: [{ bearerAuth: [] }],
+        summary: 'Atualiza o texto da Home',
+        description: privateDoc(
+          `Troca o título e a apresentação da página inicial. ${revisionHint}`,
+        ),
+        security: secured,
         body: { $ref: 'HeroWrite#' },
-        response: {
-          200: { $ref: 'PortfolioSnapshot#' },
-          401: { $ref: 'ErrorResponse#' },
-          409: { $ref: 'ErrorResponse#' },
-        },
+        response: writeResponses,
       },
     },
     async (request) => {
@@ -73,7 +100,13 @@ export const registerContentRoutes = async (app: FastifyInstance) => {
     {
       schema: {
         tags: ['Content'],
-        summary: 'Retorna o conteúdo da seção Sobre',
+        summary: 'Mostra a seção Sobre',
+        description: publicDoc('Retorna o título e o texto da seção Sobre.'),
+        response: {
+          200: snapshotDoc('Conteúdo da seção Sobre.', {
+            $ref: 'AboutContent#',
+          }),
+        },
       },
     },
     async () => {
@@ -87,14 +120,13 @@ export const registerContentRoutes = async (app: FastifyInstance) => {
     {
       schema: {
         tags: ['Content'],
-        summary: 'Atualiza o conteúdo da seção Sobre',
-        security: [{ bearerAuth: [] }],
+        summary: 'Atualiza a seção Sobre',
+        description: privateDoc(
+          `Troca o título e o texto da seção Sobre. ${revisionHint}`,
+        ),
+        security: secured,
         body: { $ref: 'AboutWrite#' },
-        response: {
-          200: { $ref: 'PortfolioSnapshot#' },
-          401: { $ref: 'ErrorResponse#' },
-          409: { $ref: 'ErrorResponse#' },
-        },
+        response: writeResponses,
       },
     },
     async (request) => {
@@ -111,7 +143,15 @@ export const registerContentRoutes = async (app: FastifyInstance) => {
     {
       schema: {
         tags: ['Content'],
-        summary: 'Retorna as competências',
+        summary: 'Lista as competências',
+        description: publicDoc('Retorna as habilidades exibidas no portfólio.'),
+        response: {
+          200: listResponse(
+            'Lista de competências.',
+            'CompetencyItem#',
+            examples.competency,
+          ),
+        },
       },
     },
     async () => {
@@ -129,14 +169,11 @@ export const registerContentRoutes = async (app: FastifyInstance) => {
     {
       schema: {
         tags: ['Content'],
-        summary: 'Substitui a lista de competências',
-        security: [{ bearerAuth: [] }],
-        body: listWriteSchema('CompetencyItem#'),
-        response: {
-          200: { $ref: 'PortfolioSnapshot#' },
-          401: { $ref: 'ErrorResponse#' },
-          409: { $ref: 'ErrorResponse#' },
-        },
+        summary: 'Salva a lista de competências',
+        description: privateDoc(listHint('competências')),
+        security: secured,
+        body: listWriteSchema('CompetencyItem#', examples.competency),
+        response: writeResponses,
       },
     },
     async (request) => {
@@ -153,7 +190,15 @@ export const registerContentRoutes = async (app: FastifyInstance) => {
     {
       schema: {
         tags: ['Content'],
-        summary: 'Retorna formação e cursos',
+        summary: 'Lista formação e cursos',
+        description: publicDoc('Retorna a formação acadêmica e os cursos.'),
+        response: {
+          200: listResponse(
+            'Lista de formações e cursos.',
+            'EducationItem#',
+            examples.education,
+          ),
+        },
       },
     },
     async () => {
@@ -171,14 +216,11 @@ export const registerContentRoutes = async (app: FastifyInstance) => {
     {
       schema: {
         tags: ['Content'],
-        summary: 'Substitui formação e cursos',
-        security: [{ bearerAuth: [] }],
-        body: listWriteSchema('EducationItem#'),
-        response: {
-          200: { $ref: 'PortfolioSnapshot#' },
-          401: { $ref: 'ErrorResponse#' },
-          409: { $ref: 'ErrorResponse#' },
-        },
+        summary: 'Salva formação e cursos',
+        description: privateDoc(listHint('formações e cursos')),
+        security: secured,
+        body: listWriteSchema('EducationItem#', examples.education),
+        response: writeResponses,
       },
     },
     async (request) => {
@@ -195,7 +237,15 @@ export const registerContentRoutes = async (app: FastifyInstance) => {
     {
       schema: {
         tags: ['Content'],
-        summary: 'Retorna destaques e conquistas',
+        summary: 'Lista destaques e conquistas',
+        description: publicDoc('Retorna os destaques exibidos no portfólio.'),
+        response: {
+          200: listResponse(
+            'Lista de destaques.',
+            'HighlightItem#',
+            examples.highlight,
+          ),
+        },
       },
     },
     async () => {
@@ -213,14 +263,11 @@ export const registerContentRoutes = async (app: FastifyInstance) => {
     {
       schema: {
         tags: ['Content'],
-        summary: 'Substitui destaques e conquistas',
-        security: [{ bearerAuth: [] }],
-        body: listWriteSchema('HighlightItem#'),
-        response: {
-          200: { $ref: 'PortfolioSnapshot#' },
-          401: { $ref: 'ErrorResponse#' },
-          409: { $ref: 'ErrorResponse#' },
-        },
+        summary: 'Salva destaques e conquistas',
+        description: privateDoc(listHint('destaques')),
+        security: secured,
+        body: listWriteSchema('HighlightItem#', examples.highlight),
+        response: writeResponses,
       },
     },
     async (request) => {
@@ -237,9 +284,20 @@ export const registerContentRoutes = async (app: FastifyInstance) => {
     {
       schema: {
         tags: ['Content'],
-        summary: 'Retorna textos editáveis mapeados por chave estável',
-        description:
-          'Usado para persistir textos editados diretamente na página sem criar endpoint específico para cada parágrafo.',
+        summary: 'Mostra os textos editáveis',
+        description: publicDoc(
+          'Retorna textos soltos da página, em pares `chave: texto` (ex.: `"hero.cta": "Fale comigo"`).',
+        ),
+        response: {
+          200: snapshotDoc(
+            'Textos editáveis por chave.',
+            {
+              type: 'object',
+              additionalProperties: { type: 'string', maxLength: 10000 },
+            },
+            examples.contentBlocks,
+          ),
+        },
       },
     },
     async () => {
@@ -257,25 +315,20 @@ export const registerContentRoutes = async (app: FastifyInstance) => {
     {
       schema: {
         tags: ['Content'],
-        summary: 'Salva os textos editáveis da página',
-        security: [{ bearerAuth: [] }],
-        body: {
-          type: 'object',
-          required: ['expectedRevision', 'data'],
-          additionalProperties: false,
-          properties: {
-            expectedRevision: { type: 'integer', minimum: 1 },
-            data: {
-              type: 'object',
-              additionalProperties: { type: 'string', maxLength: 10000 },
-            },
+        summary: 'Salva os textos editáveis',
+        description: privateDoc(
+          `Envia o conjunto **completo** de textos (o que não for enviado é removido). Cada chave é o nome do texto e o valor é o conteúdo. ${revisionHint}`,
+        ),
+        security: secured,
+        body: writeBody(
+          {
+            type: 'object',
+            description: 'Pares `chave: texto`.',
+            additionalProperties: { type: 'string', maxLength: 10000 },
           },
-        },
-        response: {
-          200: { $ref: 'PortfolioSnapshot#' },
-          401: { $ref: 'ErrorResponse#' },
-          409: { $ref: 'ErrorResponse#' },
-        },
+          examples.contentBlocks,
+        ),
+        response: writeResponses,
       },
     },
     async (request) => {

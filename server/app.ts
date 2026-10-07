@@ -42,8 +42,22 @@ export const buildApp = async () => {
     openapi: {
       info: {
         title: 'Ana Portfolio API',
-        description:
-          'API completa do portfólio: conteúdo público, editor autenticado, aparência, elementos e assistente.',
+        description: [
+          'API do portfólio: conteúdo público, editor autenticado, aparência e assistente.',
+          '',
+          '### Como usar (passo a passo)',
+          '1. Teste a API em **GET /api/v1/health**.',
+          '2. Leia dados com os **GET** 🔓 (públicos) e anote o campo `revision`.',
+          '3. Para alterar dados, faça login em **POST /api/v1/auth/login** e copie o `accessToken`.',
+          '4. Clique em **Authorize** (topo da página), cole o token e confirme.',
+          '5. Use os endpoints 🔒 (POST, PUT, DELETE) enviando `expectedRevision`: a **versão atual dos dados**, igual ao `revision` do último GET.',
+          '',
+          '### Erros comuns',
+          '- **400**: campo faltando ou em formato errado.',
+          '- **401**: sem login ou token vencido.',
+          '- **404**: o `id` não existe.',
+          '- **409**: `expectedRevision` desatualizado. Faça um novo GET e tente de novo.',
+        ].join('\n'),
         version: '1.0.0',
       },
       servers: [
@@ -62,8 +76,8 @@ export const buildApp = async () => {
         },
       },
       tags: [
-        { name: 'Health', description: 'Disponibilidade da API' },
-        { name: 'Auth', description: 'Sessão do editor' },
+        { name: 'Health', description: '🔓 Teste se a API está no ar' },
+        { name: 'Auth', description: 'Login e sessão. O token vai no botão Authorize' },
         { name: 'Portfolio', description: 'Documento completo do portfólio' },
         { name: 'Profile', description: 'Identidade, contato e foto' },
         { name: 'Content', description: 'Home, Sobre, competências, formação e textos' },

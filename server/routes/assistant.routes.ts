@@ -6,6 +6,17 @@ import type {
 } from '../domain/types.js'
 import { portfolioService } from '../services/portfolio.service.js'
 import { answerFromPortfolio } from '../services/assistant.service.js'
+import {
+  err400,
+  err401,
+  err409,
+  privateDoc,
+  publicDoc,
+  revisionHint,
+  savedResponse,
+  secured,
+  snapshotOf as snapshotDoc,
+} from '../openapi.docs.js'
 
 export const registerAssistantRoutes = async (app: FastifyInstance) => {
   app.get(
@@ -13,7 +24,15 @@ export const registerAssistantRoutes = async (app: FastifyInstance) => {
     {
       schema: {
         tags: ['Assistant'],
-        summary: 'Retorna configuração e contextos do assistente',
+        summary: 'Mostra a configuração do assistente',
+        description: publicDoc(
+          'Retorna a saudação, as perguntas sugeridas e os assuntos (contextos) que o assistente conhece.',
+        ),
+        response: {
+          200: snapshotDoc('Configuração atual do assistente.', {
+            $ref: 'AssistantConfig#',
+          }),
+        },
       },
     },
     async () => {
@@ -31,13 +50,17 @@ export const registerAssistantRoutes = async (app: FastifyInstance) => {
     {
       schema: {
         tags: ['Assistant'],
-        summary: 'Atualiza saudação, sugestões e contextos do assistente',
-        security: [{ bearerAuth: [] }],
+        summary: 'Atualiza o assistente',
+        description: privateDoc(
+          `Troca saudação, sugestões e contextos. A lista \`contexts\` enviada **substitui** a atual. ${revisionHint}`,
+        ),
+        security: secured,
         body: { $ref: 'AssistantWrite#' },
         response: {
-          200: { $ref: 'PortfolioSnapshot#' },
-          401: { $ref: 'ErrorResponse#' },
-          409: { $ref: 'ErrorResponse#' },
+          200: savedResponse(),
+          400: err400,
+          401: err401,
+          409: err409,
         },
       },
     },
@@ -55,27 +78,45 @@ export const registerAssistantRoutes = async (app: FastifyInstance) => {
     {
       schema: {
         tags: ['Assistant'],
-        summary: 'Responde perguntas usando o conteúdo do portfólio',
-        description:
-          'Nesta primeira versão, a resposta é determinística e baseada no conteúdo/contextos salvos. A integração com um provedor de IA entra depois sem mudar o endpoint.',
+        summary: 'Faz uma pergunta ao assistente',
+        description: publicDoc(
+          'Envie uma pergunta e receba uma resposta baseada no conteúdo do portfólio. Nesta versão a resposta não usa IA externa: vem dos textos e contextos salvos.',
+        ),
         body: {
           type: 'object',
           required: ['message'],
           additionalProperties: false,
           properties: {
-            message: { type: 'string', minLength: 1, maxLength: 1000 },
+            message: {
+              type: 'string',
+              minLength: 1,
+              maxLength: 1000,
+              description: 'Sua pergunta (até 1000 caracteres).',
+              examples: ['Quais são os projetos?'],
+            },
           },
+          examples: [{ message: 'Quais são os projetos?' }],
         },
         response: {
           200: {
+            description: 'Resposta do assistente.',
             type: 'object',
             required: ['reply', 'source'],
             properties: {
-              reply: { type: 'string' },
-              source: { type: 'string', const: 'portfolio' },
+              reply: {
+                type: 'string',
+                description: 'Texto da resposta.',
+                examples: ['O portfólio tem o Projeto Exemplo, feito com React e Fastify.'],
+              },
+              source: {
+                type: 'string',
+                const: 'portfolio',
+                description: 'De onde veio a resposta (sempre "portfolio").',
+                examples: ['portfolio'],
+              },
             },
           },
-          400: { $ref: 'ErrorResponse#' },
+          400: err400,
         },
       },
     },

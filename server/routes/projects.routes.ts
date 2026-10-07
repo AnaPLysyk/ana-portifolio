@@ -1,6 +1,23 @@
 import type { FastifyInstance } from 'fastify'
 import type { Project } from '../domain/types.js'
 import { portfolioService } from '../services/portfolio.service.js'
+import { examples } from '../openapi.schemas.js'
+import {
+  err400,
+  err401,
+  err404,
+  err409,
+  idParam,
+  orderBody,
+  privateDoc,
+  publicDoc,
+  revisionHint,
+  revisionQuery,
+  savedResponse,
+  secured,
+  snapshotOf as snapshotDoc,
+  writeBody,
+} from '../openapi.docs.js'
 
 interface RevisionBody<T> {
   expectedRevision: number
@@ -16,13 +33,25 @@ interface RevisionQuery {
   expectedRevision: number
 }
 
+const notFound = err404('PROJECT_NOT_FOUND', 'Projeto não encontrado.')
+const idDoc = idParam('o projeto', 'projeto-exemplo')
+
 export const registerProjectRoutes = async (app: FastifyInstance) => {
   app.get(
     '/api/v1/projects',
     {
       schema: {
         tags: ['Projects'],
-        summary: 'Lista os projetos do portfólio',
+        summary: 'Lista os projetos',
+        description: publicDoc(
+          'Retorna todos os projetos na ordem em que aparecem no portfólio. Guarde o valor `revision`: ele é usado nas escritas.',
+        ),
+        response: {
+          200: snapshotDoc('Lista de projetos.', {
+            type: 'array',
+            items: { $ref: 'Project#' },
+          }, [examples.project]),
+        },
       },
     },
     async () => {
@@ -40,21 +69,25 @@ export const registerProjectRoutes = async (app: FastifyInstance) => {
     {
       schema: {
         tags: ['Projects'],
-        summary: 'Retorna um projeto',
-        params: {
-          type: 'object',
-          required: ['id'],
-          properties: { id: { type: 'string', minLength: 1 } },
+        summary: 'Busca um projeto pelo id',
+        description: publicDoc('Retorna um único projeto.'),
+        params: idDoc,
+        response: {
+          200: snapshotDoc('O projeto encontrado.', {
+            $ref: 'Project#',
+          }),
+          400: err400,
+          404: notFound,
         },
       },
     },
     async (request, reply) => {
       const snapshot = portfolioService.get()
-      const project = snapshot.data.projects.find(
-        (item) => item.id === request.params.id,
+      const item = snapshot.data.projects.find(
+        (entry) => entry.id === request.params.id,
       )
 
-      if (!project) {
+      if (!item) {
         return reply.code(404).send({
           code: 'PROJECT_NOT_FOUND',
           message: 'Projeto não encontrado.',
@@ -64,7 +97,7 @@ export const registerProjectRoutes = async (app: FastifyInstance) => {
       return {
         revision: snapshot.revision,
         updatedAt: snapshot.updatedAt,
-        data: project,
+        data: item,
       }
     },
   )
@@ -75,20 +108,16 @@ export const registerProjectRoutes = async (app: FastifyInstance) => {
       schema: {
         tags: ['Projects'],
         summary: 'Cria um projeto',
-        security: [{ bearerAuth: [] }],
-        body: {
-          type: 'object',
-          required: ['expectedRevision', 'data'],
-          additionalProperties: false,
-          properties: {
-            expectedRevision: { type: 'integer', minimum: 1 },
-            data: { $ref: 'Project#' },
-          },
-        },
+        description: privateDoc(
+          `Cria um novo projeto no portfólio. ${revisionHint}`,
+        ),
+        security: secured,
+        body: writeBody({ $ref: 'Project#' }, examples.project),
         response: {
-          201: { $ref: 'PortfolioSnapshot#' },
-          401: { $ref: 'ErrorResponse#' },
-          409: { $ref: 'ErrorResponse#' },
+          201: savedResponse('Criada. Retorna o portfólio completo com a nova `revision`.'),
+          400: err400,
+          401: err401,
+          409: err409,
         },
       },
     },
@@ -108,27 +137,18 @@ export const registerProjectRoutes = async (app: FastifyInstance) => {
       schema: {
         tags: ['Projects'],
         summary: 'Atualiza um projeto',
-        security: [{ bearerAuth: [] }],
-        params: {
-          type: 'object',
-          required: ['id'],
-          properties: { id: { type: 'string', minLength: 1 } },
-        },
-        body: {
-          type: 'object',
-          required: ['expectedRevision', 'data'],
-          additionalProperties: false,
-          properties: {
-            expectedRevision: { type: 'integer', minimum: 1 },
-            data: { $ref: 'Project#' },
-          },
-        },
+        description: privateDoc(
+          `Troca os dados de um projeto existente. O \`id\` da URL deve ser igual ao \`data.id\` do corpo. ${revisionHint}`,
+        ),
+        security: secured,
+        params: idDoc,
+        body: writeBody({ $ref: 'Project#' }, examples.project),
         response: {
-          200: { $ref: 'PortfolioSnapshot#' },
-          400: { $ref: 'ErrorResponse#' },
-          401: { $ref: 'ErrorResponse#' },
-          404: { $ref: 'ErrorResponse#' },
-          409: { $ref: 'ErrorResponse#' },
+          200: savedResponse(),
+          400: err400,
+          401: err401,
+          404: notFound,
+          409: err409,
         },
       },
     },
@@ -148,25 +168,18 @@ export const registerProjectRoutes = async (app: FastifyInstance) => {
       schema: {
         tags: ['Projects'],
         summary: 'Remove um projeto',
-        security: [{ bearerAuth: [] }],
-        params: {
-          type: 'object',
-          required: ['id'],
-          properties: { id: { type: 'string', minLength: 1 } },
-        },
-        querystring: {
-          type: 'object',
-          required: ['expectedRevision'],
-          additionalProperties: false,
-          properties: {
-            expectedRevision: { type: 'integer', minimum: 1 },
-          },
-        },
+        description: privateDoc(
+          `Apaga um projeto. Não tem corpo: envie \`expectedRevision\` na URL (ex.: \`?expectedRevision=4\`). ${revisionHint}`,
+        ),
+        security: secured,
+        params: idDoc,
+        querystring: revisionQuery,
         response: {
-          200: { $ref: 'PortfolioSnapshot#' },
-          401: { $ref: 'ErrorResponse#' },
-          404: { $ref: 'ErrorResponse#' },
-          409: { $ref: 'ErrorResponse#' },
+          200: savedResponse('Removida. Retorna o portfólio completo com a nova `revision`.'),
+          400: err400,
+          401: err401,
+          404: notFound,
+          409: err409,
         },
       },
     },
@@ -185,26 +198,16 @@ export const registerProjectRoutes = async (app: FastifyInstance) => {
       schema: {
         tags: ['Projects'],
         summary: 'Reordena os projetos',
-        security: [{ bearerAuth: [] }],
-        body: {
-          type: 'object',
-          required: ['expectedRevision', 'ids'],
-          additionalProperties: false,
-          properties: {
-            expectedRevision: { type: 'integer', minimum: 1 },
-            ids: {
-              type: 'array',
-              minItems: 1,
-              uniqueItems: true,
-              items: { type: 'string', minLength: 1 },
-            },
-          },
-        },
+        description: privateDoc(
+          `Define a nova ordem dos projetos. Envie todos os \`id\` atuais, sem repetir e sem faltar nenhum. ${revisionHint}`,
+        ),
+        security: secured,
+        body: orderBody(['projeto-b', 'projeto-a']),
         response: {
-          200: { $ref: 'PortfolioSnapshot#' },
-          400: { $ref: 'ErrorResponse#' },
-          401: { $ref: 'ErrorResponse#' },
-          409: { $ref: 'ErrorResponse#' },
+          200: savedResponse('Reordenada. Retorna o portfólio completo com a nova `revision`.'),
+          400: err400,
+          401: err401,
+          409: err409,
         },
       },
     },

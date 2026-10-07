@@ -8,16 +8,26 @@ import type {
   TextStyle,
 } from '../domain/types.js'
 import { portfolioService } from '../services/portfolio.service.js'
+import { examples } from '../openapi.schemas.js'
+import {
+  err400,
+  err401,
+  err409,
+  privateDoc,
+  publicDoc,
+  revisionHint,
+  savedResponse,
+  secured,
+  snapshotOf as snapshotDoc,
+  writeBody,
+} from '../openapi.docs.js'
 
-const revisionObjectSchema = (data: object) => ({
-  type: 'object',
-  required: ['expectedRevision', 'data'],
-  additionalProperties: false,
-  properties: {
-    expectedRevision: { type: 'integer', minimum: 1 },
-    data,
-  },
-})
+const writeResponses = {
+  200: savedResponse(),
+  400: err400,
+  401: err401,
+  409: err409,
+}
 
 export const registerEditorRoutes = async (app: FastifyInstance) => {
   app.get(
@@ -25,7 +35,13 @@ export const registerEditorRoutes = async (app: FastifyInstance) => {
     {
       schema: {
         tags: ['Editor'],
-        summary: 'Retorna o estado visual usado pelo portfólio',
+        summary: 'Mostra o estado visual do editor',
+        description: publicDoc(
+          'Retorna layouts, ícones, estilos de texto, elementos livres e posição do assistente.',
+        ),
+        response: {
+          200: snapshotDoc('Estado atual do editor.', { $ref: 'EditorState#' }),
+        },
       },
     },
     async () => {
@@ -43,14 +59,13 @@ export const registerEditorRoutes = async (app: FastifyInstance) => {
     {
       schema: {
         tags: ['Editor'],
-        summary: 'Substitui todo o estado visual do editor',
-        security: [{ bearerAuth: [] }],
+        summary: 'Atualiza todo o editor',
+        description: privateDoc(
+          `Substitui o estado visual inteiro de uma vez. Para mudar só uma parte, use os endpoints abaixo (layouts, icons, text-styles, elements, assistant-layout). ${revisionHint}`,
+        ),
+        security: secured,
         body: { $ref: 'EditorWrite#' },
-        response: {
-          200: { $ref: 'PortfolioSnapshot#' },
-          401: { $ref: 'ErrorResponse#' },
-          409: { $ref: 'ErrorResponse#' },
-        },
+        response: writeResponses,
       },
     },
     async (request) => {
@@ -68,18 +83,19 @@ export const registerEditorRoutes = async (app: FastifyInstance) => {
       schema: {
         tags: ['Editor'],
         summary: 'Atualiza os layouts das seções',
-        description:
-          'Substitui o estado hoje salvo em ana_portfolio_section_layouts_v178.',
-        security: [{ bearerAuth: [] }],
-        body: revisionObjectSchema({
-          type: 'object',
-          additionalProperties: { type: 'string', maxLength: 100 },
-        }),
-        response: {
-          200: { $ref: 'PortfolioSnapshot#' },
-          401: { $ref: 'ErrorResponse#' },
-          409: { $ref: 'ErrorResponse#' },
-        },
+        description: privateDoc(
+          `Define o layout de cada seção. Chave = nome da seção, valor = nome do layout. O objeto enviado substitui o atual. ${revisionHint}`,
+        ),
+        security: secured,
+        body: writeBody(
+          {
+            type: 'object',
+            description: 'Pares `seção: layout`.',
+            additionalProperties: { type: 'string', maxLength: 100 },
+          },
+          examples.sectionLayouts,
+        ),
+        response: writeResponses,
       },
     },
     async (request) => {
@@ -96,19 +112,20 @@ export const registerEditorRoutes = async (app: FastifyInstance) => {
     {
       schema: {
         tags: ['Editor'],
-        summary: 'Atualiza ícones configurados por seção',
-        description:
-          'Substitui o estado hoje salvo em ana_portfolio_section_icons_v178.',
-        security: [{ bearerAuth: [] }],
-        body: revisionObjectSchema({
-          type: 'object',
-          additionalProperties: { $ref: 'SectionIconConfig#' },
-        }),
-        response: {
-          200: { $ref: 'PortfolioSnapshot#' },
-          401: { $ref: 'ErrorResponse#' },
-          409: { $ref: 'ErrorResponse#' },
-        },
+        summary: 'Atualiza os ícones das seções',
+        description: privateDoc(
+          `Define o ícone de cada seção. Chave = nome da seção. O objeto enviado substitui o atual. ${revisionHint}`,
+        ),
+        security: secured,
+        body: writeBody(
+          {
+            type: 'object',
+            description: 'Pares `seção: configuração do ícone`.',
+            additionalProperties: { $ref: 'SectionIconConfig#' },
+          },
+          { experience: examples.sectionIcon },
+        ),
+        response: writeResponses,
       },
     },
     async (request) => {
@@ -125,19 +142,20 @@ export const registerEditorRoutes = async (app: FastifyInstance) => {
     {
       schema: {
         tags: ['Editor'],
-        summary: 'Atualiza estilos dos textos editáveis',
-        description:
-          'Substitui os estilos hoje mantidos no localStorage pelo editor de texto.',
-        security: [{ bearerAuth: [] }],
-        body: revisionObjectSchema({
-          type: 'object',
-          additionalProperties: { $ref: 'TextStyle#' },
-        }),
-        response: {
-          200: { $ref: 'PortfolioSnapshot#' },
-          401: { $ref: 'ErrorResponse#' },
-          409: { $ref: 'ErrorResponse#' },
-        },
+        summary: 'Atualiza os estilos de texto',
+        description: privateDoc(
+          `Define fonte, tamanho, cor e alinhamento de cada texto. Chave = nome do texto. O objeto enviado substitui o atual. ${revisionHint}`,
+        ),
+        security: secured,
+        body: writeBody(
+          {
+            type: 'object',
+            description: 'Pares `texto: estilo`.',
+            additionalProperties: { $ref: 'TextStyle#' },
+          },
+          { 'hero.title': examples.textStyle },
+        ),
+        response: writeResponses,
       },
     },
     async (request) => {
@@ -154,20 +172,21 @@ export const registerEditorRoutes = async (app: FastifyInstance) => {
     {
       schema: {
         tags: ['Editor'],
-        summary: 'Atualiza elementos livres do quadro',
-        description:
-          'Ícones, badges, divisores e elementos de layout adicionados e posicionados na prévia.',
-        security: [{ bearerAuth: [] }],
-        body: revisionObjectSchema({
-          type: 'array',
-          maxItems: 500,
-          items: { $ref: 'FreeElement#' },
-        }),
-        response: {
-          200: { $ref: 'PortfolioSnapshot#' },
-          401: { $ref: 'ErrorResponse#' },
-          409: { $ref: 'ErrorResponse#' },
-        },
+        summary: 'Atualiza os elementos livres',
+        description: privateDoc(
+          `Envia a lista **completa** de ícones, badges, divisores e layouts posicionados na página. ${revisionHint}`,
+        ),
+        security: secured,
+        body: writeBody(
+          {
+            type: 'array',
+            maxItems: 500,
+            description: 'Lista completa de elementos. Ela substitui a atual.',
+            items: { $ref: 'FreeElement#' },
+          },
+          [examples.freeElement],
+        ),
+        response: writeResponses,
       },
     },
     async (request) => {
@@ -184,24 +203,25 @@ export const registerEditorRoutes = async (app: FastifyInstance) => {
     {
       schema: {
         tags: ['Editor'],
-        summary: 'Atualiza a posição do robô e do CTA',
-        description:
-          'Substitui o estado hoje salvo em ana_portfolio_assistant_layout_v185.',
-        security: [{ bearerAuth: [] }],
-        body: revisionObjectSchema({
-          type: 'object',
-          required: ['robot', 'cta'],
-          additionalProperties: false,
-          properties: {
-            robot: { $ref: 'Position#' },
-            cta: { $ref: 'Position#' },
+        summary: 'Atualiza a posição do assistente',
+        description: privateDoc(
+          `Define onde ficam o robô e o botão de chamada (CTA), em porcentagem da tela (0 a 100). ${revisionHint}`,
+        ),
+        security: secured,
+        body: writeBody(
+          {
+            type: 'object',
+            required: ['robot', 'cta'],
+            additionalProperties: false,
+            description: 'Posição do robô e do CTA.',
+            properties: {
+              robot: { $ref: 'Position#' },
+              cta: { $ref: 'Position#' },
+            },
           },
-        }),
-        response: {
-          200: { $ref: 'PortfolioSnapshot#' },
-          401: { $ref: 'ErrorResponse#' },
-          409: { $ref: 'ErrorResponse#' },
-        },
+          examples.assistantLayout,
+        ),
+        response: writeResponses,
       },
     },
     async (request) => {
