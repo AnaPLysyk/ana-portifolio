@@ -32,7 +32,7 @@ export const registerAuthRoutes = async (app: FastifyInstance) => {
               type: 'string',
               minLength: 1,
               description: 'Usuário do editor (definido em ADMIN_USERNAME).',
-              examples: ['admin'],
+              examples: ['ana'],
             },
             password: {
               type: 'string',
@@ -41,7 +41,7 @@ export const registerAuthRoutes = async (app: FastifyInstance) => {
               examples: ['sua-senha'],
             },
           },
-          examples: [{ username: 'admin', password: 'sua-senha' }],
+          examples: [{ username: 'ana', password: 'sua-senha' }],
         },
         response: {
           200: {
@@ -63,7 +63,7 @@ export const registerAuthRoutes = async (app: FastifyInstance) => {
               expiresIn: {
                 type: 'string',
                 description: 'Tempo de validade do token.',
-                examples: ['15m'],
+                examples: ['2h'],
               },
             },
           },
@@ -153,7 +153,7 @@ export const registerAuthRoutes = async (app: FastifyInstance) => {
               username: {
                 type: 'string',
                 description: 'Usuário logado.',
-                examples: ['admin'],
+                examples: ['ana'],
               },
             },
           },

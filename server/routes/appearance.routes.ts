@@ -4,7 +4,7 @@ import { portfolioService } from '../services/portfolio.service.js'
 import {
   err400,
   err401,
-  err409,
+  err409Revision,
   privateDoc,
   publicDoc,
   revisionHint,
@@ -53,7 +53,7 @@ export const registerAppearanceRoutes = async (app: FastifyInstance) => {
           200: savedResponse(),
           400: err400,
           401: err401,
-          409: err409,
+          409: err409Revision,
         },
       },
     },

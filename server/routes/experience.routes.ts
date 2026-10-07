@@ -6,7 +6,8 @@ import {
   err400,
   err401,
   err404,
-  err409,
+  err409Create,
+  err409Revision,
   idParam,
   orderBody,
   privateDoc,
@@ -33,7 +34,11 @@ interface RevisionQuery {
   expectedRevision: number
 }
 
-const notFound = err404('EXPERIENCE_NOT_FOUND', 'Experiência não encontrada.')
+const notFound = err404(
+  'EXPERIENCE_NOT_FOUND',
+  'Experiência não encontrada.',
+  'empresa-exemplo',
+)
 const idDoc = idParam('a experiência', 'empresa-exemplo')
 
 export const registerExperienceRoutes = async (app: FastifyInstance) => {
@@ -114,10 +119,12 @@ export const registerExperienceRoutes = async (app: FastifyInstance) => {
         security: secured,
         body: writeBody({ $ref: 'ExperienceItem#' }, examples.experience),
         response: {
-          201: savedResponse('Criada. Retorna o portfólio completo com a nova `revision`.'),
+          201: savedResponse(
+            'Experiência criada. A resposta contém o portfólio completo e a nova `revision`.',
+          ),
           400: err400,
           401: err401,
-          409: err409,
+          409: err409Create('Experiência', 'empresa-exemplo'),
         },
       },
     },
@@ -148,7 +155,7 @@ export const registerExperienceRoutes = async (app: FastifyInstance) => {
           400: err400,
           401: err401,
           404: notFound,
-          409: err409,
+          409: err409Revision,
         },
       },
     },
@@ -175,11 +182,13 @@ export const registerExperienceRoutes = async (app: FastifyInstance) => {
         params: idDoc,
         querystring: revisionQuery,
         response: {
-          200: savedResponse('Removida. Retorna o portfólio completo com a nova `revision`.'),
+          200: savedResponse(
+            'Experiência removida. A resposta contém o portfólio completo e a nova `revision`.',
+          ),
           400: err400,
           401: err401,
           404: notFound,
-          409: err409,
+          409: err409Revision,
         },
       },
     },
@@ -204,10 +213,12 @@ export const registerExperienceRoutes = async (app: FastifyInstance) => {
         security: secured,
         body: orderBody(['empresa-b', 'empresa-a']),
         response: {
-          200: savedResponse('Reordenada. Retorna o portfólio completo com a nova `revision`.'),
+          200: savedResponse(
+            'Experiências reordenadas. A resposta contém o portfólio completo e a nova `revision`.',
+          ),
           400: err400,
           401: err401,
-          409: err409,
+          409: err409Revision,
         },
       },
     },

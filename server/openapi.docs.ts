@@ -21,6 +21,12 @@ export const expectedRevisionField = {
 
 // --- Erros -----------------------------------------------------------------
 
+const errorExample = (code: string, message: string, details?: object) => ({
+  code,
+  message,
+  ...(details ? { details } : {}),
+})
+
 const errorBody = (
   description: string,
   code: string,
@@ -44,6 +50,7 @@ const errorBody = (
       ...(details ? { examples: [details] } : {}),
     },
   },
+  examples: [errorExample(code, message, details)],
 })
 
 export const err400 = errorBody(
@@ -58,17 +65,41 @@ export const err401 = errorBody(
   'Autenticação obrigatória ou token inválido.',
 )
 
-export const err404 = (code = 'RESOURCE_NOT_FOUND', message = 'Item não encontrado.') =>
+export const err404 = (
+  code = 'RESOURCE_NOT_FOUND',
+  message = 'Item não encontrado.',
+  id = 'exemplo-1',
+) =>
   errorBody('Não encontrado: o `id` informado não existe.', code, message, {
-    id: 'empresa-exemplo',
+    id,
   })
 
-export const err409 = errorBody(
-  'Conflito: `expectedRevision` está desatualizado (ou o `id` já existe). Faça um novo GET e tente de novo.',
+export const err409Revision = errorBody(
+  'Conflito de revisão: alguém alterou os dados depois do último GET. Faça um novo GET e tente de novo.',
   'REVISION_CONFLICT',
   'O portfólio foi alterado depois que esta edição começou. Recarregue a revisão atual antes de salvar.',
   { expectedRevision: 3, currentRevision: 4 },
 )
+
+export const err409AlreadyExists = (
+  resource = 'Recurso',
+  id = 'exemplo-1',
+) =>
+  errorBody(
+    'ID duplicado: já existe um item com esse `id`.',
+    'RESOURCE_ALREADY_EXISTS',
+    `${resource} já existe.`,
+    { id },
+  )
+
+export const err409Create = (resource: string, id: string) => ({
+  description:
+    'Pode ser conflito de revisão ou tentativa de criar um `id` que já existe.',
+  oneOf: [
+    err409Revision,
+    err409AlreadyExists(resource, id),
+  ],
+})
 
 // --- Respostas de sucesso --------------------------------------------------
 
@@ -94,7 +125,10 @@ export const snapshotOf = (description: string, data: object, example?: unknown)
 })
 
 /** Resposta padrão de escrita: o portfólio completo, já com a nova revision. */
-export const savedResponse = (description = 'Salvo. Retorna o portfólio completo com a nova `revision`.') => ({
+export const savedResponse = (
+  description =
+    'Alteração realizada. A resposta contém o portfólio completo e a nova `revision`.',
+) => ({
   description,
   $ref: 'PortfolioSnapshot#',
 })

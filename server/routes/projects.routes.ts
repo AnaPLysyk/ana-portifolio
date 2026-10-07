@@ -6,7 +6,8 @@ import {
   err400,
   err401,
   err404,
-  err409,
+  err409Create,
+  err409Revision,
   idParam,
   orderBody,
   privateDoc,
@@ -33,7 +34,11 @@ interface RevisionQuery {
   expectedRevision: number
 }
 
-const notFound = err404('PROJECT_NOT_FOUND', 'Projeto não encontrado.')
+const notFound = err404(
+  'PROJECT_NOT_FOUND',
+  'Projeto não encontrado.',
+  'projeto-exemplo',
+)
 const idDoc = idParam('o projeto', 'projeto-exemplo')
 
 export const registerProjectRoutes = async (app: FastifyInstance) => {
@@ -114,10 +119,12 @@ export const registerProjectRoutes = async (app: FastifyInstance) => {
         security: secured,
         body: writeBody({ $ref: 'Project#' }, examples.project),
         response: {
-          201: savedResponse('Criada. Retorna o portfólio completo com a nova `revision`.'),
+          201: savedResponse(
+            'Projeto criado. A resposta contém o portfólio completo e a nova `revision`.',
+          ),
           400: err400,
           401: err401,
-          409: err409,
+          409: err409Create('Projeto', 'projeto-exemplo'),
         },
       },
     },
@@ -148,7 +155,7 @@ export const registerProjectRoutes = async (app: FastifyInstance) => {
           400: err400,
           401: err401,
           404: notFound,
-          409: err409,
+          409: err409Revision,
         },
       },
     },
@@ -175,11 +182,13 @@ export const registerProjectRoutes = async (app: FastifyInstance) => {
         params: idDoc,
         querystring: revisionQuery,
         response: {
-          200: savedResponse('Removida. Retorna o portfólio completo com a nova `revision`.'),
+          200: savedResponse(
+            'Projeto removido. A resposta contém o portfólio completo e a nova `revision`.',
+          ),
           400: err400,
           401: err401,
           404: notFound,
-          409: err409,
+          409: err409Revision,
         },
       },
     },
@@ -204,10 +213,12 @@ export const registerProjectRoutes = async (app: FastifyInstance) => {
         security: secured,
         body: orderBody(['projeto-b', 'projeto-a']),
         response: {
-          200: savedResponse('Reordenada. Retorna o portfólio completo com a nova `revision`.'),
+          200: savedResponse(
+            'Projetos reordenados. A resposta contém o portfólio completo e a nova `revision`.',
+          ),
           400: err400,
           401: err401,
-          409: err409,
+          409: err409Revision,
         },
       },
     },

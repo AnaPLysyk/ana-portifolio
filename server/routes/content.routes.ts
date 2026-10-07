@@ -12,7 +12,7 @@ import { examples } from '../openapi.schemas.js'
 import {
   err400,
   err401,
-  err409,
+  err409Revision,
   privateDoc,
   publicDoc,
   revisionHint,
@@ -47,7 +47,7 @@ const writeResponses = {
   200: savedResponse(),
   400: err400,
   401: err401,
-  409: err409,
+  409: err409Revision,
 }
 
 const listHint = (what: string) =>

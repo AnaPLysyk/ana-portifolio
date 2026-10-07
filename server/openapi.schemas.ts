@@ -125,12 +125,12 @@ export const examples = {
   contentBlocks: { 'hero.cta': 'Fale comigo', 'footer.note': 'Obrigada pela visita!' },
 }
 
-const id = (what: string) => ({
+const id = (what: string, example: string) => ({
   type: 'string',
   minLength: 1,
   maxLength: 100,
-  description: `Identificador único d${what}, em texto simples (ex.: "empresa-exemplo"). Não pode repetir.`,
-  examples: ['exemplo-1'],
+  description: `Identificador único d${what}, em texto simples (ex.: "${example}"). Não pode repetir.`,
+  examples: [example],
 })
 
 const text = (description: string, example: string, max: number, min = 1) => ({
@@ -260,7 +260,7 @@ export const registerOpenApiSchemas = (app: FastifyInstance) => {
     required: ['id', 'title', 'description', 'tags'],
     additionalProperties: false,
     properties: {
-      id: id('a competência'),
+      id: id('a competência', 'automacao-testes'),
       title: text('Nome da competência.', 'Automação de testes', 160),
       description: text(
         'Explicação curta da competência.',
@@ -288,7 +288,7 @@ export const registerOpenApiSchemas = (app: FastifyInstance) => {
     ],
     additionalProperties: false,
     properties: {
-      id: id('o projeto'),
+      id: id('o projeto', 'projeto-exemplo'),
       name: text('Nome do projeto.', 'Projeto Exemplo', 160),
       description: text('O que o projeto faz.', examples.project.description, 3000),
       stack: list('Tecnologias usadas.', ['React', 'TypeScript', 'Fastify']),
@@ -321,7 +321,7 @@ export const registerOpenApiSchemas = (app: FastifyInstance) => {
     required: ['id', 'period', 'company', 'role', 'summary', 'details'],
     additionalProperties: false,
     properties: {
-      id: id('a experiência'),
+      id: id('a experiência', 'empresa-exemplo'),
       period: text('Período em texto livre.', '2024 — 2025', 120),
       company: text('Nome da empresa.', 'Empresa Exemplo', 160),
       role: text('Cargo exercido.', 'QA Analyst', 160),
@@ -338,7 +338,7 @@ export const registerOpenApiSchemas = (app: FastifyInstance) => {
     required: ['id', 'title', 'institution', 'status'],
     additionalProperties: false,
     properties: {
-      id: id('a formação'),
+      id: id('a formação', 'curso-exemplo'),
       title: text('Nome do curso ou formação.', examples.education.title, 200),
       institution: text('Instituição de ensino.', 'Instituição Exemplo', 160),
       status: text('Situação.', 'Concluído', 80),
@@ -361,7 +361,7 @@ export const registerOpenApiSchemas = (app: FastifyInstance) => {
     required: ['id', 'title', 'description'],
     additionalProperties: false,
     properties: {
-      id: id('o destaque'),
+      id: id('o destaque', 'destaque-exemplo'),
       title: text('Título do destaque.', examples.highlight.title, 200),
       description: text('Explicação do destaque.', examples.highlight.description, 3000),
       href: {
@@ -505,7 +505,7 @@ export const registerOpenApiSchemas = (app: FastifyInstance) => {
     required: ['id', 'section', 'type'],
     additionalProperties: false,
     properties: {
-      id: id('o elemento'),
+      id: id('o elemento', 'badge-1'),
       section: text('Seção onde o elemento aparece.', 'hero', 100),
       type: {
         type: 'string',
@@ -554,7 +554,7 @@ export const registerOpenApiSchemas = (app: FastifyInstance) => {
     required: ['id', 'title', 'category', 'keywords', 'content', 'enabled'],
     additionalProperties: false,
     properties: {
-      id: id('o contexto'),
+      id: id('o contexto', 'contato'),
       title: text('Título do assunto.', 'Como entrar em contato', 160),
       category: text('Categoria.', 'Contato', 100),
       keywords: list('Palavras que ativam este assunto.', ['contato', 'email']),

@@ -95,6 +95,8 @@ export const buildApp = async () => {
     uiConfig: {
       docExpansion: 'list',
       deepLinking: true,
+      defaultModelRendering: 'model',
+      defaultModelsExpandDepth: -1,
     },
   })
 
