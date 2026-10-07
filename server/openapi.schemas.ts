@@ -743,7 +743,7 @@ export const registerOpenApiSchemas = (app: FastifyInstance) => {
       revision: {
         type: 'integer',
         minimum: 1,
-        description: 'Versão atual dos dados. Use em `expectedRevision` ao salvar.',
+        description: 'Versão atual dos dados.',
         examples: [5],
       },
       updatedAt: {

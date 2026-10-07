@@ -3,19 +3,18 @@
 export const secured = [{ bearerAuth: [] }]
 
 export const publicDoc = (text: string) =>
-  `🔓 **Público** — não precisa de login.\n\n${text}`
+  `🔓 **Não precisa de login.**\n\n${text}`
 
 export const privateDoc = (text: string) =>
-  `🔒 **Requer Bearer Token** — faça login em \`POST /api/v1/auth/login\` e cole o \`accessToken\` no botão **Authorize**.\n\n${text}`
+  `🔒 **Precisa de login.**\n\n${text}`
 
 export const revisionHint =
-  'Antes de enviar, consulte o GET correspondente e use o valor `revision` retornado em `expectedRevision`.'
+  'Use em `expectedRevision` a `revision` do último GET.'
 
 export const expectedRevisionField = {
   type: 'integer',
   minimum: 1,
-  description:
-    'Versão atual dos dados. Use o valor `revision` retornado pelo último GET.',
+  description: 'Use a `revision` retornada pelo último GET.',
   examples: [4],
 } as const
 
@@ -54,13 +53,13 @@ const errorBody = (
 })
 
 export const err400 = errorBody(
-  'Dados inválidos: algum campo está faltando ou fora do formato.',
+  'Algum dado enviado está incorreto ou faltando.',
   'VALIDATION_ERROR',
   'A requisição não atende ao contrato da API.',
 )
 
 export const err401 = errorBody(
-  'Sem login: envie o Bearer Token (botão Authorize).',
+  'Precisa fazer login ou o token não é mais válido.',
   'UNAUTHORIZED',
   'Autenticação obrigatória ou token inválido.',
 )
@@ -70,12 +69,12 @@ export const err404 = (
   message = 'Item não encontrado.',
   id = 'exemplo-1',
 ) =>
-  errorBody('Não encontrado: o `id` informado não existe.', code, message, {
+  errorBody('O `id` informado não existe.', code, message, {
     id,
   })
 
 export const err409Revision = errorBody(
-  'Conflito de revisão: alguém alterou os dados depois do último GET. Faça um novo GET e tente de novo.',
+  'Os dados mudaram desde o último GET. Faça um novo GET e tente de novo.',
   'REVISION_CONFLICT',
   'O portfólio foi alterado depois que esta edição começou. Recarregue a revisão atual antes de salvar.',
   { expectedRevision: 3, currentRevision: 4 },
@@ -94,7 +93,7 @@ export const err409AlreadyExists = (
 
 export const err409Create = (resource: string, id: string) => ({
   description:
-    'Pode ser conflito de revisão ou tentativa de criar um `id` que já existe.',
+    'Os dados mudaram desde o último GET ou já existe um item com esse `id`.',
   oneOf: [
     err409Revision,
     err409AlreadyExists(resource, id),
@@ -111,7 +110,7 @@ export const snapshotOf = (description: string, data: object, example?: unknown)
   properties: {
     revision: {
       type: 'integer',
-      description: 'Versão atual dos dados. Use em `expectedRevision` ao salvar.',
+      description: 'Versão atual dos dados.',
       examples: [4],
     },
     updatedAt: {
@@ -140,7 +139,7 @@ export const idParam = (what: string, example: string) => ({
     id: {
       type: 'string',
       minLength: 1,
-      description: `ID d${what}. Use o campo \`id\` retornado na listagem.`,
+      description: `Identificador único d${what}.`,
       examples: [example],
     },
   },
@@ -154,7 +153,7 @@ export const revisionQuery = {
     expectedRevision: {
       ...expectedRevisionField,
       description:
-        'Versão atual dos dados. Use o valor `revision` retornado pelo último GET (vai na URL, ex.: `?expectedRevision=4`).',
+        'Use a `revision` do último GET. Vai na URL, por exemplo: `?expectedRevision=4`.',
     },
   },
 } as const
@@ -167,7 +166,10 @@ export const writeBody = (data: object, example: unknown, description?: string) 
   additionalProperties: false,
   properties: {
     expectedRevision: expectedRevisionField,
-    data,
+    data: {
+      description: 'Dados que serão salvos.',
+      ...data,
+    },
   },
   examples: [{ expectedRevision: 4, data: example }],
 })
@@ -184,7 +186,7 @@ export const orderBody = (ids: string[]) => ({
       type: 'array',
       minItems: 1,
       uniqueItems: true,
-      description: 'IDs na ordem desejada (o primeiro aparece primeiro).',
+      description: 'IDs na ordem em que os itens devem aparecer.',
       items: { type: 'string', minLength: 1 },
       examples: [ids],
     },
