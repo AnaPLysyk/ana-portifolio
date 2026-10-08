@@ -1,0 +1,250 @@
+/* ===== v183 — cor única do sistema + editor sem controles legados ===== */
+
+:root{
+  --ui-accent-v183:var(--system-accent,var(--accent,#6ea8ff));
+}
+
+/* O builder antigo e a barra antiga de formatação não competem mais com
+   Biblioteca de elementos + toolbar contextual. */
+#editorBuilderV156,
+#editorWordToolsV100{
+  display:none!important;
+}
+
+/* ───────── Botão "Editar textos / Concluir" ───────── */
+#editorStudio .editor-action-card-v85{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  gap:12px!important;
+  align-items:center!important;
+  padding:12px 0!important;
+  margin:0!important;
+  border:0!important;
+  border-top:1px solid color-mix(in srgb,var(--line) 84%,transparent)!important;
+  border-bottom:1px solid color-mix(in srgb,var(--line) 84%,transparent)!important;
+  border-radius:0!important;
+  background:transparent!important;
+}
+
+#editorStudio .editor-action-card-v85>div{
+  min-width:0!important;
+}
+
+#editorStudio .editor-action-card-v85 strong{
+  color:var(--text)!important;
+  font-size:.67rem!important;
+  line-height:1.3!important;
+}
+
+#editorStudio .editor-action-card-v85 p{
+  max-width:225px!important;
+  margin:3px 0 0!important;
+  color:var(--muted)!important;
+  font-size:.54rem!important;
+  line-height:1.45!important;
+}
+
+#editorStudio #editorTextToggleV82{
+  width:auto!important;
+  min-width:104px!important;
+  max-width:118px!important;
+  min-height:33px!important;
+  padding:0 10px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:6px!important;
+  border:1px solid color-mix(in srgb,var(--ui-accent-v183) 42%,var(--line))!important;
+  border-radius:9px!important;
+  background:color-mix(in srgb,var(--ui-accent-v183) 9%,transparent)!important;
+  color:var(--ui-accent-v183)!important;
+  box-shadow:none!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:clip!important;
+  font-size:.54rem!important;
+  font-weight:650!important;
+  line-height:1!important;
+}
+
+#editorStudio #editorTextToggleV82 svg{
+  width:13px!important;
+  height:13px!important;
+  flex:0 0 13px!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.8!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+
+#editorStudio #editorTextToggleV82:hover,
+#editorStudio #editorTextToggleV82:focus-visible{
+  background:color-mix(in srgb,var(--ui-accent-v183) 15%,transparent)!important;
+  border-color:color-mix(in srgb,var(--ui-accent-v183) 60%,var(--line))!important;
+  outline:none!important;
+}
+
+body.editor-page-text-mode #editorStudio #editorTextToggleV82{
+  background:color-mix(in srgb,var(--ui-accent-v183) 14%,transparent)!important;
+  color:var(--ui-accent-v183)!important;
+}
+
+/* ───────── UMA única cor para o editor ───────── */
+#editorStudio .editor-studio-tab.is-active,
+#editorStudio .editor-studio-tabs-v85 button.is-active,
+#editorStudio .editor-studio-tabs-v85 button[aria-selected="true"]{
+  color:var(--ui-accent-v183)!important;
+  border-bottom-color:var(--ui-accent-v183)!important;
+}
+
+#editorStudio .editor-studio-tab.is-active::after,
+#editorStudio .editor-studio-tabs-v85 button.is-active::after{
+  background:var(--ui-accent-v183)!important;
+}
+
+#editorStudio .editor-studio-primary,
+#editorStudio .editor-footer-save-v100,
+#editorStudio .editor-save,
+#editorStudio .element-save-v181{
+  color:var(--ui-accent-v183)!important;
+  border-color:color-mix(in srgb,var(--ui-accent-v183) 42%,var(--line))!important;
+  background:color-mix(in srgb,var(--ui-accent-v183) 9%,transparent)!important;
+}
+
+#editorStudio .editor-footer-save-v100{
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb,var(--ui-accent-v183) 10%,transparent),
+    0 0 18px color-mix(in srgb,var(--ui-accent-v183) 10%,transparent)!important;
+}
+
+#editorStudio input[type="range"]{
+  accent-color:var(--ui-accent-v183)!important;
+}
+
+/* ───────── Edição na tela respeita a mesma cor ───────── */
+body.editor-page-text-mode [contenteditable="true"]:not([data-modal-managed]){
+  outline:1px dashed color-mix(in srgb,var(--ui-accent-v183) 58%,transparent)!important;
+  outline-offset:4px!important;
+  border-radius:4px!important;
+  caret-color:var(--ui-accent-v183)!important;
+}
+
+body.editor-page-text-mode [contenteditable="true"]:not([data-modal-managed]):hover,
+body.editor-page-text-mode [contenteditable="true"]:not([data-modal-managed]):focus{
+  outline-color:var(--ui-accent-v183)!important;
+  background:color-mix(in srgb,var(--ui-accent-v183) 5%,transparent)!important;
+}
+
+body.editor-page-text-mode [contenteditable="true"].text-selected-v182{
+  outline-style:solid!important;
+  outline-color:var(--ui-accent-v183)!important;
+  background:color-mix(in srgb,var(--ui-accent-v183) 6%,transparent)!important;
+}
+
+/* Toolbar inferior do quadro */
+.editor-canvas-toolbar-v156 button:hover,
+.editor-canvas-toolbar-v156 button:focus-visible,
+.editor-canvas-toolbar-v156 .is-primary-v156{
+  color:var(--ui-accent-v183)!important;
+}
+
+.editor-canvas-toolbar-v156 button:focus-visible{
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--ui-accent-v183) 25%,transparent)!important;
+}
+
+/* ───────── O portfólio também respeita a mesma cor ───────── */
+.eyebrow,
+.hero-kicker-v72,
+.about-v52-kicker,
+.about-v52-section-label,
+.competencies-v59-index,
+.repo-index,
+.timeline-period-v66{
+  color:color-mix(in srgb,var(--ui-accent-v183) 76%,var(--text) 24%)!important;
+}
+
+.hero-kicker-v72::before,
+.eyebrow::before{
+  background:linear-gradient(
+    90deg,
+    var(--ui-accent-v183),
+    color-mix(in srgb,var(--ui-accent-v183) 58%,#fff 42%)
+  )!important;
+}
+
+.timeline-v66::before{
+  background:linear-gradient(
+    180deg,
+    var(--ui-accent-v183),
+    color-mix(in srgb,var(--ui-accent-v183) 58%,#fff 42%),
+    color-mix(in srgb,var(--ui-accent-v183) 72%,transparent)
+  )!important;
+}
+
+.timeline-dot-v66{
+  border-color:color-mix(in srgb,var(--ui-accent-v183) 62%,var(--line))!important;
+  box-shadow:
+    0 0 0 4px color-mix(in srgb,var(--ui-accent-v183) 12%,transparent),
+    0 0 18px color-mix(in srgb,var(--ui-accent-v183) 24%,transparent)!important;
+}
+
+.repo-plus,
+.github-profile,
+.repo-bottom a,
+.hero-meta a{
+  color:var(--ui-accent-v183)!important;
+}
+
+.repo-visibility,
+.timeline-tags-v66 span,
+.career-highlights span,
+.chat-suggestions button{
+  border-color:color-mix(in srgb,var(--ui-accent-v183) 34%,var(--line))!important;
+  background:color-mix(in srgb,var(--ui-accent-v183) 9%,transparent)!important;
+}
+
+/* elementos adicionados */
+.generated-element-v181{
+  --element-color:var(--ui-accent-v183);
+}
+.generated-element-v181[style*="--element-color"]{
+  opacity:1!important;
+}
+
+/* ───────── Tema claro ───────── */
+body.portfolio-theme-light{
+  --ui-accent-v183:var(--system-accent,var(--accent,#4f82cf));
+}
+
+body.portfolio-theme-light #editorStudio #editorTextToggleV82{
+  background:color-mix(in srgb,var(--ui-accent-v183) 7%,#fff 93%)!important;
+  color:color-mix(in srgb,var(--ui-accent-v183) 78%,#17324f 22%)!important;
+  border-color:color-mix(in srgb,var(--ui-accent-v183) 38%,rgba(44,72,110,.14))!important;
+}
+
+body.portfolio-theme-light #editorStudio .editor-studio-tab.is-active,
+body.portfolio-theme-light #editorStudio .editor-studio-tabs-v85 button.is-active,
+body.portfolio-theme-light #editorStudio .editor-studio-tabs-v85 button[aria-selected="true"]{
+  color:color-mix(in srgb,var(--ui-accent-v183) 82%,#183451 18%)!important;
+}
+
+body.portfolio-theme-light .eyebrow,
+body.portfolio-theme-light .hero-kicker-v72,
+body.portfolio-theme-light .about-v52-kicker,
+body.portfolio-theme-light .about-v52-section-label,
+body.portfolio-theme-light .competencies-v59-index,
+body.portfolio-theme-light .repo-index,
+body.portfolio-theme-light .timeline-period-v66{
+  color:color-mix(in srgb,var(--ui-accent-v183) 80%,#213c5c 20%)!important;
+}
+
+@media(max-width:480px){
+  #editorStudio .editor-action-card-v85{
+    grid-template-columns:1fr!important;
+  }
+  #editorStudio #editorTextToggleV82{
+    width:100%!important;
+    max-width:none!important;
+  }
+}

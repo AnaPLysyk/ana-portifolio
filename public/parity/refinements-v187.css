@@ -1,0 +1,419 @@
+/* ===== v187 — editor lado a lado estável + visualização pública real ===== */
+
+:root{
+  --editor-side-width-v187:var(--editor-panel-width-v93,460px);
+  --editor-side-gap-v187:20px;
+}
+
+/* =========================================================
+   EDIÇÃO EM DESKTOP/NOTEBOOK
+   O painel ocupa sua coluna. O portfólio continua inteiro.
+   Browser zoom não troca o editor para modal: só dispositivo
+   realmente estreito/coarse muda de comportamento.
+   ========================================================= */
+@media (pointer:fine){
+  body.editor-studio-open:not(.editor-public-preview-v187){
+    padding-right:calc(var(--editor-side-width-v187) + var(--editor-side-gap-v187))!important;
+    overflow-x:auto!important;
+  }
+
+  body.editor-studio-open:not(.editor-public-preview-v187) #editorStudio.editor-studio-v85{
+    position:fixed!important;
+    top:10px!important;
+    right:10px!important;
+    bottom:10px!important;
+    left:auto!important;
+    width:var(--editor-side-width-v187)!important;
+    min-width:360px!important;
+    max-width:min(560px,46vw)!important;
+    height:auto!important;
+    max-height:calc(100vh - 20px)!important;
+    transform:none!important;
+    z-index:12002!important;
+  }
+
+  /* não alteramos o conteúdo para uma "versão de editor" */
+  body.editor-studio-open:not(.editor-public-preview-v187) .container{
+    width:min(var(--max),calc(100% - 44px))!important;
+    max-width:none!important;
+  }
+
+  body.editor-studio-open:not(.editor-public-preview-v187) .hero-v70{
+    grid-template-columns:minmax(0,.94fr) minmax(340px,1.06fr)!important;
+    gap:30px!important;
+    align-items:center!important;
+  }
+
+  body.editor-studio-open:not(.editor-public-preview-v187) .agent-stage{
+    display:grid!important;
+  }
+
+  body.editor-studio-open:not(.editor-public-preview-v187) .nav{
+    gap:24px!important;
+  }
+
+  body.editor-studio-open:not(.editor-public-preview-v187) .nav-links{
+    gap:clamp(10px,1.3vw,18px)!important;
+  }
+
+  body.editor-studio-open:not(.editor-public-preview-v187) .brand span strong{
+    max-width:none!important;
+    overflow:visible!important;
+    text-overflow:clip!important;
+  }
+
+  body.editor-studio-open:not(.editor-public-preview-v187) .portfolio-lock{
+    left:18px!important;
+    right:auto!important;
+  }
+
+  /* toolbar pertence à área de preview e nunca cobre o painel */
+  body.editor-studio-open:not(.editor-public-preview-v187) .editor-canvas-toolbar-v156{
+    left:calc((100vw - var(--editor-side-width-v187) - var(--editor-side-gap-v187))/2)!important;
+    right:auto!important;
+    transform:translateX(-50%)!important;
+  }
+}
+
+/* painel mais aproveitável */
+#editorStudio .editor-studio-body-v85{
+  min-width:0!important;
+}
+
+#editorStudio .editor-studio-section,
+#editorStudio .editor-studio-section-v85,
+#editorStudio .element-builder-v181,
+#editorStudio .assistant-layout-editor-v185{
+  min-width:0!important;
+}
+
+#editorStudio .element-field-row-v181,
+#editorStudio .assistant-layout-row-v185,
+#editorStudio .design-row-v178{
+  min-width:0!important;
+}
+
+#editorStudio input,
+#editorStudio select,
+#editorStudio textarea,
+#editorStudio button{
+  max-width:100%!important;
+}
+
+/* =========================================================
+   VISUALIZAR = MESMA PÁGINA PÚBLICA
+   O editor continua autenticado internamente, mas nenhuma
+   regra visual do editor pode alterar o portfólio.
+   ========================================================= */
+body.editor-public-preview-v187{
+  padding-right:0!important;
+  overflow:auto!important;
+}
+
+body.editor-public-preview-v187::after{
+  display:none!important;
+  content:none!important;
+}
+
+body.editor-public-preview-v187 #editorStudio,
+body.editor-public-preview-v187 #aiContextPanel,
+body.editor-public-preview-v187 .assistant-element-label-v185,
+body.editor-public-preview-v187 .text-context-v182,
+body.editor-public-preview-v187 .inline-text-tools-v156{
+  display:none!important;
+}
+
+body.editor-public-preview-v187 .portfolio-lock{
+  left:auto!important;
+  right:18px!important;
+}
+
+body.editor-public-preview-v187 .container{
+  width:min(var(--max),calc(100% - 44px))!important;
+  max-width:none!important;
+}
+
+body.editor-public-preview-v187 .nav{
+  gap:24px!important;
+}
+
+body.editor-public-preview-v187 .brand span strong{
+  max-width:none!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+}
+
+body.editor-public-preview-v187 .hero-v70{
+  grid-template-columns:minmax(0,.94fr) minmax(420px,1.06fr)!important;
+  gap:42px!important;
+  min-height:calc(100vh - 74px)!important;
+  align-items:center!important;
+}
+
+body.editor-public-preview-v187 .agent-stage{
+  display:grid!important;
+}
+
+/* nada editável/arrastável durante a visualização */
+body.editor-public-preview-v187 [contenteditable="true"],
+body.editor-public-preview-v187 [data-was-editable-v187="1"]{
+  outline:none!important;
+  background:transparent!important;
+  cursor:auto!important;
+}
+
+body.editor-public-preview-v187 .free-icon-v184,
+body.editor-public-preview-v187 #agentButton,
+body.editor-public-preview-v187 #brainShell .agent-follow-hint-v180{
+  cursor:default!important;
+}
+
+body.editor-public-preview-v187 .free-icon-v184::before,
+body.editor-public-preview-v187 #brainShell .agent-follow-hint-v180::before,
+body.editor-public-preview-v187 .assistant-robot-frame-v185{
+  display:none!important;
+}
+
+/* O único elemento de editor visível no preview é "voltar a editar". */
+body.editor-public-preview-v187 .editor-canvas-toolbar-v156{
+  display:flex!important;
+  left:auto!important;
+  right:18px!important;
+  bottom:18px!important;
+  width:auto!important;
+  transform:none!important;
+  padding:4px!important;
+  border-radius:11px!important;
+  opacity:.28!important;
+  transition:opacity .18s ease!important;
+}
+
+body.editor-public-preview-v187 .editor-canvas-toolbar-v156:hover,
+body.editor-public-preview-v187 .editor-canvas-toolbar-v156:focus-within{
+  opacity:1!important;
+}
+
+body.editor-public-preview-v187 .editor-canvas-toolbar-v156 .edit-only-v156{
+  display:none!important;
+}
+
+body.editor-public-preview-v187 .editor-canvas-toolbar-v156 .preview-only-v156{
+  display:grid!important;
+}
+
+/* restaura responsividade pública normal */
+@media(max-width:1100px){
+  body.editor-public-preview-v187 .container{
+    width:min(100% - 40px,var(--max))!important;
+  }
+
+  body.editor-public-preview-v187 .hero-v70{
+    grid-template-columns:1fr!important;
+    gap:24px!important;
+    min-height:auto!important;
+    padding:68px 0 72px!important;
+  }
+
+  body.editor-public-preview-v187 .hero-v70 .agent-stage{
+    display:grid!important;
+    width:min(620px,100%)!important;
+    min-height:430px!important;
+    margin:0 auto!important;
+  }
+}
+
+@media(max-width:760px){
+  body.editor-public-preview-v187 .container{
+    width:min(100% - 28px,var(--max))!important;
+  }
+
+  body.editor-public-preview-v187 .hero-v70{
+    padding-top:40px!important;
+    padding-bottom:44px!important;
+    gap:10px!important;
+  }
+}
+
+/* =========================================================
+   PREVIEW DE DISPOSITIVO — LEVE, SEM REPARENT/RESIZE LOOP
+   ========================================================= */
+.preview-device-switcher-v187{
+  position:fixed!important;
+  z-index:12005!important;
+  display:none!important;
+  align-items:center!important;
+  gap:4px!important;
+  top:12px!important;
+  left:calc((100vw - var(--editor-side-width-v187) - var(--editor-side-gap-v187))/2)!important;
+  transform:translateX(-50%)!important;
+  padding:4px!important;
+  border:1px solid rgba(130,154,193,.18)!important;
+  border-radius:11px!important;
+  background:rgba(5,10,19,.90)!important;
+  box-shadow:0 9px 24px rgba(0,0,0,.20)!important;
+  backdrop-filter:blur(12px)!important;
+}
+
+body.editor-studio-open:not(.editor-public-preview-v187) .preview-device-switcher-v187{
+  display:flex!important;
+}
+
+body.portfolio-theme-light .preview-device-switcher-v187{
+  background:rgba(250,252,255,.94)!important;
+  border-color:rgba(50,78,116,.15)!important;
+  box-shadow:0 8px 20px rgba(45,65,94,.10)!important;
+}
+
+.preview-device-switcher-v187 button{
+  width:30px!important;
+  height:28px!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:7px!important;
+  background:transparent!important;
+  color:#7f91ac!important;
+  cursor:pointer!important;
+}
+
+.preview-device-switcher-v187 button.is-active{
+  color:var(--system-accent)!important;
+  background:var(--system-accent-soft)!important;
+}
+
+.preview-device-switcher-v187 svg{
+  width:15px!important;
+  height:15px!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.7!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+
+.preview-device-label-v187{
+  min-width:56px!important;
+  padding:0 5px!important;
+  color:#7d90ac!important;
+  font:600 .47rem "IBM Plex Mono",monospace!important;
+  text-align:center!important;
+}
+
+/* tablet simulado: não move DOM, só compõe a página nessa largura */
+@media (pointer:fine){
+  body.editor-studio-open.editor-device-tablet-v187:not(.editor-public-preview-v187) > header.topbar,
+  body.editor-studio-open.editor-device-tablet-v187:not(.editor-public-preview-v187) > main,
+  body.editor-studio-open.editor-device-tablet-v187:not(.editor-public-preview-v187) > footer{
+    width:min(768px,calc(100vw - var(--editor-side-width-v187) - var(--editor-side-gap-v187)))!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+  }
+
+  body.editor-studio-open.editor-device-tablet-v187:not(.editor-public-preview-v187) .hero-v70{
+    grid-template-columns:1fr!important;
+    gap:18px!important;
+    min-height:auto!important;
+  }
+
+  body.editor-studio-open.editor-device-tablet-v187:not(.editor-public-preview-v187) .hero-v70 .agent-stage{
+    width:min(620px,100%)!important;
+    min-height:430px!important;
+    margin:0 auto!important;
+  }
+
+  /* mobile simulado */
+  body.editor-studio-open.editor-device-mobile-v187:not(.editor-public-preview-v187) > header.topbar,
+  body.editor-studio-open.editor-device-mobile-v187:not(.editor-public-preview-v187) > main,
+  body.editor-studio-open.editor-device-mobile-v187:not(.editor-public-preview-v187) > footer{
+    width:min(390px,calc(100vw - var(--editor-side-width-v187) - var(--editor-side-gap-v187)))!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+  }
+
+  body.editor-studio-open.editor-device-mobile-v187:not(.editor-public-preview-v187) .container{
+    width:calc(100% - 28px)!important;
+  }
+
+  body.editor-studio-open.editor-device-mobile-v187:not(.editor-public-preview-v187) .hero-v70{
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+    min-height:auto!important;
+    padding-top:40px!important;
+    padding-bottom:44px!important;
+  }
+
+  body.editor-studio-open.editor-device-mobile-v187:not(.editor-public-preview-v187) .nav{
+    height:auto!important;
+    min-height:58px!important;
+    padding:9px 0!important;
+    gap:8px!important;
+  }
+
+  body.editor-studio-open.editor-device-mobile-v187:not(.editor-public-preview-v187) .brand-copy{
+    display:none!important;
+  }
+
+  body.editor-studio-open.editor-device-mobile-v187:not(.editor-public-preview-v187) .nav-links{
+    max-width:168px!important;
+    overflow-x:auto!important;
+    flex-wrap:nowrap!important;
+    gap:8px!important;
+    scrollbar-width:none!important;
+  }
+
+  body.editor-studio-open.editor-device-mobile-v187:not(.editor-public-preview-v187) .nav-links a{
+    flex:0 0 auto!important;
+    font-size:.68rem!important;
+  }
+
+  body.editor-studio-open.editor-device-mobile-v187:not(.editor-public-preview-v187) .hero-v70 .agent-stage{
+    width:100%!important;
+    min-height:350px!important;
+  }
+
+  body.editor-studio-open.editor-device-mobile-v187:not(.editor-public-preview-v187) .about-v52-head-grid,
+  body.editor-studio-open.editor-device-mobile-v187:not(.editor-public-preview-v187) .about-v52-routine-grid,
+  body.editor-studio-open.editor-device-mobile-v187:not(.editor-public-preview-v187) .competencies-v59-grid{
+    grid-template-columns:1fr!important;
+  }
+
+  body.editor-studio-open.editor-device-mobile-v187:not(.editor-public-preview-v187) .repo-card summary{
+    grid-template-columns:38px minmax(0,1fr) 28px!important;
+  }
+
+  body.editor-studio-open.editor-device-mobile-v187:not(.editor-public-preview-v187) .repo-visibility{
+    display:none!important;
+  }
+}
+
+/* =========================================================
+   CELULAR REAL: aí sim não existem duas colunas úteis.
+   ========================================================= */
+@media (max-width:760px) and (pointer:coarse){
+  body.editor-studio-open{
+    padding-right:0!important;
+    overflow:hidden!important;
+  }
+
+  body.editor-studio-open #editorStudio.editor-studio-v85{
+    position:fixed!important;
+    inset:8px!important;
+    width:auto!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:auto!important;
+    max-height:none!important;
+    border-radius:16px!important;
+  }
+
+  body.editor-studio-open:not(.editor-public-preview-v187) > header.topbar,
+  body.editor-studio-open:not(.editor-public-preview-v187) > main,
+  body.editor-studio-open:not(.editor-public-preview-v187) > footer{
+    visibility:hidden!important;
+  }
+
+  .preview-device-switcher-v187{
+    display:none!important;
+  }
+}

@@ -1,0 +1,355 @@
+/* ===== v173 — esfera + aparência compacta + cor sistêmica ===== */
+
+:root{
+  --system-accent:var(--accent,#6ea8ff);
+  --system-accent-soft:color-mix(in srgb,var(--system-accent) 13%,transparent);
+  --system-accent-soft-2:color-mix(in srgb,var(--system-accent) 22%,transparent);
+  --system-accent-mid:color-mix(in srgb,var(--system-accent) 48%,#ffffff 52%);
+  --system-accent-deep:color-mix(in srgb,var(--system-accent) 68%,#10223f 32%);
+}
+
+/* ---------- esfera: glow só na borda ---------- */
+#agentButton.brain-orb{
+  position:absolute!important;
+  overflow:visible!important;
+}
+#agentButton.brain-orb img{
+  position:relative!important;
+  z-index:5!important;
+  width:100%!important;
+  height:100%!important;
+  display:block!important;
+  border-radius:50%!important;
+  object-fit:cover!important;
+  clip-path:circle(49.15% at 50% 50%)!important;
+  box-shadow:none!important;
+  filter:saturate(.94) contrast(1.035) brightness(.985)!important;
+}
+#agentButton .orb-face-shade-v173,
+#agentButton .orb-edge-v173{
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  pointer-events:none;
+}
+#agentButton .orb-face-shade-v173{
+  z-index:6;
+  /* reduz o vermelho que invadia o centro inferior da face */
+  background:
+    radial-gradient(circle at 34% 82%,
+      rgba(3,8,18,.58) 0 18%,
+      rgba(3,8,18,.34) 30%,
+      rgba(3,8,18,.10) 43%,
+      transparent 57%);
+  mix-blend-mode:multiply;
+}
+#agentButton .orb-edge-v173{
+  z-index:7;
+  background:
+    conic-gradient(from 206deg,
+      transparent 0deg 28deg,
+      rgba(255,62,93,.10) 38deg,
+      rgba(255,62,93,.72) 64deg,
+      rgba(255,88,112,.92) 86deg,
+      rgba(255,88,112,.26) 108deg,
+      transparent 126deg 240deg,
+      rgba(211,228,255,.16) 258deg,
+      rgba(236,245,255,.55) 286deg,
+      rgba(119,174,255,.34) 312deg,
+      transparent 336deg 360deg);
+  -webkit-mask:radial-gradient(circle,transparent 0 92.1%,#000 93.1% 97.8%,transparent 98.7%);
+  mask:radial-gradient(circle,transparent 0 92.1%,#000 93.1% 97.8%,transparent 98.7%);
+  filter:drop-shadow(0 0 6px rgba(255,72,101,.16));
+}
+.agent-stage.chat-active #agentButton .orb-face-shade-v173{
+  opacity:.52;
+}
+.agent-stage.chat-active #agentButton .orb-edge-v173{
+  opacity:.72;
+}
+
+/* ---------- modo claro do editor ---------- */
+body.portfolio-theme-light #editorStudio.editor-studio-v85{
+  background:linear-gradient(180deg,#f5f8fc 0%,#eef4fa 100%)!important;
+  color:#233954!important;
+}
+body.portfolio-theme-light #editorStudio .editor-studio-section{
+  border-color:rgba(70,99,140,.10)!important;
+}
+body.portfolio-theme-light #editorStudio .editor-studio-section>p{
+  color:#667d99!important;
+}
+
+/* ---------- cor do portfólio: compacta ---------- */
+#editorStudio .editor-color-row-v85{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr)) 38px!important;
+  gap:8px!important;
+  align-items:center!important;
+  margin-top:10px!important;
+}
+#editorStudio .editor-color-dot{
+  position:relative!important;
+  width:100%!important;
+  min-width:0!important;
+  height:34px!important;
+  min-height:34px!important;
+  padding:0!important;
+  border-radius:11px!important;
+  border:1px solid color-mix(in srgb,var(--dot) 34%,rgba(112,130,160,.22))!important;
+  background:linear-gradient(135deg,
+    color-mix(in srgb,var(--dot) 72%,#fff 28%) 0%,
+    var(--dot) 58%,
+    color-mix(in srgb,var(--dot) 72%,#162640 28%) 100%)!important;
+  box-shadow:none!important;
+  overflow:hidden!important;
+}
+#editorStudio .editor-color-dot span{
+  position:absolute!important;
+  inset:auto 6px 5px!important;
+  display:block!important;
+  color:rgba(255,255,255,.88)!important;
+  font-size:.50rem!important;
+  font-weight:650!important;
+  letter-spacing:.04em!important;
+  line-height:1!important;
+  text-shadow:0 1px 2px rgba(0,0,0,.24)!important;
+}
+#editorStudio .editor-color-dot::after{
+  content:""!important;
+  position:absolute!important;
+  inset:4px!important;
+  border-radius:8px!important;
+  border:1px solid transparent!important;
+  pointer-events:none!important;
+}
+#editorStudio .editor-color-dot.is-selected{
+  transform:translateY(-1px)!important;
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--dot) 28%,transparent)!important;
+}
+#editorStudio .editor-color-dot.is-selected::after{
+  border-color:rgba(255,255,255,.72)!important;
+}
+#editorStudio .editor-color-custom{
+  width:38px!important;
+  height:34px!important;
+  min-width:38px!important;
+  margin:0!important;
+  padding:0!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid rgba(110,128,157,.18)!important;
+  border-radius:11px!important;
+  background:transparent!important;
+  font-size:0!important;
+  overflow:hidden!important;
+}
+#editorStudio .editor-color-custom::before{
+  content:"+"!important;
+  position:absolute!important;
+  z-index:0!important;
+  font-size:.8rem!important;
+  color:#7890ad!important;
+  pointer-events:none!important;
+}
+#editorStudio .editor-color-custom input[type="color"]{
+  position:relative!important;
+  z-index:1!important;
+  width:100%!important;
+  height:100%!important;
+  padding:0!important;
+  margin:0!important;
+  border:0!important;
+  opacity:.01!important;
+  cursor:pointer!important;
+}
+body.portfolio-theme-light #editorStudio .editor-color-custom{
+  background:#f9fbfe!important;
+  border-color:rgba(67,96,139,.16)!important;
+}
+
+/* ---------- alinhamento do rodapé: visual e pequeno ---------- */
+#editorStudio .editor-footer-grid-v94{
+  gap:14px!important;
+}
+#editorStudio .editor-footer-grid-v94>div{
+  display:grid!important;
+  gap:6px!important;
+}
+#editorStudio .editor-mini-label-v94{
+  margin:0!important;
+}
+#editorStudio .editor-segmented-v94{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:6px!important;
+}
+#editorStudio .editor-segmented-v94 button{
+  min-height:32px!important;
+  padding:6px 8px!important;
+  border-radius:9px!important;
+  font-size:.61rem!important;
+}
+#editorStudio [data-footer-align]{
+  min-width:0!important;
+  font-size:0!important;
+  display:grid!important;
+  place-items:center!important;
+}
+#editorStudio [data-footer-align] svg{
+  width:15px!important;
+  height:15px!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.7!important;
+  stroke-linecap:round!important;
+}
+#editorStudio [data-footer-align].is-selected{
+  color:var(--editor-accent)!important;
+  background:var(--system-accent-soft)!important;
+  border-color:color-mix(in srgb,var(--system-accent) 34%,rgba(110,128,157,.15))!important;
+}
+
+/* ---------- "bolhas"/chips seguem a cor escolhida ---------- */
+.repo-visibility,
+.timeline-tags-v66 span,
+.career-highlights span,
+.competencies-v59-item>span,
+.brain-idle button,
+.chat-suggestions button,
+.contact-link,
+.footer-signature-badge,
+.editor-status-pill,
+.tag,
+.chip{
+  border-color:color-mix(in srgb,var(--system-accent) 28%,var(--line))!important;
+}
+.repo-visibility,
+.timeline-tags-v66 span,
+.career-highlights span,
+.chat-suggestions button,
+.brain-idle button{
+  background:var(--system-accent-soft)!important;
+  color:color-mix(in srgb,var(--system-accent) 62%,#dfe9f7 38%)!important;
+}
+body.portfolio-theme-light .repo-visibility,
+body.portfolio-theme-light .timeline-tags-v66 span,
+body.portfolio-theme-light .career-highlights span,
+body.portfolio-theme-light .chat-suggestions button,
+body.portfolio-theme-light .brain-idle button{
+  background:color-mix(in srgb,var(--system-accent) 10%,#f7faff 90%)!important;
+  color:var(--system-accent-deep)!important;
+}
+.repo-plus,
+.github-profile,
+.repo-bottom a,
+.hero-meta a,
+.editor-studio-primary,
+.editor-footer-save-v100{
+  color:var(--system-accent)!important;
+}
+
+/* ---------- foto maior + lápis menor ---------- */
+#editorStudio .editor-owner-photo-wrap-v163{
+  width:52px!important;
+  height:52px!important;
+  flex:0 0 52px!important;
+}
+#editorStudio .editor-owner-photo-wrap-v163 #editorOwnerPhotoV86{
+  width:52px!important;
+  height:52px!important;
+}
+#editorStudio .editor-owner-photo-edit-v163{
+  width:20px!important;
+  height:20px!important;
+  min-width:20px!important;
+  min-height:20px!important;
+  right:-3px!important;
+  bottom:1px!important;
+  font-size:.54rem!important;
+}
+body.portfolio-theme-light #editorStudio .editor-owner-photo-edit-v163{
+  background:#fff!important;
+  color:#31557f!important;
+  border-color:rgba(70,99,140,.18)!important;
+  box-shadow:0 4px 10px rgba(44,69,103,.11)!important;
+}
+
+@media(max-width:560px){
+  #editorStudio .editor-color-row-v85{
+    grid-template-columns:repeat(4,minmax(0,1fr)) 34px!important;
+    gap:6px!important;
+  }
+  #editorStudio .editor-color-custom{
+    width:34px!important;
+    min-width:34px!important;
+  }
+}
+
+
+/* ===== v174 — borda da esfera no tamanho real do PNG ===== */
+/* O PNG do robô tem bastante transparência ao redor. A esfera ocupa
+   aproximadamente 55% da área total; por isso o efeito precisa seguir
+   esse círculo real, não o tamanho inteiro do <img>. */
+#agentButton .orb-face-shade-v173{
+  display:none!important;
+  background:none!important;
+  opacity:0!important;
+  mix-blend-mode:normal!important;
+}
+
+#agentButton .orb-edge-v173{
+  inset:auto!important;
+  left:50%!important;
+  top:50%!important;
+  width:55%!important;
+  height:55%!important;
+  transform:translate(-50%,-50%)!important;
+  border-radius:50%!important;
+  z-index:7!important;
+  background:
+    conic-gradient(
+      from 208deg,
+      transparent 0deg 24deg,
+      rgba(255,63,94,.18) 38deg,
+      rgba(255,63,94,.76) 63deg,
+      rgba(255,88,112,.92) 82deg,
+      rgba(255,88,112,.34) 105deg,
+      transparent 126deg 244deg,
+      rgba(230,241,255,.18) 260deg,
+      rgba(244,249,255,.54) 284deg,
+      rgba(117,174,255,.36) 311deg,
+      transparent 338deg 360deg
+    )!important;
+  -webkit-mask:
+    radial-gradient(
+      circle,
+      transparent 0 90.4%,
+      #000 91.7% 97.2%,
+      transparent 98.4%
+    )!important;
+  mask:
+    radial-gradient(
+      circle,
+      transparent 0 90.4%,
+      #000 91.7% 97.2%,
+      transparent 98.4%
+    )!important;
+  filter:
+    drop-shadow(0 0 4px rgba(255,72,101,.20))
+    drop-shadow(0 0 3px rgba(117,174,255,.10))!important;
+  opacity:.96!important;
+}
+
+body.portfolio-theme-light #agentButton .orb-edge-v173{
+  opacity:.90!important;
+  filter:
+    drop-shadow(0 0 3px rgba(223,65,93,.16))
+    drop-shadow(0 0 2px rgba(80,132,210,.09))!important;
+}
+
+.agent-stage.chat-active #agentButton .orb-edge-v173{
+  width:55%!important;
+  height:55%!important;
+  opacity:.78!important;
+}

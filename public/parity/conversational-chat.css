@@ -1,0 +1,33 @@
+/* ===== chat conversacional local ===== */
+.chat-messages .msg{
+  white-space:pre-line;
+}
+.chat-messages .msg.typing-v164{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  width:max-content;
+  min-width:52px;
+  padding:12px 14px;
+}
+.typing-v164 .typing-dot-v164{
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  background:currentColor;
+  opacity:.42;
+  animation:typingPulseV164 1.05s ease-in-out infinite;
+}
+.typing-v164 .typing-dot-v164:nth-child(2){animation-delay:.14s}
+.typing-v164 .typing-dot-v164:nth-child(3){animation-delay:.28s}
+@keyframes typingPulseV164{
+  0%,70%,100%{transform:translateY(0);opacity:.32}
+  35%{transform:translateY(-3px);opacity:.82}
+}
+.chat-compose input:disabled,
+.chat-compose button:disabled{
+  opacity:.62;
+}
+.chat-compose button{
+  color:#dbe9ff;
+}

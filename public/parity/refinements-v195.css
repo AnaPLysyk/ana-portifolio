@@ -1,0 +1,136 @@
+/* ===== v195 — troca de aparelho sem modal, apenas ícone + toast ===== */
+
+/* A lista/modal da v193 deixa de existir visualmente. */
+.device-presets-v193{
+  display:none!important;
+}
+
+/* botão: somente ícone */
+.editor-device-toggle-v192{
+  position:relative!important;
+  width:31px!important;
+  height:31px!important;
+  min-width:31px!important;
+  padding:0!important;
+}
+
+.editor-device-toggle-v192::after{
+  display:none!important;
+  content:none!important;
+}
+
+/* toast compacto com aparelho/resolução */
+.device-toast-v195{
+  position:fixed!important;
+  z-index:12100!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:7px!important;
+
+  min-height:30px!important;
+  max-width:min(260px,calc(100vw - 24px))!important;
+  padding:6px 9px!important;
+
+  border:1px solid color-mix(in srgb,var(--system-accent) 24%,var(--line))!important;
+  border-radius:9px!important;
+
+  background:color-mix(in srgb,var(--panel) 94%,transparent)!important;
+  color:var(--text)!important;
+
+  box-shadow:0 10px 28px rgba(0,0,0,.20)!important;
+  backdrop-filter:blur(14px)!important;
+
+  font:600 .51rem/1.2 "Inter",system-ui,sans-serif!important;
+
+  opacity:0!important;
+  transform:translateY(5px) scale(.98)!important;
+  pointer-events:none!important;
+
+  transition:
+    opacity .16s ease,
+    transform .16s ease!important;
+}
+
+.device-toast-v195.is-visible{
+  opacity:1!important;
+  transform:translateY(0) scale(1)!important;
+}
+
+.device-toast-v195 svg{
+  width:14px!important;
+  height:14px!important;
+  flex:0 0 14px!important;
+  fill:none!important;
+  stroke:var(--system-accent)!important;
+  stroke-width:1.7!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+
+.device-toast-v195 strong{
+  color:var(--text)!important;
+  font-size:.51rem!important;
+  font-weight:650!important;
+}
+
+.device-toast-v195 span{
+  color:var(--muted)!important;
+  font:600 .46rem "IBM Plex Mono",monospace!important;
+  white-space:nowrap!important;
+}
+
+/* claro */
+body.portfolio-theme-light .device-toast-v195{
+  background:rgba(250,252,255,.96)!important;
+  border-color:color-mix(in srgb,var(--system-accent) 22%,rgba(53,80,118,.14))!important;
+  box-shadow:0 8px 22px rgba(44,65,95,.11)!important;
+}
+
+/*
+  Moldura do aparelho continua existindo, mas fica mais sutil.
+  Ela deve dar noção da tela, não parecer um modal/card.
+*/
+.device-frame-v193{
+  border-color:color-mix(in srgb,var(--system-accent) 16%,var(--line))!important;
+  background:transparent!important;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.01),
+    0 14px 38px rgba(0,0,0,.12)!important;
+}
+
+.device-frame-v193::before,
+.device-frame-v193::after{
+  opacity:.72!important;
+}
+
+/* Desktop / notebook: frame mais reto */
+body[data-device-preset-v193="desktop-1440"]{
+  --device-preview-radius-v193:10px;
+}
+body[data-device-preset-v193="laptop-1280"]{
+  --device-preview-radius-v193:12px;
+}
+
+/* Tablets */
+body[data-device-preset-v193="tablet-landscape"],
+body[data-device-preset-v193="tablet-portrait"]{
+  --device-preview-radius-v193:18px;
+}
+
+/* Telefones: moldura mais arredondada */
+body[data-device-preset-v193^="mobile-"]{
+  --device-preview-radius-v193:26px;
+}
+
+/* no Visualizar nada de toast/frame de edição */
+body.editor-preview-v156 .device-toast-v195{
+  display:none!important;
+}
+
+/* celular real: simulador fica desnecessário */
+@media(max-width:760px) and (pointer:coarse){
+  .device-toast-v195,
+  .device-frame-v193{
+    display:none!important;
+  }
+}

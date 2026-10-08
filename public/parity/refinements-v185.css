@@ -1,0 +1,228 @@
+/* ===== v185 — Robô e "Fale comigo" independentes no editor ===== */
+
+#brainShell{
+  --assistant-robot-x-v185:50%;
+  --assistant-robot-y-v185:41%;
+  --assistant-cta-x-v185:78%;
+  --assistant-cta-y-v185:28%;
+}
+
+/* Posição salva do robô = esfera + campo quântico juntos */
+.agent-stage:not(.chat-active) #agentButton.brain-orb{
+  left:var(--assistant-robot-x-v185)!important;
+  top:var(--assistant-robot-y-v185)!important;
+}
+
+.agent-stage:not(.chat-active) .quantum-field-v37{
+  left:var(--assistant-robot-x-v185)!important;
+  top:var(--assistant-robot-y-v185)!important;
+}
+
+/* CTA não depende mais da posição da esfera */
+.agent-stage:not(.chat-active) #brainShell .agent-follow-hint-v180{
+  left:var(--assistant-cta-x-v185)!important;
+  top:var(--assistant-cta-y-v185)!important;
+  transform:translate(-50%,-50%)!important;
+}
+
+/* O editor precisa mostrar a Home para que os elementos possam ser movidos. */
+body.editor-studio-open .agent-stage{
+  display:grid!important;
+}
+
+/* Fora da edição: interação normal. Nada é arrastável. */
+body:not(.editor-studio-open) #agentButton.brain-orb{
+  cursor:pointer!important;
+}
+
+body:not(.editor-studio-open) #brainShell .agent-follow-hint-v180{
+  cursor:default!important;
+}
+
+/* ───────── modo edição ───────── */
+body.editor-studio-open .agent-stage:not(.chat-active) #agentButton.brain-orb{
+  cursor:grab!important;
+  touch-action:none!important;
+}
+
+body.editor-studio-open .agent-stage:not(.chat-active) #brainShell .agent-follow-hint-v180{
+  cursor:grab!important;
+  touch-action:none!important;
+  pointer-events:auto!important;
+}
+
+body.editor-studio-open .agent-stage:not(.chat-active) #brainShell .agent-follow-hint-v180 button{
+  cursor:grab!important;
+}
+
+/* moldura da composição do robô (inclui órbitas) */
+.assistant-robot-frame-v185{
+  position:absolute!important;
+  left:var(--assistant-robot-x-v185)!important;
+  top:var(--assistant-robot-y-v185)!important;
+  width:442px!important;
+  height:258px!important;
+  max-width:92%!important;
+  z-index:19!important;
+  transform:translate(-50%,-50%)!important;
+  border:1px dashed transparent!important;
+  border-radius:28px!important;
+  pointer-events:none!important;
+  opacity:0!important;
+}
+
+body.editor-studio-open .assistant-robot-frame-v185{
+  opacity:1!important;
+}
+
+body.editor-studio-open .assistant-robot-frame-v185.is-selected-v185,
+body.editor-studio-open #brainShell:has(#agentButton:hover) .assistant-robot-frame-v185{
+  border-color:color-mix(in srgb,var(--system-accent) 54%,transparent)!important;
+  background:color-mix(in srgb,var(--system-accent) 2.5%,transparent)!important;
+}
+
+/* identificação visual dos dois elementos */
+.assistant-element-label-v185{
+  position:absolute!important;
+  z-index:90!important;
+  display:none!important;
+  min-height:22px!important;
+  padding:4px 7px!important;
+  align-items:center!important;
+  gap:5px!important;
+  border:1px solid color-mix(in srgb,var(--system-accent) 35%,var(--line))!important;
+  border-radius:7px!important;
+  background:color-mix(in srgb,var(--bg) 94%,var(--system-accent) 6%)!important;
+  color:var(--system-accent)!important;
+  box-shadow:0 7px 20px rgba(0,0,0,.14)!important;
+  font:600 .47rem/1 "IBM Plex Mono",monospace!important;
+  white-space:nowrap!important;
+  pointer-events:none!important;
+}
+
+body.editor-studio-open .assistant-element-label-v185.is-open{
+  display:inline-flex!important;
+}
+
+.assistant-element-label-v185 svg{
+  width:12px!important;
+  height:12px!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.7!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+
+/* o CTA recebe outline próprio; não usa a moldura do robô */
+body.editor-studio-open .agent-stage:not(.chat-active) #brainShell .agent-follow-hint-v180::before{
+  content:""!important;
+  position:absolute!important;
+  inset:-7px!important;
+  z-index:-1!important;
+  border:1px dashed transparent!important;
+  border-radius:15px!important;
+  background:transparent!important;
+  pointer-events:none!important;
+}
+
+body.editor-studio-open .agent-stage:not(.chat-active) #brainShell .agent-follow-hint-v180:hover::before,
+body.editor-studio-open .agent-stage:not(.chat-active) #brainShell .agent-follow-hint-v180.is-selected-v185::before{
+  border-color:color-mix(in srgb,var(--system-accent) 58%,transparent)!important;
+  background:color-mix(in srgb,var(--system-accent) 3%,transparent)!important;
+}
+
+/* estado de drag */
+body.assistant-layout-dragging-v185,
+body.assistant-layout-dragging-v185 *{
+  user-select:none!important;
+}
+
+body.editor-studio-open #agentButton.is-dragging-v185{
+  cursor:grabbing!important;
+  z-index:75!important;
+}
+
+body.editor-studio-open #brainShell .agent-follow-hint-v180.is-dragging-v185,
+body.editor-studio-open #brainShell .agent-follow-hint-v180.is-dragging-v185 button{
+  cursor:grabbing!important;
+  z-index:91!important;
+}
+
+/* pequena área no painel: apenas informação, sem card pesado */
+#editorStudio .assistant-layout-editor-v185{
+  display:grid!important;
+  gap:8px!important;
+  padding:15px 0!important;
+  border-top:1px solid color-mix(in srgb,var(--line) 82%,transparent)!important;
+}
+
+#editorStudio .assistant-layout-editor-v185 small{
+  color:color-mix(in srgb,var(--system-accent) 62%,var(--muted) 38%)!important;
+  font-size:.47rem!important;
+  letter-spacing:.14em!important;
+}
+
+#editorStudio .assistant-layout-editor-v185 h3{
+  margin:3px 0 2px!important;
+  color:var(--text)!important;
+  font-size:.78rem!important;
+}
+
+#editorStudio .assistant-layout-editor-v185 p{
+  margin:0 0 3px!important;
+  color:var(--muted)!important;
+  font-size:.54rem!important;
+  line-height:1.45!important;
+}
+
+#editorStudio .assistant-layout-row-v185{
+  display:grid!important;
+  grid-template-columns:72px minmax(0,1fr) auto!important;
+  gap:8px!important;
+  align-items:center!important;
+  min-height:31px!important;
+}
+
+#editorStudio .assistant-layout-row-v185 strong{
+  color:var(--text)!important;
+  font-size:.56rem!important;
+}
+
+#editorStudio .assistant-layout-coords-v185{
+  color:var(--muted)!important;
+  font:500 .48rem "IBM Plex Mono",monospace!important;
+}
+
+#editorStudio .assistant-layout-select-v185{
+  height:28px!important;
+  padding:0 8px!important;
+  border:1px solid color-mix(in srgb,var(--system-accent) 28%,var(--line))!important;
+  border-radius:8px!important;
+  background:transparent!important;
+  color:var(--system-accent)!important;
+  font-size:.49rem!important;
+  cursor:pointer!important;
+}
+
+body.portfolio-theme-light .assistant-element-label-v185{
+  background:rgba(250,252,255,.98)!important;
+  border-color:color-mix(in srgb,var(--system-accent) 32%,rgba(48,76,113,.14))!important;
+  box-shadow:0 7px 18px rgba(42,66,100,.10)!important;
+}
+
+@media(max-width:760px){
+  .assistant-robot-frame-v185{
+    width:min(442px,96vw)!important;
+    height:240px!important;
+  }
+
+  #editorStudio .assistant-layout-row-v185{
+    grid-template-columns:64px minmax(0,1fr)!important;
+  }
+
+  #editorStudio .assistant-layout-select-v185{
+    grid-column:2!important;
+    justify-self:start!important;
+  }
+}

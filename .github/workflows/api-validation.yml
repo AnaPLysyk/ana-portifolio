@@ -1,0 +1,36 @@
+name: API Validation
+
+on:
+  push:
+    branches:
+      - feat/backend-api-swagger-base
+  pull_request:
+    paths:
+      - 'server/**'
+      - 'docs/**'
+      - 'package.json'
+      - 'tsconfig.server.json'
+      - '.github/workflows/api-validation.yml'
+
+jobs:
+  api:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build API
+        run: npm run build:api
+
+      - name: Validate API smoke
+        run: npm run validate:api

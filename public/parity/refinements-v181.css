@@ -1,0 +1,559 @@
+/* ===== v181 — biblioteca de elementos do quadro ===== */
+
+/* substitui a configuração fixa de composição por um gerador */
+#editorStudio .section-design-v178{
+  display:none!important;
+}
+
+#editorStudio .element-builder-v181{
+  display:grid!important;
+  gap:13px!important;
+  padding:18px 0!important;
+  border-top:1px solid color-mix(in srgb,var(--line) 82%,transparent)!important;
+}
+
+#editorStudio .element-builder-head-v181{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  gap:12px!important;
+  align-items:start!important;
+}
+
+#editorStudio .element-builder-head-v181 small{
+  display:block!important;
+  margin-bottom:4px!important;
+  color:color-mix(in srgb,var(--system-accent) 62%,var(--muted) 38%)!important;
+  font-size:.48rem!important;
+  letter-spacing:.16em!important;
+}
+
+#editorStudio .element-builder-head-v181 h3{
+  margin:0!important;
+  color:var(--text)!important;
+  font-size:.88rem!important;
+  letter-spacing:-.018em!important;
+}
+
+#editorStudio .element-builder-head-v181 p{
+  max-width:250px!important;
+  margin:5px 0 0!important;
+  color:var(--muted)!important;
+  font-size:.59rem!important;
+  line-height:1.48!important;
+}
+
+#editorStudio .element-add-v181{
+  height:32px!important;
+  padding:0 10px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  border:1px solid color-mix(in srgb,var(--system-accent) 34%,var(--line))!important;
+  border-radius:9px!important;
+  background:var(--system-accent-soft)!important;
+  color:var(--system-accent)!important;
+  font-size:.55rem!important;
+  font-weight:650!important;
+  cursor:pointer!important;
+}
+
+#editorStudio .element-add-v181 svg{
+  width:13px!important;
+  height:13px!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.8!important;
+}
+
+/* lista dos elementos já adicionados */
+#editorStudio .element-list-v181{
+  display:grid!important;
+  gap:6px!important;
+}
+
+#editorStudio .element-list-empty-v181{
+  padding:12px 0 2px!important;
+  color:var(--muted)!important;
+  font-size:.56rem!important;
+}
+
+#editorStudio .element-item-v181{
+  width:100%!important;
+  min-height:43px!important;
+  display:grid!important;
+  grid-template-columns:32px minmax(0,1fr) auto!important;
+  gap:9px!important;
+  align-items:center!important;
+  padding:5px 6px!important;
+  border:1px solid color-mix(in srgb,var(--line) 84%,transparent)!important;
+  border-radius:11px!important;
+  background:transparent!important;
+  color:var(--text)!important;
+  text-align:left!important;
+  cursor:pointer!important;
+  box-shadow:none!important;
+}
+
+#editorStudio .element-item-v181:hover,
+#editorStudio .element-item-v181.is-editing{
+  border-color:color-mix(in srgb,var(--system-accent) 34%,var(--line))!important;
+  background:var(--system-accent-soft)!important;
+}
+
+#editorStudio .element-item-icon-v181{
+  width:30px!important;
+  height:30px!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:8px!important;
+  background:var(--system-accent-soft)!important;
+  color:var(--system-accent)!important;
+}
+
+#editorStudio .element-item-icon-v181 svg{
+  width:15px!important;
+  height:15px!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.75!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+#editorStudio .element-item-icon-v181[data-icon="github"] svg{
+  fill:currentColor!important;
+  stroke:none!important;
+}
+
+#editorStudio .element-item-copy-v181{
+  min-width:0!important;
+}
+#editorStudio .element-item-copy-v181 strong{
+  display:block!important;
+  overflow:hidden!important;
+  color:var(--text)!important;
+  font-size:.58rem!important;
+  font-weight:650!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+#editorStudio .element-item-copy-v181 span{
+  display:block!important;
+  margin-top:2px!important;
+  overflow:hidden!important;
+  color:var(--muted)!important;
+  font-size:.49rem!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+#editorStudio .element-item-chevron-v181{
+  color:var(--muted)!important;
+  font-size:.64rem!important;
+}
+
+/* editor/creator abre só quando necessário */
+#editorStudio .element-creator-v181{
+  display:none!important;
+  gap:13px!important;
+  padding:12px!important;
+  border:1px solid color-mix(in srgb,var(--system-accent) 22%,var(--line))!important;
+  border-radius:13px!important;
+  background:color-mix(in srgb,var(--panel) 72%,transparent)!important;
+}
+#editorStudio .element-creator-v181.is-open{
+  display:grid!important;
+}
+
+#editorStudio .element-creator-top-v181{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  gap:10px!important;
+  align-items:center!important;
+}
+#editorStudio .element-creator-top-v181 strong{
+  color:var(--text)!important;
+  font-size:.65rem!important;
+}
+#editorStudio .element-creator-close-v181{
+  width:28px!important;
+  height:28px!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:8px!important;
+  background:transparent!important;
+  color:var(--muted)!important;
+  cursor:pointer!important;
+}
+
+/* tipo de elemento */
+#editorStudio .element-type-tabs-v181{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:5px!important;
+}
+#editorStudio .element-type-tabs-v181 button{
+  min-width:0!important;
+  height:31px!important;
+  padding:0 5px!important;
+  border:1px solid color-mix(in srgb,var(--line) 86%,transparent)!important;
+  border-radius:8px!important;
+  background:transparent!important;
+  color:var(--muted)!important;
+  font-size:.51rem!important;
+}
+#editorStudio .element-type-tabs-v181 button.is-selected{
+  color:var(--system-accent)!important;
+  border-color:color-mix(in srgb,var(--system-accent) 44%,var(--line))!important;
+  background:var(--system-accent-soft)!important;
+}
+
+/* preview */
+#editorStudio .element-preview-v181{
+  min-height:58px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:10px!important;
+  border:1px dashed color-mix(in srgb,var(--system-accent) 27%,var(--line))!important;
+  border-radius:11px!important;
+  background:
+    radial-gradient(circle at center,var(--system-accent-soft),transparent 66%)!important;
+}
+
+#editorStudio .element-preview-icon-v181{
+  display:grid!important;
+  place-items:center!important;
+  color:var(--system-accent)!important;
+}
+#editorStudio .element-preview-icon-v181 svg{
+  width:100%!important;
+  height:100%!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.75!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+#editorStudio .element-preview-icon-v181[data-icon="github"] svg{
+  fill:currentColor!important;
+  stroke:none!important;
+}
+
+#editorStudio .element-preview-badge-v181{
+  display:inline-flex!important;
+  align-items:center!important;
+  min-height:26px!important;
+  padding:5px 10px!important;
+  border:1px solid color-mix(in srgb,var(--system-accent) 38%,var(--line))!important;
+  border-radius:999px!important;
+  background:var(--system-accent-soft)!important;
+  color:var(--system-accent)!important;
+  font-size:.56rem!important;
+  font-weight:600!important;
+}
+
+#editorStudio .element-preview-divider-v181{
+  display:block!important;
+  border-radius:999px!important;
+  background:var(--system-accent)!important;
+}
+
+#editorStudio .element-preview-layout-v181{
+  width:128px!important;
+  height:44px!important;
+  position:relative!important;
+  border:1px solid color-mix(in srgb,var(--line) 88%,transparent)!important;
+  border-radius:9px!important;
+  overflow:hidden!important;
+}
+#editorStudio .element-preview-layout-v181::before,
+#editorStudio .element-preview-layout-v181::after{
+  content:""!important;
+  position:absolute!important;
+  border-radius:999px!important;
+  background:color-mix(in srgb,var(--text) 28%,transparent)!important;
+}
+#editorStudio .element-preview-layout-v181::before{
+  left:10px;right:10px;top:10px;height:3px;
+  box-shadow:0 8px 0 color-mix(in srgb,var(--text) 18%,transparent),
+             0 16px 0 color-mix(in srgb,var(--text) 18%,transparent);
+}
+#editorStudio .element-preview-layout-v181::after{
+  right:10px;top:10px;width:22px;height:22px;
+  background:var(--system-accent-soft)!important;
+  border:1px solid color-mix(in srgb,var(--system-accent) 38%,var(--line))!important;
+}
+
+/* campos */
+#editorStudio .element-fields-v181{
+  display:grid!important;
+  gap:10px!important;
+}
+#editorStudio .element-field-row-v181{
+  display:grid!important;
+  grid-template-columns:65px minmax(0,1fr)!important;
+  gap:9px!important;
+  align-items:center!important;
+}
+#editorStudio .element-field-label-v181{
+  color:var(--muted)!important;
+  font-size:.53rem!important;
+}
+#editorStudio .element-field-v181,
+#editorStudio .element-field-v181 select,
+#editorStudio .element-field-v181 input[type="text"]{
+  width:100%!important;
+}
+#editorStudio .element-field-v181 select,
+#editorStudio .element-field-v181 input[type="text"]{
+  height:32px!important;
+  min-height:32px!important;
+  padding:0 9px!important;
+  border:1px solid color-mix(in srgb,var(--line) 86%,transparent)!important;
+  border-radius:9px!important;
+  background:color-mix(in srgb,var(--panel) 92%,transparent)!important;
+  color:var(--text)!important;
+  font-size:.56rem!important;
+}
+
+/* biblioteca de ícones */
+#editorStudio .element-icon-library-v181{
+  display:flex!important;
+  gap:5px!important;
+  overflow-x:auto!important;
+  padding:1px 1px 5px!important;
+  scrollbar-width:thin!important;
+  scrollbar-color:color-mix(in srgb,var(--system-accent) 32%,transparent) transparent!important;
+}
+#editorStudio .element-icon-choice-v181{
+  width:31px!important;
+  height:31px!important;
+  flex:0 0 31px!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:0!important;
+  border:1px solid color-mix(in srgb,var(--line) 86%,transparent)!important;
+  border-radius:8px!important;
+  background:transparent!important;
+  color:var(--muted)!important;
+}
+#editorStudio .element-icon-choice-v181.is-selected{
+  color:var(--system-accent)!important;
+  background:var(--system-accent-soft)!important;
+  border-color:color-mix(in srgb,var(--system-accent) 42%,var(--line))!important;
+}
+#editorStudio .element-icon-choice-v181 svg{
+  width:14px!important;
+  height:14px!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.75!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+#editorStudio .element-icon-choice-v181[data-icon="github"] svg{
+  fill:currentColor!important;
+  stroke:none!important;
+}
+
+/* tamanho / posição / cor */
+#editorStudio .element-inline-grid-v181{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,.8fr)!important;
+  gap:8px!important;
+}
+#editorStudio .element-control-v181{
+  display:grid!important;
+  gap:5px!important;
+  min-width:0!important;
+}
+#editorStudio .element-control-v181>span{
+  color:var(--muted)!important;
+  font-size:.49rem!important;
+}
+#editorStudio .element-range-v181{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  gap:7px!important;
+  align-items:center!important;
+}
+#editorStudio .element-range-v181 input[type="range"]{
+  width:100%!important;
+  accent-color:var(--system-accent)!important;
+}
+#editorStudio .element-range-v181 output{
+  min-width:34px!important;
+  color:var(--muted)!important;
+  font:600 .50rem "IBM Plex Mono",monospace!important;
+  text-align:right!important;
+}
+#editorStudio .element-segment-v181{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:4px!important;
+}
+#editorStudio .element-segment-v181 button{
+  height:30px!important;
+  min-width:0!important;
+  padding:0 5px!important;
+  border:1px solid color-mix(in srgb,var(--line) 86%,transparent)!important;
+  border-radius:8px!important;
+  background:transparent!important;
+  color:var(--muted)!important;
+  font-size:.49rem!important;
+}
+#editorStudio .element-segment-v181 button.is-selected{
+  color:var(--system-accent)!important;
+  background:var(--system-accent-soft)!important;
+  border-color:color-mix(in srgb,var(--system-accent) 42%,var(--line))!important;
+}
+#editorStudio .element-color-v181{
+  display:grid!important;
+  grid-template-columns:1fr 31px!important;
+  gap:6px!important;
+}
+#editorStudio .element-system-color-v181{
+  height:31px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:6px!important;
+  border:1px solid color-mix(in srgb,var(--line) 86%,transparent)!important;
+  border-radius:8px!important;
+  background:transparent!important;
+  color:var(--muted)!important;
+  font-size:.49rem!important;
+}
+#editorStudio .element-system-color-v181.is-selected{
+  color:var(--system-accent)!important;
+  background:var(--system-accent-soft)!important;
+  border-color:color-mix(in srgb,var(--system-accent) 42%,var(--line))!important;
+}
+#editorStudio .element-system-color-v181::before{
+  content:""!important;
+  width:8px!important;
+  height:8px!important;
+  border-radius:50%!important;
+  background:var(--system-accent)!important;
+}
+#editorStudio .element-color-v181 input[type="color"]{
+  width:31px!important;
+  height:31px!important;
+  padding:2px!important;
+  border:1px solid color-mix(in srgb,var(--line) 86%,transparent)!important;
+  border-radius:8px!important;
+  background:transparent!important;
+}
+
+/* ações */
+#editorStudio .element-actions-v181{
+  display:grid!important;
+  grid-template-columns:auto 1fr!important;
+  gap:7px!important;
+  align-items:center!important;
+}
+#editorStudio .element-remove-v181{
+  display:none!important;
+  height:32px!important;
+  padding:0 10px!important;
+  border:0!important;
+  border-radius:8px!important;
+  background:transparent!important;
+  color:#ff7d91!important;
+  font-size:.53rem!important;
+}
+#editorStudio .element-creator-v181.is-editing .element-remove-v181{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+#editorStudio .element-save-v181{
+  height:32px!important;
+  border:1px solid color-mix(in srgb,var(--system-accent) 46%,var(--line))!important;
+  border-radius:9px!important;
+  background:var(--system-accent-soft)!important;
+  color:var(--system-accent)!important;
+  font-size:.55rem!important;
+  font-weight:650!important;
+}
+
+/* elementos aplicados ao portfólio */
+.generated-element-v181{
+  --element-color:var(--system-accent);
+}
+.generated-icon-v181{
+  flex:0 0 auto!important;
+  display:grid!important;
+  place-items:center!important;
+  color:var(--element-color)!important;
+}
+.generated-icon-v181 svg{
+  width:100%!important;
+  height:100%!important;
+  fill:none!important;
+  stroke:currentColor!important;
+  stroke-width:1.75!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+.generated-icon-v181[data-icon="github"] svg{
+  fill:currentColor!important;
+  stroke:none!important;
+}
+.generated-badge-v181{
+  display:inline-flex!important;
+  align-items:center!important;
+  min-height:22px!important;
+  margin-left:8px!important;
+  padding:3px 8px!important;
+  border:1px solid color-mix(in srgb,var(--element-color) 36%,var(--line))!important;
+  border-radius:999px!important;
+  background:color-mix(in srgb,var(--element-color) 10%,transparent)!important;
+  color:var(--element-color)!important;
+  font-size:.52rem!important;
+  font-weight:600!important;
+}
+.generated-divider-v181{
+  display:block!important;
+  margin-top:11px!important;
+  border-radius:999px!important;
+  background:var(--element-color)!important;
+}
+
+/* esconde ícones fixos da versão anterior: v181 assume essa responsabilidade */
+body.elements-v181-ready .section-icon-v178{
+  display:none!important;
+}
+
+/* claro */
+body.portfolio-theme-light #editorStudio .element-creator-v181,
+body.portfolio-theme-light #editorStudio .element-item-v181,
+body.portfolio-theme-light #editorStudio .element-field-v181 select,
+body.portfolio-theme-light #editorStudio .element-field-v181 input[type="text"]{
+  background:#f9fbff!important;
+  border-color:rgba(47,75,112,.13)!important;
+}
+body.portfolio-theme-light #editorStudio .element-creator-v181{
+  background:#f7faff!important;
+}
+body.portfolio-theme-light #editorStudio .element-item-v181:hover,
+body.portfolio-theme-light #editorStudio .element-item-v181.is-editing{
+  background:color-mix(in srgb,var(--system-accent) 7%,#fff 93%)!important;
+  border-color:color-mix(in srgb,var(--system-accent) 36%,rgba(47,75,112,.14))!important;
+}
+
+@media(max-width:560px){
+  #editorStudio .element-builder-head-v181{
+    grid-template-columns:1fr!important;
+  }
+  #editorStudio .element-add-v181{
+    justify-self:start!important;
+  }
+  #editorStudio .element-type-tabs-v181{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  #editorStudio .element-inline-grid-v181{
+    grid-template-columns:1fr!important;
+  }
+}

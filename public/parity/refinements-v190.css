@@ -1,0 +1,258 @@
+/* ===== v190 — editor realmente lado a lado, sem tocar no runtime ===== */
+
+:root{
+  --editor-side-panel-v190:clamp(320px,34vw,460px);
+  --editor-side-gap-v190:20px;
+  --editor-preview-width-v190:calc(100vw - var(--editor-side-panel-v190) - var(--editor-side-gap-v190));
+}
+
+/*
+  Desktop/notebook:
+  o painel ocupa uma coluna própria e a página outra.
+  Não usamos breakpoint por largura para evitar que zoom transforme
+  o painel em overlay. O critério é o dispositivo ter ponteiro fino.
+*/
+@media (pointer:fine){
+  body.editor-studio-open:not(.editor-preview-v156){
+    padding-right:calc(var(--editor-side-panel-v190) + var(--editor-side-gap-v190))!important;
+    overflow-x:hidden!important;
+  }
+
+  body.editor-studio-open:not(.editor-preview-v156) #editorStudio.editor-studio-v85{
+    position:fixed!important;
+    top:calc(var(--portfolio-header-height,74px) + 10px)!important;
+    right:10px!important;
+    bottom:10px!important;
+    left:auto!important;
+
+    width:var(--editor-side-panel-v190)!important;
+    min-width:0!important;
+    max-width:var(--editor-side-panel-v190)!important;
+    height:auto!important;
+    max-height:calc(100dvh - var(--portfolio-header-height,74px) - 20px)!important;
+
+    margin:0!important;
+    transform:none!important;
+    overflow:hidden!important;
+    z-index:10020!important;
+  }
+
+  /* header pertence à coluna da prévia, não fica atrás do painel */
+  body.editor-studio-open:not(.editor-preview-v156) .topbar{
+    left:0!important;
+    right:auto!important;
+    width:var(--editor-preview-width-v190)!important;
+    max-width:var(--editor-preview-width-v190)!important;
+  }
+
+  body.editor-studio-open:not(.editor-preview-v156) .topbar .nav{
+    width:min(var(--max),calc(100% - 36px))!important;
+    max-width:calc(100% - 36px)!important;
+    margin-inline:auto!important;
+  }
+
+  /*
+    O documento inteiro usa a coluna esquerda.
+    Nada do painel sobrepõe Projetos, Sobre, robô etc.
+  */
+  body.editor-studio-open:not(.editor-preview-v156)>main,
+  body.editor-studio-open:not(.editor-preview-v156)>footer{
+    width:var(--editor-preview-width-v190)!important;
+    max-width:var(--editor-preview-width-v190)!important;
+    margin-left:0!important;
+    margin-right:auto!important;
+  }
+
+  body.editor-studio-open:not(.editor-preview-v156) .container{
+    width:min(var(--max),calc(100% - 36px))!important;
+    max-width:calc(100% - 36px)!important;
+    margin-inline:auto!important;
+  }
+
+  /* desfaz a regra antiga que escondia o assistente durante edição */
+  body.editor-studio-open:not(.editor-preview-v156) .agent-stage{
+    display:grid!important;
+  }
+
+  /*
+    O editor antigo forçava hero em uma coluna SEMPRE ao editar.
+    Aqui deixamos a Home se comportar pela largura que realmente tem.
+  */
+  body.editor-studio-open:not(.editor-preview-v156) .hero-v70{
+    grid-template-columns:minmax(0,.94fr) minmax(300px,1.06fr)!important;
+    gap:clamp(20px,3vw,38px)!important;
+    align-items:center!important;
+  }
+
+  body.editor-studio-open:not(.editor-preview-v156) .hero-copy-v75,
+  body.editor-studio-open:not(.editor-preview-v156) .hero-copy-v70{
+    min-width:0!important;
+    width:auto!important;
+    max-width:640px!important;
+  }
+
+  /*
+    Se a coluna de preview realmente ficar estreita por zoom,
+    mantém lado a lado com o painel, mas a Home se organiza internamente.
+  */
+  @media (max-width:1050px){
+    body.editor-studio-open:not(.editor-preview-v156) .hero-v70{
+      grid-template-columns:1fr!important;
+      gap:16px!important;
+      min-height:auto!important;
+    }
+
+    body.editor-studio-open:not(.editor-preview-v156) .agent-stage{
+      width:min(620px,100%)!important;
+      min-height:430px!important;
+      margin-inline:auto!important;
+    }
+  }
+
+  /* toolbar pertence à página da esquerda */
+  body.editor-studio-open:not(.editor-preview-v156) .editor-canvas-toolbar-v156{
+    left:auto!important;
+    right:calc(var(--editor-side-panel-v190) + var(--editor-side-gap-v190) + 12px)!important;
+    width:auto!important;
+    max-width:none!important;
+    transform:none!important;
+  }
+}
+
+/* painel: conteúdo não estoura horizontalmente */
+#editorStudio .editor-studio-body-v85,
+#editorStudio .editor-studio-body{
+  min-width:0!important;
+  overflow-x:hidden!important;
+}
+
+#editorStudio .editor-studio-section,
+#editorStudio .editor-studio-section-v85,
+#editorStudio .element-builder-v181,
+#editorStudio .element-creator-v181,
+#editorStudio .assistant-layout-editor-v185{
+  min-width:0!important;
+  max-width:100%!important;
+}
+
+#editorStudio input,
+#editorStudio select,
+#editorStudio textarea,
+#editorStudio button{
+  max-width:100%!important;
+}
+
+/* ==========================================================
+   VISUALIZAR:
+   precisa ser exatamente a largura pública, sem coluna reservada.
+   ========================================================== */
+body.editor-studio-open.editor-preview-v156{
+  padding-right:0!important;
+  overflow-x:hidden!important;
+}
+
+body.editor-studio-open.editor-preview-v156 .topbar{
+  left:0!important;
+  right:0!important;
+  width:100vw!important;
+  max-width:100vw!important;
+}
+
+body.editor-studio-open.editor-preview-v156 .topbar .nav{
+  width:min(var(--max),calc(100% - 44px))!important;
+  max-width:none!important;
+  margin-inline:auto!important;
+}
+
+body.editor-studio-open.editor-preview-v156>main,
+body.editor-studio-open.editor-preview-v156>footer{
+  width:100%!important;
+  max-width:none!important;
+  margin-inline:0!important;
+}
+
+body.editor-studio-open.editor-preview-v156 .container{
+  width:min(var(--max),calc(100% - 44px))!important;
+  max-width:none!important;
+  margin-inline:auto!important;
+}
+
+body.editor-studio-open.editor-preview-v156 .hero-v70{
+  grid-template-columns:minmax(0,.94fr) minmax(420px,1.06fr)!important;
+  gap:42px!important;
+  min-height:calc(100vh - 74px)!important;
+  align-items:center!important;
+}
+
+body.editor-studio-open.editor-preview-v156 .agent-stage{
+  display:grid!important;
+}
+
+/* remove marcas de edição da visualização */
+body.editor-studio-open.editor-preview-v156 .assistant-robot-frame-v185,
+body.editor-studio-open.editor-preview-v156 .assistant-element-label-v185,
+body.editor-studio-open.editor-preview-v156 .free-icon-hint-v184,
+body.editor-studio-open.editor-preview-v156 .text-context-v182,
+body.editor-studio-open.editor-preview-v156 .inline-text-tools-v156{
+  display:none!important;
+}
+
+body.editor-studio-open.editor-preview-v156 [contenteditable],
+body.editor-studio-open.editor-preview-v156 [data-was-editable-v156]{
+  outline:none!important;
+  background:transparent!important;
+}
+
+/* mesma responsividade da página pública */
+@media(max-width:1100px){
+  body.editor-studio-open.editor-preview-v156 .container{
+    width:min(100% - 40px,var(--max))!important;
+  }
+
+  body.editor-studio-open.editor-preview-v156 .hero-v70{
+    grid-template-columns:1fr!important;
+    gap:24px!important;
+    min-height:auto!important;
+    padding:68px 0 72px!important;
+  }
+
+  body.editor-studio-open.editor-preview-v156 .agent-stage{
+    width:min(620px,100%)!important;
+    min-height:430px!important;
+    margin-inline:auto!important;
+  }
+}
+
+@media(max-width:760px){
+  body.editor-studio-open.editor-preview-v156 .container{
+    width:min(100% - 28px,var(--max))!important;
+  }
+}
+
+/*
+  Celular real: aqui sim não existe espaço útil para duas colunas.
+  Mantemos o comportamento modal já existente.
+*/
+@media(max-width:760px) and (pointer:coarse){
+  body.editor-studio-open:not(.editor-preview-v156){
+    padding-right:0!important;
+    overflow:hidden!important;
+  }
+
+  body.editor-studio-open:not(.editor-preview-v156) .topbar,
+  body.editor-studio-open:not(.editor-preview-v156)>main,
+  body.editor-studio-open:not(.editor-preview-v156)>footer{
+    width:100%!important;
+    max-width:100%!important;
+  }
+
+  body.editor-studio-open:not(.editor-preview-v156) #editorStudio.editor-studio-v85{
+    top:var(--portfolio-header-height,64px)!important;
+    left:0!important;
+    right:0!important;
+    bottom:0!important;
+    width:100%!important;
+    max-width:none!important;
+    border-radius:0!important;
+  }
+}

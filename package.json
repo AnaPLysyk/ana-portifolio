@@ -1,0 +1,38 @@
+{
+  "name": "ana-portfolio",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run build:front && npm run build:api",
+    "preview": "vite preview",
+    "dev:front": "vite",
+    "dev:api": "tsx watch server/index.ts",
+    "build:front": "tsc -b && vite build",
+    "build:api": "tsc -p tsconfig.server.json",
+    "start:api": "node dist-server/index.js",
+    "validate:api": "tsx server/validation/api.smoke.ts",
+    "docs:openapi": "tsx server/validation/export-openapi.ts",
+    "docs:openapi:check": "tsx server/validation/export-openapi.ts --check"
+  },
+  "dependencies": {
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "@fastify/cors": "^10.0.0",
+    "@fastify/jwt": "^9.0.0",
+    "@fastify/swagger": "^9.0.0",
+    "@fastify/swagger-ui": "^5.0.0",
+    "fastify": "^5.0.0",
+    "dotenv": "^16.4.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.16",
+    "@types/react-dom": "^19.1.9",
+    "@vitejs/plugin-react": "^5.0.4",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.7",
+    "@types/node": "^24.0.0",
+    "tsx": "^4.20.0"
+  }
+}

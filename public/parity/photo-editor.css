@@ -1,0 +1,67 @@
+/* Parity patch: fonte única da foto no editor */
+.editor-owner-photo-wrap-parity{
+  position:relative;
+  width:44px;
+  height:44px;
+  flex:0 0 44px;
+  overflow:visible;
+}
+.editor-owner-photo-wrap-parity .editor-owner-photo-v86{
+  display:block!important;
+  width:44px!important;
+  height:44px!important;
+  border-radius:50%!important;
+  object-fit:cover!important;
+  object-position:50% 24%!important;
+}
+.editor-owner-photo-edit-parity{
+  position:absolute;
+  right:-8px;
+  bottom:-3px;
+  z-index:8;
+  width:25px;
+  height:25px;
+  display:grid;
+  place-items:center;
+  padding:0;
+  border:1px solid rgba(143,166,205,.24);
+  border-radius:50%;
+  background:rgba(7,13,27,.96);
+  color:#dce8f8;
+  box-shadow:0 7px 18px rgba(0,0,0,.28);
+  cursor:pointer;
+  transition:transform .18s ease,border-color .18s ease,background .18s ease;
+}
+.editor-owner-photo-edit-parity:hover{
+  transform:translateY(-1px);
+  border-color:color-mix(in srgb,var(--editor-accent) 48%,rgba(143,166,205,.24));
+  background:rgba(13,24,46,.98);
+}
+.editor-owner-photo-edit-parity span{
+  display:block;
+  font-size:.72rem;
+  line-height:1;
+}
+.editor-identity-v86{
+  grid-template-columns:minmax(0,1fr)!important;
+}
+body.portfolio-theme-light .editor-owner-photo-edit-parity{
+  background:#fff!important;
+  color:#274d80!important;
+  border-color:rgba(73,105,151,.24)!important;
+  box-shadow:0 5px 14px rgba(35,61,96,.12)!important;
+}
+body.portfolio-theme-light .editor-owner-photo-edit-parity:hover{
+  background:#eef4fb!important;
+}
+@media(max-width:560px){
+  .editor-owner-photo-wrap-parity{
+    width:40px;
+    height:40px;
+    flex-basis:40px;
+  }
+  .editor-owner-photo-wrap-parity .editor-owner-photo-v86{
+    width:40px!important;
+    height:40px!important;
+  }
+}

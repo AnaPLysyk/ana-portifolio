@@ -1,0 +1,137 @@
+/* ===== v196 — aparelho muda só a prévia; editor permanece fixo ===== */
+
+:root{
+  --editor-fixed-width-v196:var(--editor-panel-width-v93,460px);
+}
+
+/* O painel de edição NÃO participa da simulação de dispositivo. */
+body.editor-studio-open #editorStudio.editor-studio-v85{
+  position:fixed!important;
+
+  top:calc(var(--portfolio-header-height,74px) + 10px)!important;
+  right:10px!important;
+  bottom:10px!important;
+  left:auto!important;
+
+  width:var(--editor-fixed-width-v196)!important;
+  min-width:340px!important;
+  max-width:min(620px,calc(100vw - 20px))!important;
+
+  height:auto!important;
+  max-height:calc(100dvh - var(--portfolio-header-height,74px) - 20px)!important;
+
+  margin:0!important;
+  transform:none!important;
+  zoom:1!important;
+
+  contain:layout paint!important;
+  box-sizing:border-box!important;
+}
+
+/* Todo o conteúdo interno mantém a mesma escala e geometria. */
+body.editor-studio-open #editorStudio .editor-studio-head-v85,
+body.editor-studio-open #editorStudio .editor-studio-tabs-v85,
+body.editor-studio-open #editorStudio .editor-studio-body-v85,
+body.editor-studio-open #editorStudio .editor-studio-footer-v85{
+  width:100%!important;
+  max-width:100%!important;
+  transform:none!important;
+  zoom:1!important;
+  box-sizing:border-box!important;
+}
+
+/* Não deixa presets mobile/tablet alterarem campos ou grids do editor. */
+body[data-device-preset-v193] #editorStudio input,
+body[data-device-preset-v193] #editorStudio select,
+body[data-device-preset-v193] #editorStudio textarea,
+body[data-device-preset-v193] #editorStudio button,
+body[data-device-preset-v193] #editorStudio label{
+  font-size:inherit;
+  transform:none!important;
+  zoom:1!important;
+}
+
+/* Grid e conteúdo do painel permanecem iguais em qualquer aparelho simulado. */
+body[data-device-preset-v193] #editorStudio .editor-studio-tabs-v85{
+  display:flex!important;
+  grid-template-columns:none!important;
+}
+
+body[data-device-preset-v193] #editorStudio .element-inline-grid-v181{
+  grid-template-columns:minmax(0,1fr) minmax(0,.85fr)!important;
+}
+
+body[data-device-preset-v193] #editorStudio .assistant-layout-row-v185{
+  grid-template-columns:72px minmax(0,1fr) auto!important;
+}
+
+/* A borda de resize continua vinculada somente à largura do painel. */
+body[data-device-preset-v193] #editorStudio #editorResizeHandleV93{
+  display:block!important;
+  left:-13px!important;
+  right:auto!important;
+}
+
+/* =========================================================
+   SOMENTE A PRÉVIA RECEBE O FORMATO DO APARELHO
+   ========================================================= */
+
+/* desktop/notebook/tablet/celular afetam apenas cabeçalho + página + rodapé */
+@media(pointer:fine){
+  body.editor-studio-open:not(.editor-preview-v156)[data-device-preset-v193]>.topbar,
+  body.editor-studio-open:not(.editor-preview-v156)[data-device-preset-v193]>main,
+  body.editor-studio-open:not(.editor-preview-v156)[data-device-preset-v193]>footer{
+    width:min(
+      var(--device-preview-width-v193),
+      calc(var(--editor-preview-width-v190) - 18px)
+    )!important;
+
+    max-width:min(
+      var(--device-preview-width-v193),
+      calc(var(--editor-preview-width-v190) - 18px)
+    )!important;
+
+    margin-left:auto!important;
+    margin-right:auto!important;
+  }
+
+  body.editor-studio-open:not(.editor-preview-v156)[data-device-preset-v193]>.topbar{
+    left:calc(var(--editor-preview-width-v190)/2)!important;
+    right:auto!important;
+    transform:translateX(-50%)!important;
+  }
+}
+
+/* A moldura também é só da prévia. */
+body.editor-studio-open #editorStudio,
+body.editor-studio-open #editorStudio *{
+  --device-preview-width-v193:initial;
+  --device-preview-height-v193:initial;
+  --device-preview-radius-v193:initial;
+}
+
+/* Em Visualizar, volta à página pública normal. */
+body.editor-preview-v156 #editorStudio{
+  display:none!important;
+}
+
+/* Celular REAL: mantém comportamento existente do editor em tela cheia.
+   O preset simulado nunca aciona isso sozinho. */
+@media(max-width:760px) and (pointer:coarse){
+  body.editor-studio-open #editorStudio.editor-studio-v85{
+    top:var(--portfolio-header-height,64px)!important;
+    right:0!important;
+    left:0!important;
+    bottom:0!important;
+
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+
+    border-radius:0!important;
+  }
+
+  body.editor-studio-open #editorStudio #editorResizeHandleV93{
+    display:none!important;
+  }
+}
