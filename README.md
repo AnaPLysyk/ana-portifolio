@@ -1,5 +1,11 @@
 # Portfólio — Ana Paula de Lima Lysyk
 
+Sou Analista de Testes Pleno. Meu trabalho combina testes funcionais e exploratórios, investigação de falhas em APIs e integrações, evidências e automação com Playwright/TypeScript.
+
+**Projetos com código público para avaliação técnica:** [Prumo QA](https://github.com/AnaPLysyk/Prumo-Qa), aplicativo desktop de engenharia de qualidade em desenvolvimento, e [Prumo QA Lab](https://github.com/AnaPLysyk/Prumo-QA-Lab), laboratório de testes controlados. Documentação e limitações estão nos próprios repositórios. Atuação em projetos profissionais privados não implica divulgação de código ou dados de clientes.
+
+Este repositório é o código do meu portfólio. A página visual pública ainda utiliza um protótipo HTML dentro de um iframe; o React e o backend estão em evolução e não devem ser apresentados como totalmente integrados.
+
 Aplicação web do portfólio profissional com editor visual e API própria.
 
 ## Status
