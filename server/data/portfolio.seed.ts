@@ -7,13 +7,13 @@ export const portfolioSeed: PortfolioDocument = {
     role: 'QA Analyst',
     level: 'Pleno',
     company: 'Sem empresa atual',
-    cep: '93320-500',
-    address: 'Rua Lopes Trovão · Industrial · Novo Hamburgo - RS',
+    cep: '',
+    address: '',
     location: 'Novo Hamburgo · RS · Brasil',
     email: 'lysykana@gmail.com',
     whatsapp: '+55 (51) 99991-7265',
     github: 'https://github.com/AnaPLysyk',
-    linkedin: 'https://www.linkedin.com/in/ana-lysik',
+    linkedin: 'https://www.linkedin.com/in/ana-lysyk/',
   },
   hero: {
     title: 'Aqui eu mostro como trabalho com qualidade de software.',
@@ -58,11 +58,11 @@ export const portfolioSeed: PortfolioDocument = {
   projects: [
     {
       id: 'quality-control',
-      name: 'Quality Control',
-      description: 'Produto autoral.',
+      name: 'Prumo QA',
+      description: 'Aplicativo desktop de engenharia de qualidade.',
       stack: [],
-      href: 'https://github.com/AnaPLysyk',
-      status: 'GitHub vinculado',
+      href: 'https://github.com/AnaPLysyk/Prumo-Qa',
+      status: 'Em desenvolvimento',
       visibility: 'public',
       linked: true,
     },
@@ -78,7 +78,7 @@ export const portfolioSeed: PortfolioDocument = {
     },
     {
       id: 'qa-orchestrator',
-      name: 'Orquestrador QA',
+      name: 'Prumo QA Lab',
       description: 'Engenharia de QA.',
       stack: ['TypeScript', 'Node.js', 'Playwright'],
       href: 'https://github.com/AnaPLysyk',
@@ -90,7 +90,7 @@ export const portfolioSeed: PortfolioDocument = {
   experience: [
     {
       id: 'testing-company',
-      period: 'jan 2025 — atual',
+      period: 'jan 2025 — out 2026',
       company: 'Testing Company',
       role: 'QA Analyst Pleno',
       summary: 'Testes manuais, automação, API, integrações e investigação de falhas.',
