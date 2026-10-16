@@ -16,14 +16,14 @@ export const portfolioSeed: PortfolioDocument = {
     linkedin: 'https://www.linkedin.com/in/ana-lysyk/',
   },
   hero: {
-    title: 'Aqui eu mostro como trabalho com qualidade de software.',
+    title: 'Quando encontro uma falha, quero entender de onde ela veio.',
     intro:
-      'Você vai encontrar minhas competências, projetos no GitHub, experiência profissional e formação. Nos projetos e na minha trajetória, mostro o que faço no dia a dia, as ferramentas que uso e o que ainda estou desenvolvendo — principalmente em automação.',
+      'Atuo com testes funcionais, exploratórios, APIs e integrações. Investigo comportamento na interface, nos serviços e nos dados, além de automatizar cenários com Playwright e TypeScript.',
   },
   about: {
     title: 'Eu gosto de entender como as coisas funcionam.',
     body:
-      'Sou uma QA analítica, curiosa e investigativa. Gosto de cruzar informações, entender o contexto e chegar à causa antes de concluir. Já trabalhei com planejamento, documentação, execução e evidências de teste. Hoje sigo construindo minha prática em automação e explorando agentes aplicados ao QA.',
+      'Antes de marcar um cenário como aprovado, procuro entender o requisito, o comportamento observado e os riscos. Tenho experiência com fluxos críticos, APIs, banco, logs e evidências. Nos meus projetos pessoais, estudo automação e avaliação de ferramentas de QA e IA com cenários controlados.',
   },
   competencies: [
     {
@@ -79,12 +79,12 @@ export const portfolioSeed: PortfolioDocument = {
     {
       id: 'qa-orchestrator',
       name: 'Prumo QA Lab',
-      description: 'Engenharia de QA.',
-      stack: ['TypeScript', 'Node.js', 'Playwright'],
-      href: 'https://github.com/AnaPLysyk',
-      status: 'privado',
-      visibility: 'private',
-      linked: false,
+      description: 'Laboratório independente de testes controlados.',
+      stack: ['Node.js', 'MCP', 'Testes'],
+      href: 'https://github.com/AnaPLysyk/Prumo-QA-Lab',
+      status: 'laboratório público',
+      visibility: 'public',
+      linked: true,
     },
   ],
   experience: [
